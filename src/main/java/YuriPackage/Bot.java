@@ -1,16 +1,25 @@
 package YuriPackage;
 
+import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
 
-public class Bot implements Bootable {
-    private Map<String,Client> Base;
-    private Scanner in;
-    public Bot(){
-        Base = new HashMap<String,Client>();
-        in = new Scanner(System.in);
-    }
+public class Bot  { //implements Bootable,ReadAndWrite
+    private static final Map<String,Client> Base = new HashMap<>();
+    private  static final Scanner  in  = new Scanner(System.in);
+//    public Bot(){
+//        Base = new HashMap<String,Client>();
+//        in = new Scanner(System.in);
+//    }
 
     public static void GreetClient()
     {
@@ -25,22 +34,22 @@ public class Bot implements Bootable {
                 "5)Input \"\\Statistics\" to show all of your expenses\n" +
                 "6)Input \"\\Exit\" to leave current session\n");
     }
-    @Override
-    public  void RegistrateClient()
+//    @Override
+    public static void RegistrateClient()
     {
         System.out.println("Input your unique Telegram nick");
         String tempClient = in.nextLine();
         if (Base.containsKey(tempClient))
         {
             System.out.println("You've already registered\n" +
-                    "Plese, sign in a system");
+                    "Please, sign in a system");
             return;
         }
         else {
             Base.put(tempClient,new Client());
         }
     };
-    public Client SignUP()
+    public static Client SignUP()
     {
         System.out.println("Input your unique Telegram nick");
         String tempClient = in.nextLine();
@@ -56,10 +65,130 @@ public class Bot implements Bootable {
 
     }
 
+    public static void Work()
+    {
+        Scanner in = new Scanner(System.in);
+//        Bot bot = new Bot();
+        Client tempClient = new Client();
+        Bot.GreetClient();
+        boolean InSystem = false;//Показывает, есть клиент в системе или нет
+        while (true)
+        {
+            String action = in.nextLine();
+            if (Objects.equals(action, "\\Register")) {
+                Bot.RegistrateClient();
+                System.out.println("Now, sign up to use all properties!");
+            }
+            else if (Objects.equals(action, "\\Sign up")) {
+                tempClient = Bot.SignUP();
+                if (tempClient == null)
+                    continue;
+                InSystem = true;
+            }
+            else if (Objects.equals(action, "\\Limit"))
+            {
+                if (!InSystem)
+                {
+                    System.out.println("Register or sign up a system!");
+                    continue;
+                }
+                else {
+                    assert tempClient != null;//но он и не будет null
+                    tempClient.SetLimit();
+                }
+            }
+            else if (Objects.equals(action, "\\Add"))
+            {
+                if (!InSystem)
+                {
+                    System.out.println("Register or sign in a system!");
+                    continue;
+                }
+                else {
+                    assert tempClient != null;//но он и не будет null
+                    tempClient.AddExpenses();
+                }
+            }
+            else if (Objects.equals(action, "\\Statistics"))
+            {
+                if (!InSystem)
+                {
+                    System.out.println("Register or sign up a system!");
+                    continue;
+                }
+                else {
+                    assert tempClient != null;//но он и не будет null
+                    tempClient.ShowStatistic();
+                }
+            }
+            else if (Objects.equals(action, "\\Exit"))
+            {
+                InSystem = false;
+                Bot.GreetClient();//человек вышел - значит
+                // с ботом будет работать
+                // другой, возможно, не знает, как с ним работать
+            }
+        }
+    }
+    public static void ReadBase(){
+        try(FileReader fileReader = new FileReader("text.json"))
+        {
+            Path file = Paths.get("text.json");
+            String input = Files.readString(file);
+            Client TempClient = new Client();//новый клиент в словарь
+            JSONObject jsonObject = (JSONObject)JSONValue.parse(input);
+            JSONArray jsonArray = (JSONArray)jsonObject.get("Map");
+
+            for (Object item : jsonArray)
+            {
+                TempClient = new Client();
+                JSONObject map = (JSONObject)item;
+                String name = (String)map.get("Name");
+                long lim = (Long)map.get("Limit");
+                TempClient.SetLimitFromJSON((int)lim);
+                JSONArray jsonArray1 = (JSONArray)map.get("Products");
+                System.out.println(name + "\t" + lim);
+                System.out.println();
+                for (Object item1 : jsonArray1)
+                {
+                    JSONObject map1 = (JSONObject)item1;
+                    String title = (String)map1.get("title");
+                    long price = (Long)map1.get("price");
+                    TempClient.AddExpensesFromJSON((int)price,title);
+                    System.out.println(title + '\t' + price);
+                    System.out.println();
+                }
+                System.out.println("\n_________\n");
+                Base.put(name,TempClient);
+            }
+            jsonObject.remove("Map");
+//            File file1 = new File("temp.txt");
+//            if (file1.delete())
+//                System.out.println("Deleted successfully");
+            //так буду удалять json файл
+            for (String key : Base.keySet())
+            {
+                System.out.println(key+'\n');
+            }
+
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    };
+    public static void UpdateBase(){};
+
+
 }
 
-interface Bootable
-{
-    public void RegistrateClient();
+//interface ReadAndWrite{
+//    public void ReadBase();
+//    public void WriteBase();
+//}
 
-}
+//interface Bootable
+//{
+//    public void RegistrateClient();
+//
+//}

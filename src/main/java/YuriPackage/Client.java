@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Client {
-    private int Limit = Integer.MIN_VALUE;
+    private int Limit = Integer.MAX_VALUE;
     private int ostat;
     private Scanner in;
     private Map<String,Integer> map;
@@ -24,6 +24,27 @@ public class Client {
         //поэтому так
         System.out.println("Input product");
         product = in.nextLine();
+        if (map.containsKey(product))
+        {
+            int temp = map.get(product);
+            if (CanAdd(temp+sum))
+                map.put(product, temp + sum);
+            else
+                System.out.println("Your limit will be" +
+                        " achieved\nYou can't by this!\n" +
+                        "If you buy, thr limit is over");
+        }
+        else {
+            if (CanAdd(sum))
+                map.put(product,sum);
+            else
+                System.out.println("Your limit will be" +
+                        " achieved\nYou can't by this!\n" +
+                        "If you buy, thr limit is over");
+        }
+    }
+    public void AddExpensesFromJSON(int sum,String product)
+    {
         if (map.containsKey(product))
         {
             int temp = map.get(product);
@@ -79,6 +100,10 @@ public class Client {
     {
         System.out.println("Input limit of your daily costs");
         this.Limit = Integer.parseInt(in.nextLine());
+    }
+    public void SetLimitFromJSON(int lim)
+    {
+        this.Limit = lim;
     }
 
 
