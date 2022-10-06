@@ -105,6 +105,9 @@ public class Client {
     {
         this.Limit = lim;
     }
-
-
+    public HashMap<String,Integer> MapForJSON()//нужно для запси в json-базу
+    {
+        return (HashMap<String, Integer>) this.map;
+    }
+    public int LimitForJSON(){return this.Limit;}
 }

@@ -1,6 +1,9 @@
 package YuriPackage;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -74,6 +77,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
         boolean InSystem = false;//Показывает, есть клиент в системе или нет
         while (true)
         {
+            Bot.ReadBase();
             String action = in.nextLine();
             if (Objects.equals(action, "\\Register")) {
                 Bot.RegistrateClient();
@@ -128,6 +132,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
                 // с ботом будет работать
                 // другой, возможно, не знает, как с ним работать
             }
+            Bot.UpdateBase();
         }
     }
     public static void ReadBase(){
@@ -147,29 +152,29 @@ public class Bot  { //implements Bootable,ReadAndWrite
                 long lim = (Long)map.get("Limit");
                 TempClient.SetLimitFromJSON((int)lim);
                 JSONArray jsonArray1 = (JSONArray)map.get("Products");
-                System.out.println(name + "\t" + lim);
-                System.out.println();
+//                System.out.println(name + "\t" + lim);
+//                System.out.println();
                 for (Object item1 : jsonArray1)
                 {
                     JSONObject map1 = (JSONObject)item1;
                     String title = (String)map1.get("title");
                     long price = (Long)map1.get("price");
                     TempClient.AddExpensesFromJSON((int)price,title);
-                    System.out.println(title + '\t' + price);
-                    System.out.println();
+//                    System.out.println(title + '\t' + price);
+//                    System.out.println();
                 }
-                System.out.println("\n_________\n");
+//                System.out.println("\n_________\n");
                 Base.put(name,TempClient);
             }
-            jsonObject.remove("Map");
+           // jsonObject.remove("Map");
 //            File file1 = new File("temp.txt");
 //            if (file1.delete())
 //                System.out.println("Deleted successfully");
             //так буду удалять json файл
-            for (String key : Base.keySet())
-            {
-                System.out.println(key+'\n');
-            }
+//            for (String key : Base.keySet())
+//            {
+//                System.out.println(key+'\n');
+//            }
 
         }
         catch (Exception ex)
@@ -177,7 +182,51 @@ public class Bot  { //implements Bootable,ReadAndWrite
             ex.printStackTrace();
         }
     };
-    public static void UpdateBase(){};
+    public static void UpdateBase()
+    {
+        try(FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+            JSONObject main_obj = new JSONObject();
+            JSONArray mp = new JSONArray();
+            Client TempClient = new Client();
+            HashMap<String,Integer> tempClientBase;
+            for (Map.Entry<String,Client> entry: Base.entrySet())
+            {
+                JSONObject obj = new JSONObject();
+                String UNIQ_NAME = entry.getKey();
+                TempClient = entry.getValue();
+                tempClientBase = TempClient.MapForJSON();
+                obj.put("Name",UNIQ_NAME);
+                obj.put("Limit",TempClient.LimitForJSON());
+                JSONArray products = new JSONArray();
+                for (Map.Entry<String,Integer> entry1: tempClientBase.entrySet())
+                {
+                    JSONObject obj1 = new JSONObject();
+                    obj1.put("title",entry1.getKey());
+                    obj1.put("price",entry1.getValue());
+                    products.add(obj1);
+                }
+                obj.put("Products",products);
+                mp.add(obj);
+            }
+//            obj.put("Name","Jurex");
+//            obj.put("Limit",1000);
+//            JSONArray products = new JSONArray();
+//            JSONObject obj1 = new JSONObject();
+//            obj1.put("title","Milk");
+//            obj1.put("price",100);
+//            products.add(obj1);
+//            obj.put("Products",products);
+//            mp.add(obj);
+//            main_obj.put("Map",mp);
+            main_obj.put("Map",mp);
+            file.write(main_obj.toJSONString());
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            System.out.println("Not today");
+        }
+    };
 
 
 }
