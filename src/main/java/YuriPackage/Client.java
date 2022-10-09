@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Client {
-    private int Limit = Integer.MAX_VALUE;
+    private int limit = Integer.MAX_VALUE;
     private int ostat;
     private Scanner in;
     private Map<String,Integer> map;
@@ -15,7 +15,7 @@ public class Client {
         in = new Scanner(System.in);
         ostat = Integer.MAX_VALUE;
     }
-    public void AddExpenses()
+    public void addExpenses()
     {
         int sum;String product;
         System.out.println("Input sum");
@@ -27,7 +27,7 @@ public class Client {
         if (map.containsKey(product))
         {
             int temp = map.get(product);
-            if (CanAdd(temp+sum))
+            if (canAdd(temp+sum))
                 map.put(product, temp + sum);
             else
                 System.out.println("Your limit will be" +
@@ -35,20 +35,20 @@ public class Client {
                         "If you buy, thr limit is over");
         }
         else {
-            if (CanAdd(sum))
-                map.put(product,sum);
+            if (canAdd(sum))
+                this.map.put(product,sum);
             else
                 System.out.println("Your limit will be" +
                         " achieved\nYou can't by this!\n" +
                         "If you buy, thr limit is over");
         }
     }
-    public void AddExpensesFromJSON(int sum,String product)
+    public void addExpensesFromJSON(int sum,String product)
     {
         if (map.containsKey(product))
         {
             int temp = map.get(product);
-            if (CanAdd(temp+sum))
+            if (canAdd(temp+sum))
                 map.put(product, temp + sum);
             else
                 System.out.println("Your limit will be" +
@@ -56,7 +56,7 @@ public class Client {
                         "If you buy, thr limit is over");
         }
         else {
-            if (CanAdd(sum))
+            if (canAdd(sum))
                 map.put(product,sum);
             else
                 System.out.println("Your limit will be" +
@@ -64,28 +64,28 @@ public class Client {
                         "If you buy, thr limit is over");
         }
     }
-    private void ShowTheOstat()
+    private void showTheOstat()
     {
         int sum = 0;
         for (Map.Entry<String,Integer> entry: map.entrySet())
         {
             sum+= entry.getValue();
         }
-        System.out.println("Your ostat = " + (this.Limit - sum));
+        System.out.println("Your ostat = " + (this.limit - sum));
     }
-    private boolean CanAdd(int item)
+    private boolean canAdd(int item)
     {
         int sum = 0;
         for (Map.Entry<String,Integer> entry: map.entrySet())
         {
             sum+= entry.getValue();
         }
-        if (sum+item<this.Limit)
+        if (sum+item<this.limit)
             return true;
         return false;
     }
 
-    public void ShowStatistic()
+    public void showStatistic()
     {
         for (Map.Entry<String,Integer> entry: map.entrySet())
         {
@@ -93,21 +93,21 @@ public class Client {
             Integer val = entry.getValue();
             System.out.println("Product - " + key + "| Expenses = " + val);
         }
-        ShowTheOstat();
+        showTheOstat();
     };
 
-    public void SetLimit()
+    public void setLimit()
     {
         System.out.println("Input limit of your daily costs");
-        this.Limit = Integer.parseInt(in.nextLine());
+        this.limit = Integer.parseInt(in.nextLine());
     }
-    public void SetLimitFromJSON(int lim)
+    public void setLimitFromJSON(int lim)
     {
-        this.Limit = lim;
+        this.limit = lim;
     }
-    public HashMap<String,Integer> MapForJSON()//нужно для запси в json-базу
+    public HashMap<String,Integer> mapForJSON()//нужно для запси в json-базу
     {
         return (HashMap<String, Integer>) this.map;
     }
-    public int LimitForJSON(){return this.Limit;}
+    public int LimitForJSON(){return this.limit;}
 }
