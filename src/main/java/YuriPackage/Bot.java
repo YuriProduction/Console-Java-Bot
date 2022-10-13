@@ -1,6 +1,9 @@
 package YuriPackage;
 
-import java.io.File;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,10 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
 
 public class Bot  { //implements Bootable,ReadAndWrite
     private final Map<String,Client> base = new HashMap<>();
@@ -35,7 +34,8 @@ public class Bot  { //implements Bootable,ReadAndWrite
                 "3)Input \"\\Add\" to add the expense\n" +
                 "4)Input \"\\Limit\" to set the limit of money for today\n" +
                 "5)Input \"\\Statistics\" to show all of your expenses\n" +
-                "6)Input \"\\Exit\" to leave current session\n");
+                "6)Input \"\\Calculation\" to calculate for the entered period\n" +
+                "7)Input \"\\Exit\" to leave current session\n");
     }
 //    @Override
     public void registrateClient()
@@ -46,12 +46,11 @@ public class Bot  { //implements Bootable,ReadAndWrite
         {
             System.out.println("You've already registered\n" +
                     "Please, sign in a system");
-            return;
         }
         else {
             base.put(tempClient,new Client());
         }
-    };
+    }
     public Client signIN()
     {
         System.out.println("Input your unique Telegram nick");
@@ -68,8 +67,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
 
     }
 
-    public void work()
-    {
+    public void work() throws IOException {
         Scanner in = new Scanner(System.in);
 //        Bot bot = new Bot();
         Client tempClient = new Client();
@@ -98,7 +96,18 @@ public class Bot  { //implements Bootable,ReadAndWrite
                 }
                 else {
                     assert tempClient != null;//но он и не будет null
-                    tempClient.setLimit();
+                    try{
+                        System.out.println("Input limit of your daily costs");
+                        int LimitUser = Integer.parseInt(in.nextLine());
+                        tempClient.setLimit(LimitUser);
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        System.out.println("Incorrect input\n" +
+                                "Enter a number:");
+                        int LimitUser = Integer.parseInt(in.nextLine());
+                        tempClient.setLimit(LimitUser);
+                    }
                 }
             }
             else if (Objects.equals(action, "\\Add"))
@@ -109,9 +118,12 @@ public class Bot  { //implements Bootable,ReadAndWrite
                     continue;
                 }
                 else {
+                    System.out.println("Input sum: ");
+                    int sumUser = Integer.parseInt(in.nextLine());
+                    System.out.println("Input product: ");
+                    String product = in.nextLine();
                     assert tempClient != null;//но он и не будет null
-                    tempClient.addExpenses();
-
+                    tempClient.addExpenses(sumUser, product);
                 }
             }
             else if (Objects.equals(action, "\\Statistics"))
@@ -126,12 +138,26 @@ public class Bot  { //implements Bootable,ReadAndWrite
                     tempClient.showStatistic();
                 }
             }
+            else if (Objects.equals(action,"\\Calculation")) {
+                if (!inSystem)
+                {
+                    System.out.println("Register or sign up a system!");
+                    continue;
+                }
+                else{
+                    assert tempClient != null;
+                    System.out.println("Enter the period for the calculation");
+                    int UserPeriod = Integer.parseInt(in.nextLine());
+                    tempClient.distributionPeriod(UserPeriod);
+                }
+            }
             else if (Objects.equals(action, "\\Exit"))
             {
                 inSystem = false;
                 this.greetClient();//человек вышел - значит
                 // с ботом будет работать
                 // другой, возможно, не знает, как с ним работать
+                // здесь должен быть наверное break >>> ???
             }
             this.updateBase();
         }
@@ -172,7 +198,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
     };
     private void updateBase()
     {
-        try(FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+        try(FileWriter file = new FileWriter("C:\\Учеба ООП\\ConsoleJavaBot\\Console-Java-Bot\\text.json");) {
             JSONObject main_obj = new JSONObject();
             JSONArray mp = new JSONArray();
             Client tempClient = new Client();
@@ -204,7 +230,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
             ex.printStackTrace();
             System.out.println("Not today");
         }
-    };
+    }
 
 
 }

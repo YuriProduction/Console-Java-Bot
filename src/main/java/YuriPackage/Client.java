@@ -1,11 +1,12 @@
 package YuriPackage;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Client {
-    private int limit = Integer.MAX_VALUE;
+    public static int limit = Integer.MAX_VALUE;
     private int ostat;
     private Scanner in;
     private Map<String,Integer> map;
@@ -15,15 +16,8 @@ public class Client {
         in = new Scanner(System.in);
         ostat = Integer.MAX_VALUE;
     }
-    public void addExpenses()
+    public void addExpenses(int sum, String product)
     {
-        int sum;String product;
-        System.out.println("Input sum");
-        sum = Integer.parseInt(in.nextLine());//после nextInt()
-        // некорректно работает nextLine(),считывая пустую строку
-        //поэтому так
-        System.out.println("Input product");
-        product = in.nextLine();
         if (map.containsKey(product))
         {
             int temp = map.get(product);
@@ -96,10 +90,10 @@ public class Client {
         showTheOstat();
     };
 
-    public void setLimit()
+    public static boolean setLimit(int LimitUser) throws IOException
     {
-        System.out.println("Input limit of your daily costs");
-        this.limit = Integer.parseInt(in.nextLine());
+        limit = LimitUser;
+        return true;
     }
     public void setLimitFromJSON(int lim)
     {
@@ -110,4 +104,11 @@ public class Client {
         return (HashMap<String, Integer>) this.map;
     }
     public int LimitForJSON(){return this.limit;}
+
+    static public int distributionPeriod(int period)
+    {
+        int periodUnit = limit / period;
+        System.out.println("Spending limit for today: " + periodUnit);
+        return periodUnit;
+    }
 }
