@@ -141,7 +141,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
             else if (Objects.equals(action,"\\Calculation")) {
                 if (!inSystem)
                 {
-                    System.out.println("Register or sign up a system!");
+                    System.out.println("Register or sign in a system!");
                     continue;
                 }
                 else{
@@ -198,7 +198,7 @@ public class Bot  { //implements Bootable,ReadAndWrite
     };
     private void updateBase()
     {
-        try(FileWriter file = new FileWriter("C:\\Учеба ООП\\ConsoleJavaBot\\Console-Java-Bot\\text.json");) {
+        try(FileWriter file = new FileWriter("text.json");) {
             JSONObject main_obj = new JSONObject();
             JSONArray mp = new JSONArray();
             Client tempClient = new Client();
