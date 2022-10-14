@@ -18,7 +18,7 @@ public class ClientTest {
 
     @Test
     public void addExpenses() {
-        Client.limit = 1000;
+        newClient.limit = 1000;
         newClient.addExpenses(100, "sausage");
         newClient.addExpenses(300, "milk");
         newClient.addExpenses(500, "bread");
@@ -36,7 +36,7 @@ public class ClientTest {
 
     @Test
     public void distributionPeriod() {
-        Client.limit = 10000;
+        newClient.limit = 10000;
         assertEquals(1428, newClient.distributionPeriod(7));
         assertEquals(333, newClient.distributionPeriod(30));
         assertEquals(166, newClient.distributionPeriod(60));
