@@ -9,36 +9,42 @@ import static org.junit.Assert.assertTrue;
 
 public class ClientTest {
 
-    private Client newClient;
+  private Client newClient;
 
-    @Before
-    public void setUp() throws IOException {
-        newClient = new Client();
-    }
+  @Before
+  public void setUp() {
+    newClient = new Client();
+  }
 
-    @Test
-    public void addExpenses() {
-        newClient.limit = 1000;
-        newClient.addExpenses(100, "sausage");
-        newClient.addExpenses(300, "milk");
-        newClient.addExpenses(500, "bread");
-        newClient.showStatistic();
-        //newClient.addExpenses(100, "spaghetti");
-    }
+  @Test
+  public void addExpenses() {
+//    сверения статистики после нескольких
+//    пользовательских операций
+//    с ожидаемым остатком
+    newClient.setLimit(1000);
+    newClient.addExpenses(100, "sausage");
+    assertEquals(900, newClient.getOstat());
+    newClient.addExpenses(300, "milk");
+    assertEquals(600, newClient.getOstat());
+    newClient.addExpenses(500, "bread");
+    assertEquals(100, newClient.getOstat());
+  }
 
-    @Test
-    public void setLimit() throws IOException {
-        assertTrue(newClient.setLimit(1000));
-        newClient.showStatistic();
-        assertTrue(newClient.setLimit(10000000));
-        newClient.showStatistic();
-    }
+  @Test
+  public void setLimit(){
+    newClient.setLimit(1000);
+    assertEquals(1000,newClient.getOstat());
+    newClient.setLimit(10000000);
+    assertEquals(10000000,newClient.getOstat());
+  }
 
-    @Test
-    public void distributionPeriod() {
-        newClient.limit = 10000;
-        assertEquals(1428, newClient.distributionPeriod(7));
-        assertEquals(333, newClient.distributionPeriod(30));
-        assertEquals(166, newClient.distributionPeriod(60));
-    }
+  @Test
+  public void distributionPeriod() {
+    newClient.setLimit(10000);
+    assertEquals(1428, newClient.distributionPeriod(7));
+    assertEquals(333, newClient.distributionPeriod(30));
+    assertEquals(166, newClient.distributionPeriod(60));
+  }
+
+
 }

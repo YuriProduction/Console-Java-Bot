@@ -201,7 +201,9 @@ public class Bot { //implements Bootable,ReadAndWrite
       ex.printStackTrace();
       System.out.println("Not today");
     }
+
   }
+
 
 
 }

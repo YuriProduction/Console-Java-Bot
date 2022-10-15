@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Client {
 
-  public int limit = Integer.MAX_VALUE;
+  private int limit = Integer.MAX_VALUE;
   private int ostat;
   private Scanner in;
   private Map<String, Integer> map;
@@ -35,8 +35,11 @@ public class Client {
         System.out.println("Your limit will be" +
             " achieved\nYou can't by this!\n" +
             "If you buy, thr limit is over");
+        return;
       }
+
     }
+    ostat -= sum;
   }
 
   public void addExpensesFromJSON(int sum, String product) {
@@ -68,6 +71,10 @@ public class Client {
     System.out.println("Your ostat = " + (this.limit - sum));
   }
 
+  public int getOstat() {
+    return ostat;
+  }
+
   private boolean canAdd(int item) {
     int sum = 0;
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
@@ -90,9 +97,9 @@ public class Client {
 
   ;
 
-  public boolean setLimit(int LimitUser) throws IOException {
+  public void setLimit(int LimitUser) {
     limit = LimitUser;
-    return true;
+    this.ostat = limit;
   }
 
   public void setLimitFromJSON(int lim) {

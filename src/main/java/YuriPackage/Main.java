@@ -8,4 +8,5 @@ public class Main {
     Bot bot = new Bot();
     bot.work();
   }
+
 }
