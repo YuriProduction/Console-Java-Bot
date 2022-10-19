@@ -1,50 +1,46 @@
+
 import YuriPackage.Client;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.IOException;
+class ClientTest {
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+  Client ourClient;
 
-public class ClientTest {
+  @BeforeEach
+  public void prepareData() {
 
-  private Client newClient;
-
-  @Before
-  public void setUp() {
-    newClient = new Client();
+    ourClient = new Client();
   }
 
   @Test
-  public void addExpenses() {
-//    сверения статистики после нескольких
-//    пользовательских операций
-//    с ожидаемым остатком
-    newClient.setLimit(1000);
-    newClient.addExpenses(100, "sausage");
-    assertEquals(900, newClient.getOstat());
-    newClient.addExpenses(300, "milk");
-    assertEquals(600, newClient.getOstat());
-    newClient.addExpenses(500, "bread");
-    assertEquals(100, newClient.getOstat());
+  void addExpenses() {
+    ourClient.setLimit(1000);
+    ourClient.addExpenses(100, "sausage");
+    Assertions.assertEquals(900, ourClient.getOstat());
+    ourClient.addExpenses(300, "milk");
+    Assertions.assertEquals(600, ourClient.getOstat());
+    ourClient.addExpenses(500, "bread");
+    Assertions.assertEquals(100, ourClient.getOstat());
   }
 
   @Test
-  public void setLimit(){
-    newClient.setLimit(1000);
-    assertEquals(1000,newClient.getOstat());
-    newClient.setLimit(10000000);
-    assertEquals(10000000,newClient.getOstat());
+  void setLimit() {
+    ourClient.setLimit(1000);
+    Assertions.assertEquals(1000, ourClient.getOstat());
+    ourClient.setLimit(10000000);
+    Assertions.assertEquals(10000000, ourClient.getOstat());
   }
 
-  @Test
-  public void distributionPeriod() {
-    newClient.setLimit(10000);
-    assertEquals(1428, newClient.distributionPeriod(7));
-    assertEquals(333, newClient.distributionPeriod(30));
-    assertEquals(166, newClient.distributionPeriod(60));
+  @ParameterizedTest
+  @ValueSource(strings = {"1428"})
+  public void distributionPeriod(String value) {
+    ourClient.setLimit(10000);
+    Assertions.assertEquals(Integer.parseInt(value), ourClient.distributionPeriod(7));
+//    assertEquals(333, newClient.distributionPeriod(30));
+//    assertEquals(166, newClient.distributionPeriod(60));
   }
-
-
 }
