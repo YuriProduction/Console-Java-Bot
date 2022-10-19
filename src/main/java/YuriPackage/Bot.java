@@ -140,8 +140,8 @@ public class Bot { //implements Bootable,ReadAndWrite
   }
 
   private void readBase() {
-    try (FileReader fileReader = new FileReader("text.json")) {
-      Path file = Paths.get("text.json");
+    try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
+      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
       String input = Files.readString(file);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
@@ -173,7 +173,7 @@ public class Bot { //implements Bootable,ReadAndWrite
   ;
 
   private void updateBase() {
-    try (FileWriter file = new FileWriter("text.json");) {
+    try (FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
