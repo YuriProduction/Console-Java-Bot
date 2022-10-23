@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -41,17 +42,23 @@ public class TeleBot extends TelegramLongPollingBot {
   public void onUpdateReceived(Update update) {
     var msg = update.getMessage();
     var user = msg.getFrom();
-    System.out.println(
-        user.getFirstName() + " wrote " + msg.getText() + "\nHis own nick is @" + user.getUserName()
-            + '\n');
-    System.out.println(
-        user.getFirstName() + " wrote " + msg.getText() + "\nHis own nick is @" + user.getUserName()
-            + '\n');
+    if (msg.getText().equals("/menu")) {
+      SendMenu(msg.getChatId());
+      return;
+    }
 
+    System.out.println(
+        user.getFirstName() + " wrote " + msg.getText() + "\nHis own nick is @" + user.getUserName()
+            + '\n');
     try {
       if (update.hasMessage() && update.getMessage().hasText()) {
         //Извлекаем из объекта сообщение пользователя
         Message inMess = update.getMessage();
+        if (inMess.isCommand()) {
+          System.out.println(
+              "Поступила команда " + inMess.getText() + " из чата " + inMess.getChatId()
+                  .toString());
+        }
         //Достаем из inMess id чата пользователя
         String chatId = inMess.getChatId().toString();
         //Получаем текст сообщения пользователя, отправляем в написанный нами обработчик
@@ -61,6 +68,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
         //Добавляем в наше сообщение id чата а также наш ответ
         outMess.setChatId(chatId);
+
         outMess.setText(response);
 
         //Отправка в чат
@@ -86,13 +94,14 @@ public class TeleBot extends TelegramLongPollingBot {
     } else if (textMsg.equals("/help")) {
       response =
           "\n" +
-          "1)Введите \"/Register\" чтобы зарегистрироваться\n" +
-          "2)Введите \"/Sign in\" чтобы зайти в систему\n" +
-          "3)Введите \"/Add\" чтобы добавить расходы\n" +
-          "4)Введите \"/Limit\" чтобы установить лимит по расходам на сегодня\n" +
-          "5)Введите \"/Statistics\" чтобы показать статистику\n" +
-          "6)Введите \"/Calculation\" чтобы вычислить лимит на 7-n дней\n" +
-          "7)Введите \"/Exit\" чтобы выйти из системы\n";
+              "1)Введите \"/Register\" чтобы зарегистрироваться\n" +
+              "2)Введите \"/Sign in\" чтобы зайти в систему\n" +
+              "3)Введите \"/Add\" чтобы добавить расходы\n" +
+              "4)Введите \"/Limit\" чтобы установить лимит по расходам на сегодня\n" +
+              "5)Введите \"/Statistics\" чтобы показать статистику\n" +
+              "6)Введите \"/Calculation\" чтобы вычислить лимит на 7-n дней\n" +
+              "7)Введите \"/Exit\" чтобы выйти из системы\n" +
+              "8)Введите \"/menu\" чтобы открыть навигационное меню ";
     } else {
       response = "Сообщение не распознано";
     }
@@ -100,7 +109,56 @@ public class TeleBot extends TelegramLongPollingBot {
     return response;
   }
 
+
+  public void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
+    SendMessage sm = SendMessage.builder().chatId(who.toString())
+        .parseMode("HTML").text(txt)
+        .replyMarkup(kb).build();
+
+    try {
+      execute(sm);
+    } catch (TelegramApiException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   private static String readUsingFiles(String fileName) throws IOException {
     return new String(Files.readAllBytes(Paths.get(fileName)));
   }//считываем данные из файла и возвращаем в виде строки
+
+  private void SendMenu(Long number_of_chat) {
+    //создаем кнопочки
+    var add = InlineKeyboardButton.builder()
+        .text("Add").callbackData("add")
+        .build();
+
+    var limit = InlineKeyboardButton.builder()
+        .text("Limit").callbackData("limit")
+        .build();
+
+    var stat = InlineKeyboardButton.builder()
+        .text("Statistics").callbackData("statistics")
+        .build();
+
+    var url = InlineKeyboardButton.builder()
+        .text("GitHub")
+        .url("https://core.telegram.org/bots/api")
+        .build();
+
+    //создаем клавиатуру
+    keyboard1 = InlineKeyboardMarkup.builder()
+        .keyboardRow(List.of(add))
+        .keyboardRow(List.of(url))
+        .keyboardRow(List.of(limit))
+        .keyboardRow(List.of(stat))
+        .build();
+
+    //сендим клавиатуру
+
+    sendMenu(number_of_chat, "<b>\uD83E\uDDEDNavigation\uD83E\uDDED</b>", keyboard1);
+
+    //____________________________________________________//
+  }
+
+  private InlineKeyboardMarkup keyboard1;
 }
