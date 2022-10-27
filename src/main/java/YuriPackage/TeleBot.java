@@ -1,10 +1,16 @@
 package YuriPackage;
 
+import static java.lang.System.exit;
+import static java.lang.System.out;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -21,6 +27,98 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TeleBot extends TelegramLongPollingBot {
 
+  private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
+
+  private String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
+      "/help"};
+  private boolean sumIsAdded = false;
+
+  private boolean isCommand(String argum) {
+    for (String x : commands_list) {
+      if (argum.equals(x)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void fixUsingCommand(String argum) {
+    currentCommand.put(true, argum);
+  }
+
+  private void SendFirstTextOfCommand(String command, Long chatID) throws TelegramApiException {
+    SendMessage outMess = new SendMessage();
+    outMess.setChatId(chatID.toString());
+    if (command.equals("/start")) {
+      outMess.setText(
+          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
+              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
+      execute(outMess);
+    } else if (command.equals("/help")) {
+      outMess.setText(
+          "\n" +
+              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
+              "2)Введите \"/help\" чтобы получить список комад\n" +
+              "3)Введите \"/add\" чтобы добавить расходы\n" +
+              "4)Введите \"/limit\" чтобы установить лимит по расходам на сегодня\n" +
+              "5)Введите \"/statistics\" чтобы показать статистику\n");
+
+      execute(outMess);
+    } else if (command.equals("/add")) {
+      outMess.setText("Введите сумму");
+      execute(outMess);
+    } else if (command.equals("/limit")) {
+      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
+      execute(outMess);
+    } else if (command.equals("/statistics")) {
+      outMess.setText("*Бот показывает статистику*");
+      execute(outMess);
+    }
+    else {
+      outMess.setText("Сообщение не распознано");
+      execute(outMess);
+    }
+  }
+
+  private void DoCommandLogic(String command, String text,Long chat_id)
+      throws TelegramApiException {
+    SendMessage outMess = new SendMessage();
+    outMess.setChatId(chat_id.toString());
+    if (command.equals("/add")){
+      //мы знаем, что первое сообщение уже отправлено
+      //"Введите сумму" добавлено
+      if (!sumIsAdded)
+      {
+        //Если сумма еще не добавлена - просим добавить
+        //addSum(text)
+        //просим ввести товар
+        outMess.setText("Введите товар");
+        execute(outMess);
+        sumIsAdded = true;
+      }
+      else {
+        //addGood(text)
+        //товар добавлен, затираем переменную
+        sumIsAdded  = false;
+        currentCommand.put(true,"Default command");//ставим дефолтную команду
+      }
+    }
+    else if (command.equals("/limit"))
+    {
+      //setLimit(text)
+      outMess.setText("Лимит установлен");
+      execute(outMess);
+      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+      // которая никак не обрабатывается
+      // и попадет в else
+    }
+    else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
+        outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
+        execute(outMess);
+    }
+  }
+
+
   @Override
   public String getBotUsername() {
     return "Finance_Yur_and_Serg_Bot";
@@ -28,92 +126,62 @@ public class TeleBot extends TelegramLongPollingBot {
 
   @Override
   public String getBotToken() {
-    String token = null;
-    try {
-      token = readUsingFiles(
-          "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\src\\main\\resources\\TOKEN.txt");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    String token = GetTokenFromEnvironmentVariables();
+    if (token != null) {
+      return token;
+    } else {
+      System.out.println("Not token in enviroment variables");
+      exit(-1);
+      return null;
     }
-    return token;
   }
 
   @Override
   public void onUpdateReceived(Update update) {
+    //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
     var msg = update.getMessage();
     var user = msg.getFrom();
-    if (msg.getText().equals("/menu")) {
-      SendMenu(msg.getChatId());
+    String textOfMessage = msg.getText();
+    Long chat_id = msg.getChatId();
+    if (isCommand(textOfMessage)) {
+      fixUsingCommand(textOfMessage);
+      try {
+        SendFirstTextOfCommand(textOfMessage,
+            chat_id); //отправляем первое сообщение и завершаем логику
+      } catch (TelegramApiException e) {
+        throw new RuntimeException(e);
+      }
       return;
     }
-
-    System.out.println(
-        user.getFirstName() + " wrote " + msg.getText() + "\nHis own nick is @" + user.getUserName()
-            + '\n');
+    String command = currentCommand.get(true);//смотрим, какая команда используется
     try {
-      if (update.hasMessage() && update.getMessage().hasText()) {
-        //Извлекаем из объекта сообщение пользователя
-        Message inMess = update.getMessage();
-        if (inMess.isCommand()) {
-          System.out.println(
-              "Поступила команда " + inMess.getText() + " из чата " + inMess.getChatId()
-                  .toString());
-        }
-        //Достаем из inMess id чата пользователя
-        String chatId = inMess.getChatId().toString();
-        //Получаем текст сообщения пользователя, отправляем в написанный нами обработчик
-        String response = parseMessage(inMess.getText());
-        //Создаем объект класса SendMessage - наш будущий ответ пользователю
-        SendMessage outMess = new SendMessage();
-
-        //Добавляем в наше сообщение id чата а также наш ответ
-        outMess.setChatId(chatId);
-
-        outMess.setText(response);
-
-        //Отправка в чат
-        try {
-          execute(outMess);
-        } catch (TelegramApiException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+      DoCommandLogic(command,textOfMessage,chat_id);
+    } catch (TelegramApiException e) {
+      throw new RuntimeException(e);
     }
 
   }
 
-  public String parseMessage(String textMsg) {
-    String response;
+  private void SendMessageToUser(String command, Long chat_id) throws TelegramApiException {
+    SendMessage outMess = new SendMessage();
+    if (command.equals("/Add")) {
+      outMess.setChatId(chat_id.toString());
+      outMess.setText("Введите сумму");
+      //какая-то логика
+      execute(outMess);
 
-    //Сравниваем текст пользователя с нашими командами, на основе этого формируем ответ
-    if (textMsg.equals("/start")) {
-      response = "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
-          + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE";
-    } else if (textMsg.equals("/help")) {
-      response =
-          "\n" +
-              "1)Введите \"/Register\" чтобы зарегистрироваться\n" +
-              "2)Введите \"/Sign in\" чтобы зайти в систему\n" +
-              "3)Введите \"/Add\" чтобы добавить расходы\n" +
-              "4)Введите \"/Limit\" чтобы установить лимит по расходам на сегодня\n" +
-              "5)Введите \"/Statistics\" чтобы показать статистику\n" +
-              "6)Введите \"/Calculation\" чтобы вычислить лимит на 7-n дней\n" +
-              "7)Введите \"/Exit\" чтобы выйти из системы\n" +
-              "8)Введите \"/menu\" чтобы открыть навигационное меню ";
-    } else {
-      response = "Сообщение не распознано";
     }
-
-    return response;
   }
 
 
-  public void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
-    SendMessage sm = SendMessage.builder().chatId(who.toString())
-        .parseMode("HTML").text(txt)
-        .replyMarkup(kb).build();
+  private void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
+    SendMessage sm = SendMessage
+        .builder()
+        .chatId(who.toString())
+        .parseMode("HTML")
+        .text(txt)
+        .replyMarkup(kb)
+        .build();
 
     try {
       execute(sm);
@@ -122,25 +190,32 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  private static String readUsingFiles(String fileName) throws IOException {
+  private String readUsingFiles(String fileName) throws IOException {
     return new String(Files.readAllBytes(Paths.get(fileName)));
   }//считываем данные из файла и возвращаем в виде строки
 
   private void SendMenu(Long number_of_chat) {
     //создаем кнопочки
-    var add = InlineKeyboardButton.builder()
-        .text("Add").callbackData("add")
+    var add = InlineKeyboardButton
+        .builder()
+        .text("Add")
+        .callbackData("add")
         .build();
 
-    var limit = InlineKeyboardButton.builder()
-        .text("Limit").callbackData("limit")
+    var limit = InlineKeyboardButton
+        .builder()
+        .text("Limit")
+        .callbackData("limit")
         .build();
 
-    var stat = InlineKeyboardButton.builder()
-        .text("Statistics").callbackData("statistics")
+    var stat = InlineKeyboardButton
+        .builder()
+        .text("Statistics")
+        .callbackData("statistics")
         .build();
 
-    var url = InlineKeyboardButton.builder()
+    var url = InlineKeyboardButton
+        .builder()
         .text("GitHub")
         .url("https://core.telegram.org/bots/api")
         .build();
@@ -158,6 +233,16 @@ public class TeleBot extends TelegramLongPollingBot {
     sendMenu(number_of_chat, "<b>\uD83E\uDDEDNavigation\uD83E\uDDED</b>", keyboard1);
 
     //____________________________________________________//
+  }
+
+  private String GetTokenFromEnvironmentVariables() {
+    Map<String, String> env = System.getenv();
+    for (String envName : env.keySet()) {
+      if (envName.equals("TOKEN_TELE")) {
+        return env.get(envName);
+      }
+    }
+    return null;
   }
 
   private InlineKeyboardMarkup keyboard1;
