@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 public class Client {
 
@@ -63,12 +64,14 @@ public class Client {
     }
   }
 
-  private void showTheOstat() {
+  private String showTheOstat() {
     int sum = 0;
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
       sum += entry.getValue();
     }
-    System.out.println("Your ostat = " + (this.limit - sum));
+    //System.out.println("Your ostat = " + (this.limit - sum));
+    return "Your ostat = " + (this.limit - sum);
+
   }
 
   public int getOstat() {
@@ -86,13 +89,15 @@ public class Client {
     return false;
   }
 
-  public void showStatistic() {
+  public String showStatistic() {
+    String stat = "";
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
       String key = entry.getKey();
       Integer val = entry.getValue();
-      System.out.println("Product - " + key + "| Expenses = " + val);
+      stat+="Product - " + key + "| Expenses = " + val + "\n";
     }
-    showTheOstat();
+    stat+=showTheOstat()+"\n";
+    return stat;
   }
 
   ;

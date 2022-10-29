@@ -74,8 +74,10 @@ public class TeleBot extends TelegramLongPollingBot {
       outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
       execute(outMess);
     } else if (command.equals("/statistics")) {
-      outMess.setText("*Бот показывает статистику*");
+      String stat = tempClient.showStatistic();
+      outMess.setText(stat);
       execute(outMess);
+      currentCommand.put(true,"Default command");//ставим дефолтную команду,
     }
     else {
       outMess.setText("Сообщение не распознано");
@@ -119,6 +121,7 @@ public class TeleBot extends TelegramLongPollingBot {
     else if (command.equals("/limit"))
     {
       //setLimit(text)
+      tempClient.setLimit(Integer.parseInt(textOfMessage));
       outMess.setText("Лимит установлен");
       execute(outMess);
       currentCommand.put(true,"Default command");//ставим дефолтную команду,
