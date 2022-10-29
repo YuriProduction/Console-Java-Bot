@@ -48,6 +48,11 @@ public class Bot { //implements Bootable,ReadAndWrite
     } else {
       base.put(tempClient, new Client());
     }
+  }//уберем
+  public void registateClient(String nick){
+    if (!base.containsKey(nick)) {
+      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
+    }
   }
 
   public Client signIN() {
@@ -62,6 +67,10 @@ public class Bot { //implements Bootable,ReadAndWrite
     }
 
   }
+  public Client signIN(String nick) {
+      return base.get(nick); //так как он зарегистрирован на шаге выше
+  }
+
 
   public void work() throws IOException {
     Scanner in = new Scanner(System.in);
@@ -71,6 +80,7 @@ public class Bot { //implements Bootable,ReadAndWrite
     boolean inSystem = false;//Показывает, есть клиент в системе или нет
     while (true) {
       this.readBase();
+
       String action = in.nextLine();
       if (Objects.equals(action, "\\Register")) {
         this.registrateClient();
@@ -96,6 +106,7 @@ public class Bot { //implements Bootable,ReadAndWrite
                 "Enter a number:");
             int LimitUser = Integer.parseInt(in.nextLine());
             tempClient.setLimit(LimitUser);
+
           }
         }
       } else if (Objects.equals(action, "\\Add")) {
@@ -139,9 +150,9 @@ public class Bot { //implements Bootable,ReadAndWrite
     }
   }
 
-  private void readBase() {
-    try (FileReader fileReader = new FileReader("text.json")) {
-      Path file = Paths.get("text.json");
+  public void readBase() {
+    try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
+      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
       String input = Files.readString(file);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
@@ -172,8 +183,8 @@ public class Bot { //implements Bootable,ReadAndWrite
 
   ;
 
-  private void updateBase() {
-    try (FileWriter file = new FileWriter("text.json");) {
+  public void updateBase() {
+    try (FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();

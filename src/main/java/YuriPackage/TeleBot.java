@@ -29,6 +29,9 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
 
+  private Bot bot_holding_base = new Bot();
+  private Client tempClient = new Client();
+
   private String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
       "/help"};
   private boolean sumIsAdded = false;
@@ -80,15 +83,20 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  private void DoCommandLogic(String command, String text,Long chat_id)
+  private int tempSUM = 0;
+  private String tempGOOD = "";
+  private void DoCommandLogic(String command, String textOfMessage,Long chat_id)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
+    bot_holding_base.readBase();
+
     outMess.setChatId(chat_id.toString());
     if (command.equals("/add")){
       //мы знаем, что первое сообщение уже отправлено
       //"Введите сумму" добавлено
       if (!sumIsAdded)
       {
+        tempSUM = Integer.parseInt(textOfMessage);
         //Если сумма еще не добавлена - просим добавить
         //addSum(text)
         //просим ввести товар
@@ -99,7 +107,12 @@ public class TeleBot extends TelegramLongPollingBot {
       else {
         //addGood(text)
         //товар добавлен, затираем переменную
+        tempGOOD = textOfMessage;
+        tempClient.addExpenses(tempSUM,tempGOOD);//добавляем расходы
+        //затираем даные
         sumIsAdded  = false;
+        tempSUM = 0;
+        tempGOOD = "";
         currentCommand.put(true,"Default command");//ставим дефолтную команду
       }
     }
@@ -141,6 +154,12 @@ public class TeleBot extends TelegramLongPollingBot {
     //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
     var msg = update.getMessage();
     var user = msg.getFrom();
+    out.println(user.getUserName());
+    String user_uniq_nick = user.getUserName();
+    bot_holding_base.readBase();
+    bot_holding_base.registateClient(user_uniq_nick);
+    tempClient = bot_holding_base.signIN(user_uniq_nick);
+
     String textOfMessage = msg.getText();
     Long chat_id = msg.getChatId();
     if (isCommand(textOfMessage)) {
@@ -159,6 +178,7 @@ public class TeleBot extends TelegramLongPollingBot {
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
+    bot_holding_base.updateBase();
 
   }
 
