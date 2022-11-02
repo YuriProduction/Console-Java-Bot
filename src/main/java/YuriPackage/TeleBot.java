@@ -18,6 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -33,7 +34,7 @@ public class TeleBot extends TelegramLongPollingBot {
   private Client tempClient = new Client();
 
   private String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help"};
+      "/help","/menu"};
   private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
@@ -64,7 +65,10 @@ public class TeleBot extends TelegramLongPollingBot {
               "2)Введите \"/help\" чтобы получить список комад\n" +
               "3)Введите \"/add\" чтобы добавить расходы\n" +
               "4)Введите \"/limit\" чтобы установить лимит по расходам на сегодня\n" +
-              "5)Введите \"/statistics\" чтобы показать статистику\n");
+              "5)Введите \"/statistics\" чтобы показать статистику\n"
+              +
+              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
+      );
 
       execute(outMess);
     } else if (command.equals("/add")) {
@@ -77,6 +81,10 @@ public class TeleBot extends TelegramLongPollingBot {
       String stat = tempClient.showStatistic();
       outMess.setText(stat);
       execute(outMess);
+      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+    } else if (command.equals("/menu"))
+    {
+      SendMenu(chatID);
       currentCommand.put(true,"Default command");//ставим дефолтную команду,
     }
     else {
@@ -152,19 +160,11 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  @Override
-  public void onUpdateReceived(Update update) {
-    //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
-    var msg = update.getMessage();
-    var user = msg.getFrom();
-    out.println(user.getUserName());
-    String user_uniq_nick = user.getUserName();
-    bot_holding_base.readBase();
+  private void mainLogic(String textOfMessage,long chat_id,String user_uniq_nick)
+  {
     bot_holding_base.registateClient(user_uniq_nick);
     tempClient = bot_holding_base.signIN(user_uniq_nick);
 
-    String textOfMessage = msg.getText();
-    Long chat_id = msg.getChatId();
     if (isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
       try {
@@ -181,22 +181,50 @@ public class TeleBot extends TelegramLongPollingBot {
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
+
+  }
+
+  @Override
+  public void onUpdateReceived(Update update) {
+    //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
+    bot_holding_base.readBase();
+    var msg = update.getMessage();
+    String textOfMessage = null;
+    if (msg==null)
+    {
+      if (isUserTouchButton(update))
+      {
+        textOfMessage = update.getCallbackQuery().getData();
+        var user = update.getCallbackQuery().getFrom();
+        long chat_id = update.getCallbackQuery().getMessage().getChatId();
+        String user_uniq_nick = user.getUserName();
+        mainLogic(textOfMessage,chat_id,user_uniq_nick);
+      }
+    }
+    else
+    {
+      textOfMessage = msg.getText();
+      out.println(textOfMessage);
+      var user = msg.getFrom();
+      long chat_id = msg.getChatId();
+      out.println(user.getUserName());
+      String user_uniq_nick = user.getUserName();
+      mainLogic(textOfMessage,chat_id,user_uniq_nick);
+    }
     bot_holding_base.updateBase();
 
   }
 
-  private void SendMessageToUser(String command, Long chat_id) throws TelegramApiException {
-    SendMessage outMess = new SendMessage();
-    if (command.equals("/Add")) {
-      outMess.setChatId(chat_id.toString());
-      outMess.setText("Введите сумму");
-      //какая-то логика
-      execute(outMess);
-
-    }
+  private boolean isUserTouchButton(Update update)
+  {
+    if (update.hasCallbackQuery())
+        return true;
+//      String call_data = update.getCallbackQuery().getData();
+//      long message_id = update.getCallbackQuery().getMessage().getMessageId();
+//      long chat__id = update.getCallbackQuery().getMessage().getChatId();
+//      out.println(call_data);
+    return false;
   }
-
-
   private void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
     SendMessage sm = SendMessage
         .builder()
@@ -213,6 +241,9 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
+
+
+
   private String readUsingFiles(String fileName) throws IOException {
     return new String(Files.readAllBytes(Paths.get(fileName)));
   }//считываем данные из файла и возвращаем в виде строки
@@ -221,32 +252,32 @@ public class TeleBot extends TelegramLongPollingBot {
     //создаем кнопочки
     var add = InlineKeyboardButton
         .builder()
-        .text("Add")
-        .callbackData("add")
+        .text("Добавить товар в корзину")
+        .callbackData("/add")
         .build();
 
     var limit = InlineKeyboardButton
         .builder()
-        .text("Limit")
-        .callbackData("limit")
+        .text("Ввести сумму бюджета(мой лимит на покупки)")
+        .callbackData("/limit")
         .build();
 
     var stat = InlineKeyboardButton
         .builder()
-        .text("Statistics")
-        .callbackData("statistics")
+        .text("Посмотреть статистику")
+        .callbackData("/statistics")
         .build();
 
-    var url = InlineKeyboardButton
-        .builder()
-        .text("GitHub")
-        .url("https://core.telegram.org/bots/api")
-        .build();
+//    var url = InlineKeyboardButton
+//        .builder()
+//        .text("GitHub")
+//        .url("https://core.telegram.org/bots/api")
+//        .build();
 
     //создаем клавиатуру
     keyboard1 = InlineKeyboardMarkup.builder()
         .keyboardRow(List.of(add))
-        .keyboardRow(List.of(url))
+//        .keyboardRow(List.of(url))
         .keyboardRow(List.of(limit))
         .keyboardRow(List.of(stat))
         .build();

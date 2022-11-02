@@ -1,5 +1,6 @@
 package YuriPackage;
 
+import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -163,15 +164,31 @@ public class Bot { //implements Bootable,ReadAndWrite
         JSONObject map = (JSONObject) item;
         String name = (String) map.get("Name");
         long lim = (Long) map.get("Limit");
-        tempClient.setLimitFromJSON((int) lim);
-        JSONArray jsonArray1 = (JSONArray) map.get("Products");
-        for (Object item1 : jsonArray1) {
-          JSONObject map1 = (JSONObject) item1;
-          String title = (String) map1.get("title");
-          long price = (Long) map1.get("price");
-          tempClient.addExpensesFromJSON((int) price, title);
+        String date = (String) map.get("Date");
+        if (CastDateToInt(new Date().toString()) - CastDateToInt(date)!=0)
+        {
+          tempClient.setLimitFromJSON(Integer.MAX_VALUE);
+          tempClient.setDate(date);//уже можно добавлять
+//          JSONArray jsonArray1 = (JSONArray) map.get("Products");
+//          for (Object item1 : jsonArray1) {
+//            JSONObject map1 = (JSONObject) item1;
+//            String title = (String) map1.get("title");
+//            long price = (Long) map1.get("price");
+//            //tempClient.addExpensesFromJSON((int) price, title);
+//          }
         }
-        if (!base.containsKey(name)) {
+        else {
+          tempClient.setLimitFromJSON((int) lim);
+          tempClient.setDate(date);
+          JSONArray jsonArray1 = (JSONArray) map.get("Products");
+          for (Object item1 : jsonArray1) {
+            JSONObject map1 = (JSONObject) item1;
+            String title = (String) map1.get("title");
+            long price = (Long) map1.get("price");
+            tempClient.addExpensesFromJSON((int) price, title);
+          }
+        }
+        if (!base.containsKey(name)) {//если первый раз считываем или записали нового
           base.put(name, tempClient);
         }
       }
@@ -196,6 +213,7 @@ public class Bot { //implements Bootable,ReadAndWrite
         tempClientBase = tempClient.mapForJSON();
         obj.put("Name", uniq_NAME);
         obj.put("Limit", tempClient.LimitForJSON());
+        obj.put("Date", new Date().toString());
         JSONArray products = new JSONArray();
         for (Map.Entry<String, Integer> entry1 : tempClientBase.entrySet()) {
           JSONObject obj1 = new JSONObject();
@@ -213,6 +231,15 @@ public class Bot { //implements Bootable,ReadAndWrite
       System.out.println("Not today");
     }
 
+  }
+
+  public static int CastDateToInt(String data) {
+    //происходит проверка по дням
+    // (в функции выше, не учитывается
+    // проерка по месяцам!)
+    char[] char_data = data.toCharArray();
+    String str_day = String.valueOf(char_data[8]) + char_data[9];
+    return Integer.parseInt(str_day);
   }
 
 

@@ -1,5 +1,5 @@
 package YuriPackage;
-
+import java.util.Date;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,8 @@ public class Client {
   private int limit = Integer.MAX_VALUE;
   private int ostat;
   private Scanner in;
+
+  private String date;
   private Map<String, Integer> map;
 
   public Client() {
@@ -48,6 +50,7 @@ public class Client {
       int temp = map.get(product);
       if (canAdd(temp + sum)) {
         map.put(product, temp + sum);
+        this.date = new Date().toString();
       } else {
         System.out.println("Your limit will be" +
             " achieved\nYou can't by this!\n" +
@@ -114,6 +117,11 @@ public class Client {
   public HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
   {
     return (HashMap<String, Integer>) this.map;
+  }
+
+  public void setDate(String data)
+  {
+    this.date = data;
   }
 
   public int LimitForJSON() {
