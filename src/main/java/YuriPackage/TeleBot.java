@@ -18,7 +18,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -34,7 +33,7 @@ public class TeleBot extends TelegramLongPollingBot {
   private Client tempClient = new Client();
 
   private String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help","/menu"};
+      "/help"};
   private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
@@ -55,40 +54,33 @@ public class TeleBot extends TelegramLongPollingBot {
     outMess.setChatId(chatID.toString());
     if (command.equals("/start")) {
       outMess.setText(
-          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
-              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
+          "пїЅпїЅпїЅпїЅпїЅпїЅ \uD83D\uDC4B, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ. пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ \uD83D\uDCB0."
+              + "\nпїЅпїЅпїЅ /help, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ \uD83E\uDDBE");
       execute(outMess);
     } else if (command.equals("/help")) {
       outMess.setText(
           "\n" +
-              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
-              "2)Введите \"/help\" чтобы получить список комад\n" +
-              "3)Введите \"/add\" чтобы добавить расходы\n" +
-              "4)Введите \"/limit\" чтобы установить лимит по расходам на сегодня\n" +
-              "5)Введите \"/statistics\" чтобы показать статистику\n"
-              +
-              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
-      );
+              "1)пїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"/start\" пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ\n" +
+              "2)пїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"/help\" пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ\n" +
+              "3)пїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"/add\" пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n" +
+              "4)пїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"/limit\" пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n" +
+              "5)пїЅпїЅпїЅпїЅпїЅпїЅпїЅ \"/statistics\" пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ\n");
 
       execute(outMess);
     } else if (command.equals("/add")) {
-      outMess.setText("Введите сумму");
+      outMess.setText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
       execute(outMess);
     } else if (command.equals("/limit")) {
-      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
+      outMess.setText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
       execute(outMess);
     } else if (command.equals("/statistics")) {
       String stat = tempClient.showStatistic();
       outMess.setText(stat);
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
-    } else if (command.equals("/menu"))
-    {
-      SendMenu(chatID);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+      currentCommand.put(true,"Default command");//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ,
     }
     else {
-      outMess.setText("Сообщение не распознано");
+      outMess.setText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
       execute(outMess);
     }
   }
@@ -102,42 +94,42 @@ public class TeleBot extends TelegramLongPollingBot {
 
     outMess.setChatId(chat_id.toString());
     if (command.equals("/add")){
-      //мы знаем, что первое сообщение уже отправлено
-      //"Введите сумму" добавлено
+      //пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+      //"пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ" пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
       if (!sumIsAdded)
       {
         tempSUM = Integer.parseInt(textOfMessage);
-        //Если сумма еще не добавлена - просим добавить
+        //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         //addSum(text)
-        //просим ввести товар
-        outMess.setText("Введите товар");
+        //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        outMess.setText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
         execute(outMess);
         sumIsAdded = true;
       }
       else {
         //addGood(text)
-        //товар добавлен, затираем переменную
+        //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         tempGOOD = textOfMessage;
-        tempClient.addExpenses(tempSUM,tempGOOD);//добавляем расходы
-        //затираем даные
+        tempClient.addExpenses(tempSUM,tempGOOD);//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         sumIsAdded  = false;
         tempSUM = 0;
         tempGOOD = "";
-        currentCommand.put(true,"Default command");//ставим дефолтную команду
+        currentCommand.put(true,"Default command");//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
       }
     }
     else if (command.equals("/limit"))
     {
       //setLimit(text)
       tempClient.setLimit(Integer.parseInt(textOfMessage));
-      outMess.setText("Лимит установлен");
+      outMess.setText("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
-      // которая никак не обрабатывается
-      // и попадет в else
+      currentCommand.put(true,"Default command");//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ,
+      // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+      // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ else
     }
-    else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
-        outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
+    else {//(Default command,/help,/start) //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+        outMess.setText("пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
         execute(outMess);
     }
   }
@@ -160,71 +152,51 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  private void mainLogic(String textOfMessage,long chat_id,String user_uniq_nick)
-  {
-    bot_holding_base.registateClient(user_uniq_nick);
-    tempClient = bot_holding_base.signIN(user_uniq_nick);
+  @Override
+  public void onUpdateReceived(Update update) {
+    //currentCommand.put(true,"Defolt command");//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    var msg = update.getMessage();
+    var user = msg.getFrom();
+    out.println(user.getUserName());
+    String user_uniq_nick = user.getUserName();
+    bot_holding_base.readBase();
+    //bot_holding_base.registrateClient(user_uniq_nick);
+    //tempClient = bot_holding_base.signIN(user_uniq_nick);
 
+    String textOfMessage = msg.getText();
+    Long chat_id = msg.getChatId();
     if (isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
       try {
         SendFirstTextOfCommand(textOfMessage,
-            chat_id); //отправляем первое сообщение и завершаем логику
+            chat_id); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
       }
       return;
     }
-    String command = currentCommand.get(true);//смотрим, какая команда используется
+    String command = currentCommand.get(true);//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     try {
       DoCommandLogic(command,textOfMessage,chat_id);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
-
-  }
-
-  @Override
-  public void onUpdateReceived(Update update) {
-    //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
-    bot_holding_base.readBase();
-    var msg = update.getMessage();
-    String textOfMessage = null;
-    if (msg==null)
-    {
-      if (isUserTouchButton(update))
-      {
-        textOfMessage = update.getCallbackQuery().getData();
-        var user = update.getCallbackQuery().getFrom();
-        long chat_id = update.getCallbackQuery().getMessage().getChatId();
-        String user_uniq_nick = user.getUserName();
-        mainLogic(textOfMessage,chat_id,user_uniq_nick);
-      }
-    }
-    else
-    {
-      textOfMessage = msg.getText();
-      out.println(textOfMessage);
-      var user = msg.getFrom();
-      long chat_id = msg.getChatId();
-      out.println(user.getUserName());
-      String user_uniq_nick = user.getUserName();
-      mainLogic(textOfMessage,chat_id,user_uniq_nick);
-    }
     bot_holding_base.updateBase();
 
   }
 
-  private boolean isUserTouchButton(Update update)
-  {
-    if (update.hasCallbackQuery())
-        return true;
-//      String call_data = update.getCallbackQuery().getData();
-//      long message_id = update.getCallbackQuery().getMessage().getMessageId();
-//      long chat__id = update.getCallbackQuery().getMessage().getChatId();
-//      out.println(call_data);
-    return false;
+  private void SendMessageToUser(String command, Long chat_id) throws TelegramApiException {
+    SendMessage outMess = new SendMessage();
+    if (command.equals("/Add")) {
+      outMess.setChatId(chat_id.toString());
+      outMess.setText("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
+      //пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+      execute(outMess);
+
+    }
   }
+
+
   private void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
     SendMessage sm = SendMessage
         .builder()
@@ -241,48 +213,45 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-
-
-
   private String readUsingFiles(String fileName) throws IOException {
     return new String(Files.readAllBytes(Paths.get(fileName)));
-  }//считываем данные из файла и возвращаем в виде строки
+  }//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
   private void SendMenu(Long number_of_chat) {
-    //создаем кнопочки
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     var add = InlineKeyboardButton
         .builder()
-        .text("Добавить товар в корзину")
-        .callbackData("/add")
+        .text("Add")
+        .callbackData("add")
         .build();
 
     var limit = InlineKeyboardButton
         .builder()
-        .text("Ввести сумму бюджета(мой лимит на покупки)")
-        .callbackData("/limit")
+        .text("Limit")
+        .callbackData("limit")
         .build();
 
     var stat = InlineKeyboardButton
         .builder()
-        .text("Посмотреть статистику")
-        .callbackData("/statistics")
+        .text("Statistics")
+        .callbackData("statistics")
         .build();
 
-//    var url = InlineKeyboardButton
-//        .builder()
-//        .text("GitHub")
-//        .url("https://core.telegram.org/bots/api")
-//        .build();
+    var url = InlineKeyboardButton
+        .builder()
+        .text("GitHub")
+        .url("https://core.telegram.org/bots/api")
+        .build();
 
-    //создаем клавиатуру
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     keyboard1 = InlineKeyboardMarkup.builder()
         .keyboardRow(List.of(add))
-//        .keyboardRow(List.of(url))
+        .keyboardRow(List.of(url))
         .keyboardRow(List.of(limit))
         .keyboardRow(List.of(stat))
         .build();
 
-    //сендим клавиатуру
+    //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
     sendMenu(number_of_chat, "<b>\uD83E\uDDEDNavigation\uD83E\uDDED</b>", keyboard1);
 

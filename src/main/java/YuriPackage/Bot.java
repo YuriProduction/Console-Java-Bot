@@ -50,11 +50,11 @@ public class Bot { //implements Bootable,ReadAndWrite
       base.put(tempClient, new Client());
     }
   }//уберем
-  public void registateClient(String nick){
-    if (!base.containsKey(nick)) {
-      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
-    }
-  }
+//  public void registateClient(String nick){
+//    if (!base.containsKey(nick)) {
+//      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
+//    }
+//  }
 
   public Client signIN() {
     System.out.println("Input your unique Telegram nick");
@@ -68,12 +68,12 @@ public class Bot { //implements Bootable,ReadAndWrite
     }
 
   }
-  public Client signIN(String nick) {
-      return base.get(nick); //так как он зарегистрирован на шаге выше
-  }
+//  public Client signIN(String nick) {
+//      return base.get(nick); //так как он зарегистрирован на шаге выше
+//  }
 
 
-  public void work() throws IOException {
+  public void work() {
     Scanner in = new Scanner(System.in);
 //        Bot bot = new Bot();
     Client tempClient = new Client();
@@ -152,8 +152,8 @@ public class Bot { //implements Bootable,ReadAndWrite
   }
 
   public void readBase() {
-    try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
-      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
+    try (FileReader fileReader = new FileReader("C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
+      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
       String input = Files.readString(file);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
@@ -198,10 +198,9 @@ public class Bot { //implements Bootable,ReadAndWrite
     }
   }
 
-  ;
 
   public void updateBase() {
-    try (FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+    try (FileWriter file = new FileWriter("C:\\Учеба ООП\\Console-Java-Bot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
