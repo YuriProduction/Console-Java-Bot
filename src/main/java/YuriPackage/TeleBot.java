@@ -98,7 +98,6 @@ public class TeleBot extends TelegramLongPollingBot {
   private void DoCommandLogic(String command, String textOfMessage,Long chat_id)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
-    bot_holding_base.readBase();
 
     outMess.setChatId(chat_id.toString());
     if (command.equals("/add")){
@@ -219,10 +218,6 @@ public class TeleBot extends TelegramLongPollingBot {
   {
     if (update.hasCallbackQuery())
         return true;
-//      String call_data = update.getCallbackQuery().getData();
-//      long message_id = update.getCallbackQuery().getMessage().getMessageId();
-//      long chat__id = update.getCallbackQuery().getMessage().getChatId();
-//      out.println(call_data);
     return false;
   }
   private void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
@@ -267,12 +262,6 @@ public class TeleBot extends TelegramLongPollingBot {
         .text("ѕосмотреть статистику")
         .callbackData("/statistics")
         .build();
-
-//    var url = InlineKeyboardButton
-//        .builder()
-//        .text("GitHub")
-//        .url("https://core.telegram.org/bots/api")
-//        .build();
 
     //создаем клавиатуру
     keyboard1 = InlineKeyboardMarkup.builder()
