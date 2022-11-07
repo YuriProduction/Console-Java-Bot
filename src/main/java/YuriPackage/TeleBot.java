@@ -185,6 +185,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
   @Override
   public void onUpdateReceived(Update update) {
+    //rabotai plzzzzzzzz
     //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
     bot_holding_base.readBase();
     var msg = update.getMessage();

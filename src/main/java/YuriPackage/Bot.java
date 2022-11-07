@@ -22,19 +22,19 @@ public class Bot { //implements Bootable,ReadAndWrite
 
   protected void registateClient(String nick){
     if (!base.containsKey(nick)) {
-      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
+      base.put(nick, new Client());//Р•РЎР›Р РЎРћР”Р•Р Р–РРў - РўРћ РќРР§Р• РќР• Р”Р•Р›РђР•Рњ, РўРђРљ РљРђРљ РћРќ РЎРџРћРљРћР™РќРћ Р’РћР™Р”Р•Рў Р’ РЎРРЎРўР•РњРЈ
     }
   }
 
   protected Client signIN(String nick) {
-      return base.get(nick); //так как он зарегистрирован на шаге выше
+      return base.get(nick); //С‚Р°Рє РєР°Рє РѕРЅ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅ РЅР° С€Р°РіРµ РІС‹С€Рµ
   }
 
   protected void readBase() {
     try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
       Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
       String input = Files.readString(file);
-      Client tempClient = new Client();//новый клиент в словарь
+      Client tempClient = new Client();//РЅРѕРІС‹Р№ РєР»РёРµРЅС‚ РІ СЃР»РѕРІР°СЂСЊ
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
       JSONArray jsonArray = (JSONArray) jsonObject.get("Map");
 
@@ -47,7 +47,7 @@ public class Bot { //implements Bootable,ReadAndWrite
         if (CastDateToInt(new Date().toString()) - CastDateToInt(date)!=0)
         {
           tempClient.setLimitFromJSON(Integer.MAX_VALUE);
-          tempClient.setDate(date);//уже можно добавлять
+          tempClient.setDate(date);//СѓР¶Рµ РјРѕР¶РЅРѕ РґРѕР±Р°РІР»СЏС‚СЊ
 //          JSONArray jsonArray1 = (JSONArray) map.get("Products");
 //          for (Object item1 : jsonArray1) {
 //            JSONObject map1 = (JSONObject) item1;
@@ -67,7 +67,7 @@ public class Bot { //implements Bootable,ReadAndWrite
             tempClient.addExpensesFromJSON((int) price, title);
           }
         }
-        if (!base.containsKey(name)) {//если первый раз считываем или записали нового
+        if (!base.containsKey(name)) {//РµСЃР»Рё РїРµСЂРІС‹Р№ СЂР°Р· СЃС‡РёС‚С‹РІР°РµРј РёР»Рё Р·Р°РїРёСЃР°Р»Рё РЅРѕРІРѕРіРѕ
           base.put(name, tempClient);
         }
       }
@@ -113,9 +113,9 @@ public class Bot { //implements Bootable,ReadAndWrite
   }
 
   protected static int CastDateToInt(String data) {
-    //происходит проверка по дням
-    // (в функции выше, не учитывается
-    // проерка по месяцам!)
+    //РїСЂРѕРёСЃС…РѕРґРёС‚ РїСЂРѕРІРµСЂРєР° РїРѕ РґРЅСЏРј
+    // (РІ С„СѓРЅРєС†РёРё РІС‹С€Рµ, РЅРµ СѓС‡РёС‚С‹РІР°РµС‚СЃСЏ
+    // РїСЂРѕРµСЂРєР° РїРѕ РјРµСЃСЏС†Р°Рј!)
     char[] char_data = data.toCharArray();
     String str_day = String.valueOf(char_data[8]) + char_data[9];
     return Integer.parseInt(str_day);
