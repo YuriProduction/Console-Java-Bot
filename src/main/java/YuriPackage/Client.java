@@ -21,7 +21,7 @@ public class Client {
     ostat = Integer.MAX_VALUE;
   }
 
-  public void addExpenses(int sum, String product) {
+  protected void addExpenses(int sum, String product) {
     if (map.containsKey(product)) {
       int temp = map.get(product);
       if (canAdd(temp + sum)) {
@@ -45,7 +45,7 @@ public class Client {
     ostat -= sum;
   }
 
-  public void addExpensesFromJSON(int sum, String product) {
+  protected void addExpensesFromJSON(int sum, String product) {
     if (map.containsKey(product)) {
       int temp = map.get(product);
       if (canAdd(temp + sum)) {
@@ -77,7 +77,7 @@ public class Client {
 
   }
 
-  public int getOstat() {
+  protected int getOstat() {
     return ostat;
   }
 
@@ -92,7 +92,7 @@ public class Client {
     return false;
   }
 
-  public String showStatistic() {
+  protected String showStatistic() {
     String stat = "";
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
       String key = entry.getKey();
@@ -105,32 +105,27 @@ public class Client {
 
   ;
 
-  public void setLimit(int LimitUser) {
+  protected void setLimit(int LimitUser) {
     limit = LimitUser;
     this.ostat = limit;
   }
 
-  public void setLimitFromJSON(int lim) {
+  protected void setLimitFromJSON(int lim) {
     this.limit = lim;
   }
 
-  public HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
+  protected HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
   {
     return (HashMap<String, Integer>) this.map;
   }
 
-  public void setDate(String data)
+  protected void setDate(String data)
   {
     this.date = data;
   }
 
-  public int LimitForJSON() {
+  protected int LimitForJSON() {
     return this.limit;
   }
 
-  public int distributionPeriod(int period) {
-    int periodUnit = limit / period;
-    System.out.println("Spending limit for today: " + periodUnit);
-    return periodUnit;
-  }
 }

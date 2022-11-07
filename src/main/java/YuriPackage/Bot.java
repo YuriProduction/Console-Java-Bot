@@ -19,141 +19,20 @@ import java.util.Scanner;
 public class Bot { //implements Bootable,ReadAndWrite
 
   private final Map<String, Client> base = new HashMap<>();
-  private final Scanner in = new Scanner(System.in);
-//    public Bot(){
-//        Base = new HashMap<String,Client>();
-//        in = new Scanner(System.in);
-//    }
 
-  private void greetClient() {
-    System.out.println("Hello!It's a console bot" +
-        " which can help you to keep track " +
-        "of daily expenses" +
-        "\n" +
-        "1)Input \"\\Register\" to sign up\n" +
-        "2)Input \"\\Sign in\" to sign in a system\n" +
-        "3)Input \"\\Add\" to add the expense\n" +
-        "4)Input \"\\Limit\" to set the limit of money for today\n" +
-        "5)Input \"\\Statistics\" to show all of your expenses\n" +
-        "6)Input \"\\Calculation\" to calculate for the entered period\n" +
-        "7)Input \"\\Exit\" to leave current session\n");
-  }
-
-  //    @Override
-  public void registrateClient() {
-    System.out.println("Input your unique Telegram nick");
-    String tempClient = in.nextLine();
-    if (base.containsKey(tempClient)) {
-      System.out.println("You've already registered\n" +
-          "Please, sign in a system");
-    } else {
-      base.put(tempClient, new Client());
-    }
-  }//уберем
-//  public void registateClient(String nick){
-//    if (!base.containsKey(nick)) {
-//      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
-//    }
-//  }
-
-  public Client signIN() {
-    System.out.println("Input your unique Telegram nick");
-    String tempClient = in.nextLine();
-    if (!base.containsKey(tempClient)) {
-      System.out.println("You't registrated!");
-      return null;
-    } else {
-      System.out.println("Signed up successfully");
-      return base.get(tempClient);
-    }
-
-  }
-//  public Client signIN(String nick) {
-//      return base.get(nick); //так как он зарегистрирован на шаге выше
-//  }
-
-
-  public void work() {
-    Scanner in = new Scanner(System.in);
-//        Bot bot = new Bot();
-    Client tempClient = new Client();
-    this.greetClient();
-    boolean inSystem = false;//Показывает, есть клиент в системе или нет
-    while (true) {
-      this.readBase();
-
-      String action = in.nextLine();
-      if (Objects.equals(action, "\\Register")) {
-        this.registrateClient();
-        System.out.println("Now, sign up to use all properties!");
-      } else if (Objects.equals(action, "\\Sign in")) {
-        tempClient = this.signIN();
-        if (tempClient == null) {
-          continue;
-        }
-        inSystem = true;
-      } else if (Objects.equals(action, "\\Limit")) {
-        if (!inSystem) {
-          System.out.println("Register or sign up a system!");
-          continue;
-        } else {
-          assert tempClient != null;//но он и не будет null
-          try {
-            System.out.println("Input limit of your daily costs");
-            int LimitUser = Integer.parseInt(in.nextLine());
-            tempClient.setLimit(LimitUser);
-          } catch (NumberFormatException e) {
-            System.out.println("Incorrect input\n" +
-                "Enter a number:");
-            int LimitUser = Integer.parseInt(in.nextLine());
-            tempClient.setLimit(LimitUser);
-
-          }
-        }
-      } else if (Objects.equals(action, "\\Add")) {
-        if (!inSystem) {
-          System.out.println("Register or sign in a system!");
-          continue;
-        } else {
-          System.out.println("Input sum: ");
-          int sumUser = Integer.parseInt(in.nextLine());
-          System.out.println("Input product: ");
-          String product = in.nextLine();
-          assert tempClient != null;//но он и не будет null
-          tempClient.addExpenses(sumUser, product);
-        }
-      } else if (Objects.equals(action, "\\Statistics")) {
-        if (!inSystem) {
-          System.out.println("Register or sign up a system!");
-          continue;
-        } else {
-          assert tempClient != null;//но он и не будет null
-          tempClient.showStatistic();
-        }
-      } else if (Objects.equals(action, "\\Calculation")) {
-        if (!inSystem) {
-          System.out.println("Register or sign in a system!");
-          continue;
-        } else {
-          assert tempClient != null;
-          System.out.println("Enter the period for the calculation");
-          int UserPeriod = Integer.parseInt(in.nextLine());
-          tempClient.distributionPeriod(UserPeriod);
-        }
-      } else if (Objects.equals(action, "\\Exit")) {
-        inSystem = false;
-        this.greetClient();//человек вышел - значит
-        // с ботом будет работать
-        // другой, возможно, не знает, как с ним работать
-        // здесь должен быть наверное break >>> ???
-      }
-      this.updateBase();
+  protected void registateClient(String nick){
+    if (!base.containsKey(nick)) {
+      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
     }
   }
 
-  public void readBase() {
-    try (FileReader fileReader = new FileReader("C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
-      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
+  protected Client signIN(String nick) {
+      return base.get(nick); //так как он зарегистрирован на шаге выше
+  }
+
+  protected void readBase() {
+    try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
+      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
       String input = Files.readString(file);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
@@ -198,9 +77,10 @@ public class Bot { //implements Bootable,ReadAndWrite
     }
   }
 
+  ;
 
-  public void updateBase() {
-    try (FileWriter file = new FileWriter("C:\\Учеба ООП\\Console-Java-Bot\\text.json");) {
+  protected void updateBase() {
+    try (FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
@@ -232,7 +112,7 @@ public class Bot { //implements Bootable,ReadAndWrite
 
   }
 
-  public static int CastDateToInt(String data) {
+  protected static int CastDateToInt(String data) {
     //происходит проверка по дням
     // (в функции выше, не учитывается
     // проерка по месяцам!)
@@ -241,17 +121,4 @@ public class Bot { //implements Bootable,ReadAndWrite
     return Integer.parseInt(str_day);
   }
 
-
-
 }
-
-//interface ReadAndWrite{
-//    public void ReadBase();
-//    public void WriteBase();
-//}
-
-//interface Bootable
-//{
-//    public void RegistrateClient();
-//
-//}
