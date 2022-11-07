@@ -55,40 +55,40 @@ public class TeleBot extends TelegramLongPollingBot {
     outMess.setChatId(chatID.toString());
     if (command.equals("/start")) {
       outMess.setText(
-          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
-              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
+          "РџСЂРёРІРµС‚ \uD83D\uDC4B, РјРµРЅСЏ Р·РѕРІСѓС‚ Р¤РёРЅРµСЃ. РЇ С‚РІРѕР№ Р»РёС‡РЅС‹Р№ Р±РѕС‚-С„РёРЅР°РЅСЃРёСЃС‚ \uD83D\uDCB0."
+              + "\nР–РјРё /help, РµСЃР»Рё С…РѕС‡РµС€СЊ СѓР·РЅР°С‚СЊ РЅР° С‡С‚Рѕ СЏ СЃРїРѕСЃРѕР±РµРЅ \uD83E\uDDBE");
       execute(outMess);
     } else if (command.equals("/help")) {
       outMess.setText(
           "\n" +
-              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
-              "2)Введите \"/help\" чтобы получить список комад\n" +
-              "3)Введите \"/add\" чтобы добавить расходы\n" +
-              "4)Введите \"/limit\" чтобы установить лимит по расходам на сегодня\n" +
-              "5)Введите \"/statistics\" чтобы показать статистику\n"
+              "1)Р’РІРµРґРёС‚Рµ \"/start\" С‡С‚РѕР±С‹ РЅР°С‡Р°С‚СЊ СЂР°Р±РѕС‚Сѓ СЃ Р±РѕС‚РѕРј\n" +
+              "2)Р’РІРµРґРёС‚Рµ \"/help\" С‡С‚РѕР±С‹ РїРѕР»СѓС‡РёС‚СЊ СЃРїРёСЃРѕРє РєРѕРјР°Рґ\n" +
+              "3)Р’РІРµРґРёС‚Рµ \"/add\" С‡С‚РѕР±С‹ РґРѕР±Р°РІРёС‚СЊ СЂР°СЃС…РѕРґС‹\n" +
+              "4)Р’РІРµРґРёС‚Рµ \"/limit\" С‡С‚РѕР±С‹ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ Р»РёРјРёС‚ РїРѕ СЂР°СЃС…РѕРґР°Рј РЅР° СЃРµРіРѕРґРЅСЏ\n" +
+              "5)Р’РІРµРґРёС‚Рµ \"/statistics\" С‡С‚РѕР±С‹ РїРѕРєР°Р·Р°С‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ\n"
               +
-              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
+              "6)Р’РІРµРґРёС‚Рµ \"/menu\" С‡С‚РѕР±С‹ РѕС‚РєСЂС‹С‚СЊ РёРЅС‚РµСЂР°РєС‚РёРІРЅРѕРµ РјРµРЅСЋ\n"
       );
 
       execute(outMess);
     } else if (command.equals("/add")) {
-      outMess.setText("Введите сумму");
+      outMess.setText("Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ");
       execute(outMess);
     } else if (command.equals("/limit")) {
-      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
+      outMess.setText("Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ, Р·Р° РїСЂРµРґРµР»С‹ РєРѕС‚РѕСЂРѕР№ РІР°С€Рё СЂР°СЃС…РѕРґС‹ РЅРµ РґРѕР»Р¶РЅС‹ СЃРµРіРѕРґРЅСЏ РІС‹С…РѕРґРёС‚СЊ");
       execute(outMess);
     } else if (command.equals("/statistics")) {
       String stat = tempClient.showStatistic();
       outMess.setText(stat);
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+      currentCommand.put(true,"Default command");//СЃС‚Р°РІРёРј РґРµС„РѕР»С‚РЅСѓСЋ РєРѕРјР°РЅРґСѓ,
     } else if (command.equals("/menu"))
     {
       SendMenu(chatID);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+      currentCommand.put(true,"Default command");//СЃС‚Р°РІРёРј РґРµС„РѕР»С‚РЅСѓСЋ РєРѕРјР°РЅРґСѓ,
     }
     else {
-      outMess.setText("Сообщение не распознано");
+      outMess.setText("РЎРѕРѕР±С‰РµРЅРёРµ РЅРµ СЂР°СЃРїРѕР·РЅР°РЅРѕ");
       execute(outMess);
     }
   }
@@ -101,42 +101,42 @@ public class TeleBot extends TelegramLongPollingBot {
 
     outMess.setChatId(chat_id.toString());
     if (command.equals("/add")){
-      //мы знаем, что первое сообщение уже отправлено
-      //"Введите сумму" добавлено
+      //РјС‹ Р·РЅР°РµРј, С‡С‚Рѕ РїРµСЂРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ СѓР¶Рµ РѕС‚РїСЂР°РІР»РµРЅРѕ
+      //"Р’РІРµРґРёС‚Рµ СЃСѓРјРјСѓ" РґРѕР±Р°РІР»РµРЅРѕ
       if (!sumIsAdded)
       {
         tempSUM = Integer.parseInt(textOfMessage);
-        //Если сумма еще не добавлена - просим добавить
+        //Р•СЃР»Рё СЃСѓРјРјР° РµС‰Рµ РЅРµ РґРѕР±Р°РІР»РµРЅР° - РїСЂРѕСЃРёРј РґРѕР±Р°РІРёС‚СЊ
         //addSum(text)
-        //просим ввести товар
-        outMess.setText("Введите товар");
+        //РїСЂРѕСЃРёРј РІРІРµСЃС‚Рё С‚РѕРІР°СЂ
+        outMess.setText("Р’РІРµРґРёС‚Рµ С‚РѕРІР°СЂ");
         execute(outMess);
         sumIsAdded = true;
       }
       else {
         //addGood(text)
-        //товар добавлен, затираем переменную
+        //С‚РѕРІР°СЂ РґРѕР±Р°РІР»РµРЅ, Р·Р°С‚РёСЂР°РµРј РїРµСЂРµРјРµРЅРЅСѓСЋ
         tempGOOD = textOfMessage;
-        tempClient.addExpenses(tempSUM,tempGOOD);//добавляем расходы
-        //затираем даные
+        tempClient.addExpenses(tempSUM,tempGOOD);//РґРѕР±Р°РІР»СЏРµРј СЂР°СЃС…РѕРґС‹
+        //Р·Р°С‚РёСЂР°РµРј РґР°РЅС‹Рµ
         sumIsAdded  = false;
         tempSUM = 0;
         tempGOOD = "";
-        currentCommand.put(true,"Default command");//ставим дефолтную команду
+        currentCommand.put(true,"Default command");//СЃС‚Р°РІРёРј РґРµС„РѕР»С‚РЅСѓСЋ РєРѕРјР°РЅРґСѓ
       }
     }
     else if (command.equals("/limit"))
     {
       //setLimit(text)
       tempClient.setLimit(Integer.parseInt(textOfMessage));
-      outMess.setText("Лимит установлен");
+      outMess.setText("Р›РёРјРёС‚ СѓСЃС‚Р°РЅРѕРІР»РµРЅ");
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
-      // которая никак не обрабатывается
-      // и попадет в else
+      currentCommand.put(true,"Default command");//СЃС‚Р°РІРёРј РґРµС„РѕР»С‚РЅСѓСЋ РєРѕРјР°РЅРґСѓ,
+      // РєРѕС‚РѕСЂР°СЏ РЅРёРєР°Рє РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚СЃСЏ
+      // Рё РїРѕРїР°РґРµС‚ РІ else
     }
-    else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
-        outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
+    else {//(Default command,/help,/start) //РµСЃР»Рё РєРѕРјР°РЅРґС‹ РІС‹РїРѕР»РЅРµРЅС‹, Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ С‡С‚Рѕ-С‚Рѕ РїРёС€РµС‚
+        outMess.setText("Р’СЃСЏ Р»РѕРіРёРєР° РІС‹РїРѕР»РЅРµРЅР°. РљРѕРјР°РЅРґС‹ РїРµСЂРµРґ РІР°РјРё. Р”РµР»Р°Р№С‚Рµ С‡С‚Рѕ С…РѕС‚РёС‚Рµ");
         execute(outMess);
     }
   }
@@ -168,13 +168,13 @@ public class TeleBot extends TelegramLongPollingBot {
       fixUsingCommand(textOfMessage);
       try {
         SendFirstTextOfCommand(textOfMessage,
-            chat_id); //отправляем первое сообщение и завершаем логику
+            chat_id); //РѕС‚РїСЂР°РІР»СЏРµРј РїРµСЂРІРѕРµ СЃРѕРѕР±С‰РµРЅРёРµ Рё Р·Р°РІРµСЂС€Р°РµРј Р»РѕРіРёРєСѓ
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
       }
       return;
     }
-    String command = currentCommand.get(true);//смотрим, какая команда используется
+    String command = currentCommand.get(true);//СЃРјРѕС‚СЂРёРј, РєР°РєР°СЏ РєРѕРјР°РЅРґР° РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ
     try {
       DoCommandLogic(command,textOfMessage,chat_id);
     } catch (TelegramApiException e) {
@@ -186,7 +186,7 @@ public class TeleBot extends TelegramLongPollingBot {
   @Override
   public void onUpdateReceived(Update update) {
     //rabotai plzzzzzzzz
-    //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
+    //currentCommand.put(true,"Defolt command");//СЃС‚Р°РІРёРј РґРµС„РѕР»С‚РЅСѓСЋ РєРѕРјР°РЅРґСѓ, РєРѕС‚РѕСЂР°СЏ РІ СЃР»СѓС‡Р°Рµ С‡РµРіРѕ РЅРёРєР°Рє РЅРµ РѕР±СЂР°Р±РѕС‚Р°РµС‚СЃСЏ
     bot_holding_base.readBase();
     var msg = update.getMessage();
     String textOfMessage = null;
@@ -242,29 +242,29 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private String readUsingFiles(String fileName) throws IOException {
     return new String(Files.readAllBytes(Paths.get(fileName)));
-  }//считываем данные из файла и возвращаем в виде строки
+  }//СЃС‡РёС‚С‹РІР°РµРј РґР°РЅРЅС‹Рµ РёР· С„Р°Р№Р»Р° Рё РІРѕР·РІСЂР°С‰Р°РµРј РІ РІРёРґРµ СЃС‚СЂРѕРєРё
 
   private void SendMenu(Long number_of_chat) {
-    //создаем кнопочки
+    //СЃРѕР·РґР°РµРј РєРЅРѕРїРѕС‡РєРё
     var add = InlineKeyboardButton
         .builder()
-        .text("Добавить товар в корзину")
+        .text("Р”РѕР±Р°РІРёС‚СЊ С‚РѕРІР°СЂ РІ РєРѕСЂР·РёРЅСѓ")
         .callbackData("/add")
         .build();
 
     var limit = InlineKeyboardButton
         .builder()
-        .text("Ввести сумму бюджета(мой лимит на покупки)")
+        .text("Р’РІРµСЃС‚Рё СЃСѓРјРјСѓ Р±СЋРґР¶РµС‚Р°(РјРѕР№ Р»РёРјРёС‚ РЅР° РїРѕРєСѓРїРєРё)")
         .callbackData("/limit")
         .build();
 
     var stat = InlineKeyboardButton
         .builder()
-        .text("Посмотреть статистику")
+        .text("РџРѕСЃРјРѕС‚СЂРµС‚СЊ СЃС‚Р°С‚РёСЃС‚РёРєСѓ")
         .callbackData("/statistics")
         .build();
 
-    //создаем клавиатуру
+    //СЃРѕР·РґР°РµРј РєР»Р°РІРёР°С‚СѓСЂСѓ
     keyboard1 = InlineKeyboardMarkup.builder()
         .keyboardRow(List.of(add))
 //        .keyboardRow(List.of(url))
@@ -272,7 +272,7 @@ public class TeleBot extends TelegramLongPollingBot {
         .keyboardRow(List.of(stat))
         .build();
 
-    //сендим клавиатуру
+    //СЃРµРЅРґРёРј РєР»Р°РІРёР°С‚СѓСЂСѓ
 
     sendMenu(number_of_chat, "<b>\uD83E\uDDEDNavigation\uD83E\uDDED</b>", keyboard1);
 
