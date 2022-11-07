@@ -13,12 +13,12 @@ import org.jsoup.select.Elements;
 public class Parser {
 
   public static void main(String[] args) throws IOException {
-    Map<String, List<String>> categories = new HashMap<String, List<String>>();
+    Map<String, List<String>> categories = new HashMap<>();
     Document doc = Jsoup.connect("https://www.perekrestok.ru/cat").get(); // подключаюсь к катологу магазина
     String price;
     String product;
     for (int i = 1; i <= 6; i++) { // Цикл пробегает только по 6 категориям, поменям 6 на n будет выводить n категорий
-      Map<String, String> contents = new HashMap<String, String>();
+      Map<String, String> contents = new HashMap<>();
       String selector = "#app > div > main > div > div > div > div.catalog__list > div.sc-gsTCUz.coCsbI > div:nth-child("+i+") > div > a";
       Elements element = doc.select(selector); // Selector переместил в отдельную переменную, для лучшей читабельности
       Elements hrefElements = doc.select(selector); // Selector - это такой путь до определенного элемента
@@ -41,7 +41,7 @@ public class Parser {
       String key = entry.getKey();
       // get value
       List<String> value = entry.getValue();
-      System.out.println(key + " = " + value);
+      System.out.println(key + " = " + value);//work
     }
 
   }
