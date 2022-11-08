@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -30,10 +32,23 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
 
-  private Bot bot_holding_base = new Bot();
+  private final Bot bot_holding_base = new Bot();
   private Client tempClient = new Client();
 
-  private String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
+  private final Parser parserPerekrestok = new Parser();
+
+  private void SendGoodsListToServer() throws IOException {
+    Map<String, List<String>> categories = parserPerekrestok.getCategories();
+    for (Entry<String, List<String>> entry : categories.entrySet()) {
+      String key = entry.getKey();
+      List<String> value = entry.getValue();
+      System.out.println(key + " = " + value);//work
+    }
+
+  }
+
+
+  private final String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
       "/help","/menu"};
   private boolean sumIsAdded = false;
 
@@ -50,7 +65,8 @@ public class TeleBot extends TelegramLongPollingBot {
     currentCommand.put(true, argum);
   }
 
-  private void SendFirstTextOfCommand(String command, Long chatID) throws TelegramApiException {
+  private void SendFirstTextOfCommand(String command, Long chatID)
+      throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     if (command.equals("/start")) {
@@ -81,6 +97,7 @@ public class TeleBot extends TelegramLongPollingBot {
       String stat = tempClient.showStatistic();
       outMess.setText(stat);
       execute(outMess);
+      this.SendGoodsListToServer();
       currentCommand.put(true,"Default command");//ставим дефолтную команду,
     } else if (command.equals("/menu"))
     {
@@ -171,6 +188,8 @@ public class TeleBot extends TelegramLongPollingBot {
             chat_id); //отправляем первое сообщение и завершаем логику
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
       return;
     }
@@ -183,10 +202,10 @@ public class TeleBot extends TelegramLongPollingBot {
 
   }
 
+
+
   @Override
   public void onUpdateReceived(Update update) {
-    //rabotai plzzzzzzzz
-    //currentCommand.put(true,"Defolt command");//ставим дефолтную команду, которая в случае чего никак не обработается
     bot_holding_base.readBase();
     var msg = update.getMessage();
     String textOfMessage = null;

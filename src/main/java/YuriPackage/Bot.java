@@ -1,5 +1,6 @@
 package YuriPackage;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,14 +8,11 @@ import org.json.simple.JSONValue;
 
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
 
 public class Bot { //implements Bootable,ReadAndWrite
 
@@ -34,6 +32,7 @@ public class Bot { //implements Bootable,ReadAndWrite
     try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
       Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
       String input = Files.readString(file);
+      System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
       JSONArray jsonArray = (JSONArray) jsonObject.get("Map");
