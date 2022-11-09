@@ -37,19 +37,30 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private final Parser parserPerekrestok = new Parser();
 
-  private void SendGoodsListToServer() throws IOException {
+  private String sendDataToUser() throws IOException {
     Map<String, List<String>> categories = parserPerekrestok.getCategories();
+    StringBuilder result = new StringBuilder();
     for (Entry<String, List<String>> entry : categories.entrySet()) {
+      String result_data_po_categoriyam = "";
       String key = entry.getKey();
       List<String> value = entry.getValue();
-      System.out.println(key + " = " + value);//work
+      result.append(key).append("\n");
+      for (int i = 0; i < value.size();i++)
+      {
+        String name_of_product = value.get(i).split("___")[0];
+        String price_of_product = value.get(i).split("___")[1];
+        result.append(name_of_product).append("\t - ").append(price_of_product).append("\n");
+      }
+      result.append("\n");
     }
+
+    return result.toString();
 
   }
 
 
   private final String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help","/menu"};
+      "/help","/menu","/products_and_prices"};
   private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
@@ -79,11 +90,13 @@ public class TeleBot extends TelegramLongPollingBot {
           "\n" +
               "1)Введите \"/start\" чтобы начать работу с ботом\n" +
               "2)Введите \"/help\" чтобы получить список комад\n" +
-              "3)Введите \"/add\" чтобы добавить расходы\n" +
-              "4)Введите \"/limit\" чтобы установить лимит по расходам на сегодня\n" +
-              "5)Введите \"/statistics\" чтобы показать статистику\n"
+              "3)Введите \"/add\" чтобы добавить товар в корзину\n" +
+              "4)Введите \"/limit\" чтобы установить лимит на покупки\n" +
+              "5)Введите \"/statistics\" чтобы показать стоимость корзины и ваш остаток\n"
               +
               "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
+              +"7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
+              + "на товары в магазине \"Перекресток\""
       );
 
       execute(outMess);
@@ -97,11 +110,19 @@ public class TeleBot extends TelegramLongPollingBot {
       String stat = tempClient.showStatistic();
       outMess.setText(stat);
       execute(outMess);
-      this.SendGoodsListToServer();
       currentCommand.put(true,"Default command");//ставим дефолтную команду,
     } else if (command.equals("/menu"))
     {
       SendMenu(chatID);
+      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+    }
+    else if (command.equals("/products_and_prices"))
+    {
+      outMess.setText("Вычисляем статистику, немного подождите...");
+      execute(outMess);
+      String result_prod_and_prices = this.sendDataToUser();
+      outMess.setText(result_prod_and_prices);
+      execute(outMess);
       currentCommand.put(true,"Default command");//ставим дефолтную команду,
     }
     else {
@@ -273,27 +294,33 @@ public class TeleBot extends TelegramLongPollingBot {
 
     var limit = InlineKeyboardButton
         .builder()
-        .text("Ввести сумму бюджета(мой лимит на покупки)")
+        .text("Ввести сумму лимита на покупки")
         .callbackData("/limit")
         .build();
 
     var stat = InlineKeyboardButton
         .builder()
-        .text("Посмотреть статистику")
+        .text("Посмотреть стоимость корзины и остаток")
         .callbackData("/statistics")
+        .build();
+
+    var products_and_prices = InlineKeyboardButton
+        .builder()
+        .text("Посмотреть текущие цены на товары в магазине \"Перекресток\"")
+        .callbackData("/products_and_prices")
         .build();
 
     //создаем клавиатуру
     keyboard1 = InlineKeyboardMarkup.builder()
+        .keyboardRow(List.of(products_and_prices))
         .keyboardRow(List.of(add))
-//        .keyboardRow(List.of(url))
         .keyboardRow(List.of(limit))
         .keyboardRow(List.of(stat))
         .build();
 
     //сендим клавиатуру
 
-    sendMenu(number_of_chat, "<b>\uD83E\uDDEDNavigation\uD83E\uDDED</b>", keyboard1);
+    sendMenu(number_of_chat, "<b>\uD83E\uDDEDFines interactive menu\uD83E\uDDED</b>", keyboard1);
 
     //____________________________________________________//
   }
