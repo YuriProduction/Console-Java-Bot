@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import org.checkerframework.checker.i18nformatter.qual.I18nFormat;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -37,11 +38,30 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private final Parser parserPerekrestok = new Parser();
 
-  private String sendDataToUser() throws IOException {
-    Map<String, List<String>> categories = parserPerekrestok.getCategories();
+  private Map<String, List<String>> categories;
+
+  private String extractCategory(String message)
+  {
+    List<String> tempList = this.categories.get(message);//по ключу берем
+    // нужный список продуктов
+    StringBuilder result = new StringBuilder();
+    result.append(message).append("\n");
+    for (String str : tempList)
+    {
+      String name_of_product = str.split("___")[0];
+      String price_of_product = str.split("___")[1];
+      result.append(name_of_product)
+          .append("\t - ")
+          .append(price_of_product)
+          .append("\n");
+    }
+    return result.toString();
+  }
+
+  private String sendDataForUser() throws IOException {
+    this.categories = parserPerekrestok.getCategories();
     StringBuilder result = new StringBuilder();
     for (Entry<String, List<String>> entry : categories.entrySet()) {
-      String result_data_po_categoriyam = "";
       String key = entry.getKey();
       List<String> value = entry.getValue();
       result.append(key).append("\n");
@@ -49,7 +69,10 @@ public class TeleBot extends TelegramLongPollingBot {
       {
         String name_of_product = value.get(i).split("___")[0];
         String price_of_product = value.get(i).split("___")[1];
-        result.append(name_of_product).append("\t - ").append(price_of_product).append("\n");
+        result.append(name_of_product)
+            .append("\t - ")
+            .append(price_of_product)
+            .append("\n");
       }
       result.append("\n");
     }
@@ -58,9 +81,62 @@ public class TeleBot extends TelegramLongPollingBot {
 
   }
 
+  private void sendKeyboardCategoriesToUser(Long number_of_chat)
+  {
+    var per = InlineKeyboardButton
+        .builder()
+        .text("От Перекрёстка")
+        .callbackData("От Перекрёстка")
+        .build();
+
+    var veg = InlineKeyboardButton
+        .builder()
+        .text("С днём вегана")
+        .callbackData("С днём вегана")
+        .build();
+
+    var milk_prod = InlineKeyboardButton
+        .builder()
+        .text("Молоко, сыр, яйца")
+        .callbackData("Молоко, сыр, яйца")
+        .build();
+
+    var makarony = InlineKeyboardButton
+        .builder()
+        .text("Макароны, крупы, масло, специи")
+        .callbackData("Макароны, крупы, масло, специи")
+        .build();
+    var fruits_veget = InlineKeyboardButton
+        .builder()
+        .text("Овощи, фрукты, грибы")
+        .callbackData("Овощи, фрукты, грибы")
+        .build();
+    var ready_food = InlineKeyboardButton
+        .builder()
+        .text("Готовая еда")
+        .callbackData("Готовая еда")
+        .build();
+
+    //создаем клавиатуру
+    keyboard1 = InlineKeyboardMarkup.builder()
+        .keyboardRow(List.of(per))
+        .keyboardRow(List.of(veg))
+        .keyboardRow(List.of(milk_prod))
+        .keyboardRow(List.of(makarony))
+        .keyboardRow(List.of(fruits_veget))
+        .keyboardRow(List.of(ready_food))
+        .build();
+
+    //сендим клавиатуру
+
+    sendMenu(number_of_chat, "<b>Категории</b>", keyboard1);
+  }
 
   private final String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help","/menu","/products_and_prices"};
+      "/help","/menu","/products_and_prices","Молоко, сыр, яйца","С днём вегана",
+      "От Перекрёстка",
+      "Макароны, крупы, масло, специи",
+      "Овощи, фрукты, грибы","Готовая еда"};
   private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
@@ -96,7 +172,8 @@ public class TeleBot extends TelegramLongPollingBot {
               +
               "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
               +"7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
-              + "на товары в магазине \"Перекресток\""
+              + "на товары в магазине \"Перекресток\"\n"
+
       );
 
       execute(outMess);
@@ -120,16 +197,31 @@ public class TeleBot extends TelegramLongPollingBot {
     {
       outMess.setText("Вычисляем статистику, немного подождите...");
       execute(outMess);
-      String result_prod_and_prices = this.sendDataToUser();
+      String result_prod_and_prices = this.sendDataForUser();
       outMess.setText(result_prod_and_prices);
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
-    }
-    else {
+      sendKeyboardCategoriesToUser(chatID);
+      currentCommand.put(true,"Default command");//ставим дефолтную команду
+    } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
+        || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
+        || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
+      if (categories == null)
+      {
+        outMess.setText("Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
+        execute(outMess);
+        return;
+      }
+      String prod_of_suit_category = extractCategory(command);
+      outMess.setText(prod_of_suit_category);
+      out.println("Command of category!");
+      execute(outMess);
+      currentCommand.put(true,"Default command");//ставим дефолтную команду
+    } else {
       outMess.setText("Сообщение не распознано");
       execute(outMess);
     }
   }
+
 
   private int tempSUM = 0;
   private String tempGOOD = "";
