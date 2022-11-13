@@ -1,10 +1,9 @@
 package YuriPackage;
+
 import java.util.Date;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 public class Client {
 

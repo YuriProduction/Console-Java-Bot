@@ -1,1 +1,1 @@
-{"Map":[{"Products":[],"Limit":2147483647,"Date":"Sat Nov 12 13:19:47 YEKT 2022","Name":"SergWhiteBear"},{"Products":[],"Limit":2147483647,"Date":"Sat Nov 12 13:19:47 YEKT 2022","Name":"YuriProduction"}]}
+{"Map":[{"Products":[{"price":1999,"title":"Штаны"},{"price":100,"title":"Сосиски"}],"Limit":10000,"Date":"Sun Nov 13 19:54:29 YEKT 2022","Name":"SergWhiteBear"},{"Products":[],"Limit":2147483647,"Date":"Sun Nov 13 19:54:29 YEKT 2022","Name":"YuriProduction"}]}

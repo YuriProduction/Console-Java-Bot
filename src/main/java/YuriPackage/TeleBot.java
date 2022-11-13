@@ -5,27 +5,16 @@ import static java.lang.System.out;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import org.checkerframework.checker.i18nformatter.qual.I18nFormat;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
@@ -85,35 +74,35 @@ public class TeleBot extends TelegramLongPollingBot {
   {
     var per = InlineKeyboardButton
         .builder()
-        .text("От Перекрёстка")
+        .text("\uD83C\uDFEAОт Перекрёстка\uD83C\uDFEA")
         .callbackData("От Перекрёстка")
         .build();
 
     var veg = InlineKeyboardButton
         .builder()
-        .text("С днём вегана")
+        .text("\uD83E\uDD66С днём вегана\uD83E\uDD66")
         .callbackData("С днём вегана")
         .build();
 
     var milk_prod = InlineKeyboardButton
         .builder()
-        .text("Молоко, сыр, яйца")
+        .text("\uD83D\uDC2EМолоко, сыр, яйца\uD83D\uDC14")
         .callbackData("Молоко, сыр, яйца")
         .build();
 
     var makarony = InlineKeyboardButton
         .builder()
-        .text("Макароны, крупы, масло, специи")
+        .text("\uD83C\uDF5DМакароны, крупы, масло, специи\uD83E\uDDC2")
         .callbackData("Макароны, крупы, масло, специи")
         .build();
     var fruits_veget = InlineKeyboardButton
         .builder()
-        .text("Овощи, фрукты, грибы")
+        .text("\uD83C\uDF45Овощи, фрукты, грибы\uD83C\uDF4E")
         .callbackData("Овощи, фрукты, грибы")
         .build();
     var ready_food = InlineKeyboardButton
         .builder()
-        .text("Готовая еда")
+        .text("\uD83C\uDF71Готовая еда\uD83C\uDF71")
         .callbackData("Готовая еда")
         .build();
 

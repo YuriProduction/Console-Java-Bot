@@ -8,6 +8,16 @@ public class TeleMain {
   public static void main(String[] args) throws TelegramApiException {
     TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
     botsApi.registerBot(new TeleBot());
+
   }
+
+//    public static void main(String[] args) throws TelegramApiException {
+//      try {
+//        Parser.ParserWeb();
+//      } catch (IOException e) {
+//        throw new RuntimeException(e);
+//      }
+//    }
+
 
 }

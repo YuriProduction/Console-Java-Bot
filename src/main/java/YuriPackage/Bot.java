@@ -1,18 +1,16 @@
 package YuriPackage;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 public class Bot { //implements Bootable,ReadAndWrite
 
@@ -29,8 +27,8 @@ public class Bot { //implements Bootable,ReadAndWrite
   }
 
   protected void readBase() {
-    try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
-      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
+    try (FileReader fileReader = new FileReader("C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
+      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
       String input = Files.readString(file);
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
@@ -79,7 +77,7 @@ public class Bot { //implements Bootable,ReadAndWrite
   ;
 
   protected void updateBase() {
-    try (FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+    try (FileWriter file = new FileWriter("C:\\Учеба ООП\\Console-Java-Bot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
