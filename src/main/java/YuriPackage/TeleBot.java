@@ -36,18 +36,16 @@ public class TeleBot extends TelegramLongPollingBot {
   private final Bot bot_holding_base = new Bot();
   private Client tempClient = new Client();
 
-  private final Parser parserPerekrestok = new Parser();
 
-  private Map<String, List<String>> categories;
 
-  private String extractCategory(String message)
-  {
+  private Map<String, List<String>> categories = null;
+
+  private String extractCategory(String message) {
     List<String> tempList = this.categories.get(message);//по ключу берем
     // нужный список продуктов
     StringBuilder result = new StringBuilder();
     result.append(message).append("\n");
-    for (String str : tempList)
-    {
+    for (String str : tempList) {
       String name_of_product = str.split("___")[0];
       String price_of_product = str.split("___")[1];
       result.append(name_of_product)
@@ -59,14 +57,13 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
   private String sendDataForUser() throws IOException {
-    this.categories = parserPerekrestok.getCategories();
+    this.categories = readFromPerekrestok.getCategories();
     StringBuilder result = new StringBuilder();
     for (Entry<String, List<String>> entry : categories.entrySet()) {
       String key = entry.getKey();
       List<String> value = entry.getValue();
       result.append(key).append("\n");
-      for (int i = 0; i < value.size();i++)
-      {
+      for (int i = 0; i < value.size(); i++) {
         String name_of_product = value.get(i).split("___")[0];
         String price_of_product = value.get(i).split("___")[1];
         result.append(name_of_product)
@@ -81,8 +78,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
   }
 
-  private void sendKeyboardCategoriesToUser(Long number_of_chat)
-  {
+  private void sendKeyboardCategoriesToUser(Long number_of_chat) {
     var per = InlineKeyboardButton
         .builder()
         .text("От Перекрёстка")
@@ -133,10 +129,10 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
   private final String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help","/menu","/products_and_prices","Молоко, сыр, яйца","С днём вегана",
+      "/help", "/menu", "/products_and_prices", "Молоко, сыр, яйца", "С днём вегана",
       "От Перекрёстка",
       "Макароны, крупы, масло, специи",
-      "Овощи, фрукты, грибы","Готовая еда"};
+      "Овощи, фрукты, грибы", "Готовая еда", "/find"};
   private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
@@ -171,7 +167,7 @@ public class TeleBot extends TelegramLongPollingBot {
               "5)Введите \"/statistics\" чтобы показать стоимость корзины и ваш остаток\n"
               +
               "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
-              +"7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
+              + "7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
               + "на товары в магазине \"Перекресток\"\n"
 
       );
@@ -180,6 +176,9 @@ public class TeleBot extends TelegramLongPollingBot {
     } else if (command.equals("/add")) {
       outMess.setText("Введите сумму");
       execute(outMess);
+    } else if (command.equals("/find")) {
+      outMess.setText("Введите товар(например, \"Молоко\")");
+      execute(outMess);
     } else if (command.equals("/limit")) {
       outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
       execute(outMess);
@@ -187,27 +186,26 @@ public class TeleBot extends TelegramLongPollingBot {
       String stat = tempClient.showStatistic();
       outMess.setText(stat);
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
-    } else if (command.equals("/menu"))
-    {
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+    } else if (command.equals("/menu")) {
       SendMenu(chatID);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
-    }
-    else if (command.equals("/products_and_prices"))
-    {
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+    } else if (command.equals("/products_and_prices")) {
       outMess.setText("Вычисляем статистику, немного подождите...");
       execute(outMess);
       String result_prod_and_prices = this.sendDataForUser();
       outMess.setText(result_prod_and_prices);
       execute(outMess);
       sendKeyboardCategoriesToUser(chatID);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду
+      outMess.setText("Введите /find, чтобы найти какой-то конкретный товар");
+      execute(outMess);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду
     } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
         || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
         || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
-      if (categories == null)
-      {
-        outMess.setText("Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
+      if (categories == null) {
+        outMess.setText(
+            "Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
         execute(outMess);
         return;
       }
@@ -215,7 +213,7 @@ public class TeleBot extends TelegramLongPollingBot {
       outMess.setText(prod_of_suit_category);
       out.println("Command of category!");
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду
+      currentCommand.put(true, "Default command");//ставим дефолтную команду
     } else {
       outMess.setText("Сообщение не распознано");
       execute(outMess);
@@ -224,17 +222,16 @@ public class TeleBot extends TelegramLongPollingBot {
 
 
   private int tempSUM = 0;
-  private String tempGOOD = "";
-  private void DoCommandLogic(String command, String textOfMessage,Long chat_id)
+
+  private void DoCommandLogic(String command, String textOfMessage, Long chat_id)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
 
     outMess.setChatId(chat_id.toString());
-    if (command.equals("/add")){
+    if (command.equals("/add")) {
       //мы знаем, что первое сообщение уже отправлено
       //"Введите сумму" добавлено
-      if (!sumIsAdded)
-      {
+      if (!sumIsAdded) {
         tempSUM = Integer.parseInt(textOfMessage);
         //Если сумма еще не добавлена - просим добавить
         //addSum(text)
@@ -242,32 +239,46 @@ public class TeleBot extends TelegramLongPollingBot {
         outMess.setText("Введите товар");
         execute(outMess);
         sumIsAdded = true;
-      }
-      else {
+      } else {
         //addGood(text)
         //товар добавлен, затираем переменную
-        tempGOOD = textOfMessage;
-        tempClient.addExpenses(tempSUM,tempGOOD);//добавляем расходы
+        String tempGOOD = textOfMessage;
+        tempClient.addExpenses(tempSUM, tempGOOD);//добавляем расходы
         //затираем даные
-        sumIsAdded  = false;
+        sumIsAdded = false;
         tempSUM = 0;
         tempGOOD = "";
-        currentCommand.put(true,"Default command");//ставим дефолтную команду
+        currentCommand.put(true, "Default command");//ставим дефолтную команду
       }
-    }
-    else if (command.equals("/limit"))
-    {
+    } else if (command.equals("/limit")) {
       //setLimit(text)
       tempClient.setLimit(Integer.parseInt(textOfMessage));
       outMess.setText("Лимит установлен");
       execute(outMess);
-      currentCommand.put(true,"Default command");//ставим дефолтную команду,
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+      // которая никак не обрабатывается
+      // и попадет в else
+    }
+    else if (command.equals("/find")) {
+      //setLimit(text)
+      Finder finder = new Finder();
+      finder.text = this.readFromPerekrestok.parserFinder.text.toString();
+      String mathes = finder.getAllMathes(textOfMessage);
+      if (mathes == null || mathes.equals(""))
+      {
+        outMess.setText("Нет такого товара, найдите другой!");
+        execute(outMess);
+        return;
+      }
+      outMess.setText(mathes);
+      execute(outMess);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
       // которая никак не обрабатывается
       // и попадет в else
     }
     else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
-        outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
-        execute(outMess);
+      outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
+      execute(outMess);
     }
   }
 
@@ -289,8 +300,7 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  private void mainLogic(String textOfMessage,long chat_id,String user_uniq_nick)
-  {
+  private void mainLogic(String textOfMessage, long chat_id, String user_uniq_nick) {
     bot_holding_base.registateClient(user_uniq_nick);
     tempClient = bot_holding_base.signIN(user_uniq_nick);
 
@@ -308,7 +318,7 @@ public class TeleBot extends TelegramLongPollingBot {
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
     try {
-      DoCommandLogic(command,textOfMessage,chat_id);
+      DoCommandLogic(command, textOfMessage, chat_id);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
@@ -316,43 +326,41 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
 
+  Parser readFromPerekrestok = new Parser();
 
   @Override
   public void onUpdateReceived(Update update) {
     bot_holding_base.readBase();
     var msg = update.getMessage();
     String textOfMessage = null;
-    if (msg==null)
-    {
-      if (isUserTouchButton(update))
-      {
+    if (msg == null) {
+      if (isUserTouchButton(update)) {
         textOfMessage = update.getCallbackQuery().getData();
         var user = update.getCallbackQuery().getFrom();
         long chat_id = update.getCallbackQuery().getMessage().getChatId();
         String user_uniq_nick = user.getUserName();
-        mainLogic(textOfMessage,chat_id,user_uniq_nick);
+        mainLogic(textOfMessage, chat_id, user_uniq_nick);
       }
-    }
-    else
-    {
+    } else {
       textOfMessage = msg.getText();
       out.println(textOfMessage);
       var user = msg.getFrom();
       long chat_id = msg.getChatId();
       out.println(user.getUserName());
       String user_uniq_nick = user.getUserName();
-      mainLogic(textOfMessage,chat_id,user_uniq_nick);
+      mainLogic(textOfMessage, chat_id, user_uniq_nick);
     }
     bot_holding_base.updateBase();
 
   }
 
-  private boolean isUserTouchButton(Update update)
-  {
-    if (update.hasCallbackQuery())
-        return true;
+  private boolean isUserTouchButton(Update update) {
+    if (update.hasCallbackQuery()) {
+      return true;
+    }
     return false;
   }
+
   private void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
     SendMessage sm = SendMessage
         .builder()
@@ -368,8 +376,6 @@ public class TeleBot extends TelegramLongPollingBot {
       throw new RuntimeException(e);
     }
   }
-
-
 
 
   private String readUsingFiles(String fileName) throws IOException {
