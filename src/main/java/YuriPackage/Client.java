@@ -1,14 +1,15 @@
 package YuriPackage;
+
 import java.util.Date;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 public class Client {
 
   private int limit = Integer.MAX_VALUE;
+
+  protected boolean OVERFLOW = false;
   private int ostat;
   private Scanner in;
 
@@ -22,11 +23,13 @@ public class Client {
   }
 
   protected void addExpenses(int sum, String product) {
+    this.OVERFLOW = false;
     if (map.containsKey(product)) {
       int temp = map.get(product);
       if (canAdd(temp + sum)) {
         map.put(product, temp + sum);
       } else {
+        this.OVERFLOW = true;
         System.out.println("Your limit will be" +
             " achieved\nYou can't by this!\n" +
             "If you buy, thr limit is over");
@@ -35,6 +38,7 @@ public class Client {
       if (canAdd(sum)) {
         this.map.put(product, sum);
       } else {
+        this.OVERFLOW = true;
         System.out.println("Your limit will be" +
             " achieved\nYou can't by this!\n" +
             "If you buy, thr limit is over");
@@ -60,6 +64,7 @@ public class Client {
       if (canAdd(sum)) {
         map.put(product, sum);
       } else {
+
         System.out.println("Your limit will be" +
             " achieved\nYou can't by this!\n" +
             "If you buy, thr limit is over");
@@ -97,9 +102,9 @@ public class Client {
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
       String key = entry.getKey();
       Integer val = entry.getValue();
-      stat+="Product - " + key + "| Expenses = " + val + "\n";
+      stat += "Product - " + key + "| Expenses = " + val + "\n";
     }
-    stat+=showTheOstat()+"\n";
+    stat += showTheOstat() + "\n";
     return stat;
   }
 
@@ -119,8 +124,7 @@ public class Client {
     return (HashMap<String, Integer>) this.map;
   }
 
-  protected void setDate(String data)
-  {
+  protected void setDate(String data) {
     this.date = data;
   }
 

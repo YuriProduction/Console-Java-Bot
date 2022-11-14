@@ -1,35 +1,35 @@
 package YuriPackage;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 public class Bot { //implements Bootable,ReadAndWrite
 
   private final Map<String, Client> base = new HashMap<>();
 
-  protected void registateClient(String nick){
+  protected void registateClient(String nick) {
     if (!base.containsKey(nick)) {
-      base.put(nick, new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
+      base.put(nick,
+          new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
     }
   }
 
   protected Client signIN(String nick) {
-      return base.get(nick); //так как он зарегистрирован на шаге выше
+    return base.get(nick); //так как он зарегистрирован на шаге выше
   }
 
   protected void readBase() {
-    try (FileReader fileReader = new FileReader("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
+    try (FileReader fileReader = new FileReader(
+        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
       Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
       String input = Files.readString(file);
       System.out.println(input);
@@ -43,8 +43,7 @@ public class Bot { //implements Bootable,ReadAndWrite
         String name = (String) map.get("Name");
         long lim = (Long) map.get("Limit");
         String date = (String) map.get("Date");
-        if (CastDateToInt(new Date().toString()) - CastDateToInt(date)!=0)
-        {
+        if (CastDateToInt(new Date().toString()) - CastDateToInt(date) != 0) {
           tempClient.setLimitFromJSON(Integer.MAX_VALUE);
           tempClient.setDate(date);//уже можно добавлять
 //          JSONArray jsonArray1 = (JSONArray) map.get("Products");
@@ -54,8 +53,7 @@ public class Bot { //implements Bootable,ReadAndWrite
 //            long price = (Long) map1.get("price");
 //            //tempClient.addExpensesFromJSON((int) price, title);
 //          }
-        }
-        else {
+        } else {
           tempClient.setLimitFromJSON((int) lim);
           tempClient.setDate(date);
           JSONArray jsonArray1 = (JSONArray) map.get("Products");
@@ -79,7 +77,8 @@ public class Bot { //implements Bootable,ReadAndWrite
   ;
 
   protected void updateBase() {
-    try (FileWriter file = new FileWriter("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+    try (FileWriter file = new FileWriter(
+        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();

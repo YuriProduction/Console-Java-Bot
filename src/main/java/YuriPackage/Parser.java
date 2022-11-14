@@ -7,16 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-public class Parser  {
+public class Parser {
 
   Finder parserFinder = new Finder();
   StringBuilder textForPareserFinder = new StringBuilder();
-  protected  Map<String, List<String>> categories = null;
-  protected  Map<String, List<String>> getCategories() throws IOException {
+  protected Map<String, List<String>> categories = null;
+
+  protected Map<String, List<String>> getCategories() throws IOException {
     categories = new HashMap<>();
     Document doc = Jsoup.connect("https://www.perekrestok.ru/cat").get();
     String price;
@@ -53,7 +57,6 @@ public class Parser  {
     }
     this.parserFinder.text = this.textForPareserFinder.toString();
     System.out.println(this.parserFinder.text.toString());
-
     return categories;
   }
 
