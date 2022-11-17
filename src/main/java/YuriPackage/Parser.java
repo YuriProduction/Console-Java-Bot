@@ -14,18 +14,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-public class Parser {
+public class Parser  {
 
-  Finder parserFinder = new Finder();
-  StringBuilder textForPareserFinder = new StringBuilder();
-  protected Map<String, List<String>> categories = null;
 
-  protected Map<String, List<String>> getCategories() throws IOException {
+  public Finder getParserFinder() {
+    return parserFinder;
+  }
+
+  private Finder parserFinder = new Finder();
+  private StringBuilder textForPareserFinder = new StringBuilder();
+  private Map<String, List<String>> categories = null;
+
+  Map<String, List<String>> getCategories() throws IOException {
     categories = new HashMap<>();
     Document doc = Jsoup.connect("https://www.perekrestok.ru/cat").get();
     String price;
     String product;
-    for (int i = 1; i <= 6;
+    for (int i = 1; i <= 10;
         i++) { // Цикл пробегает только по 6 категориям, поменям 6 на n будет выводить n категорий
       List<String> contents = new ArrayList<>();
       String selector =
@@ -55,8 +60,8 @@ public class Parser {
       //System.out.println(contents);
 
     }
-    this.parserFinder.text = this.textForPareserFinder.toString();
-    System.out.println(this.parserFinder.text.toString());
+    this.parserFinder.setText(this.textForPareserFinder.toString());
+    System.out.println(this.parserFinder.getText().toString());
     return categories;
   }
 

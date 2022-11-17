@@ -5,9 +5,17 @@ import java.util.regex.Pattern;
 
 public class Finder {
 
-  protected String text;
+  public void setText(String text) {
+    this.text = text;
+  }
 
-  public String getAllMathes(String user_text) {
+  public String getText() {
+    return text;
+  }
+
+  private String text;
+
+  String getAllMathes(String user_text) {
     String tempFind = "";
     StringBuilder result = new StringBuilder();
     Pattern pattern = Pattern.compile(user_text + ".*___?");
