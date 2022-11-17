@@ -14,6 +14,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
@@ -24,7 +25,6 @@ public class TeleBot extends TelegramLongPollingBot {
   private final Bot bot_holding_base = new Bot();
   private Client tempClient = new Client();
 
-  private CommandHandler cmd = new CommandHandler();
 
   private Map<String, List<String>> categories = null;
 
@@ -98,95 +98,81 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
 
+
   private void sendFirstTextOfCommand(String command, Long chatID)
       throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
-    try{
-      cmd.handleFirstTextOfCommand(command, chatID);
-      SendMessage outPutMess = cmd.getOutMess();//Переименуешь тут как нужно
-      execute(outPutMess);
-    }
-    catch(Exception e){
-      //тут просто дописать какой ex выкинуть
-    }
+    if (command.equals("/start")) {
+      outMess.setText(
+          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
+              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
+      execute(outMess);
+    } else if (command.equals("/help")) {
+      outMess.setText(
+          "\n" +
+              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
+              "2)Введите \"/help\" чтобы получить список комад\n" +
+              "3)Введите \"/add\" чтобы добавить товар в корзину\n" +
+              "4)Введите \"/limit\" чтобы установить лимит на покупки\n" +
+              "5)Введите \"/statistics\" чтобы показать стоимость корзины и ваш остаток\n"
+              +
+              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
+              + "7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
+              + "на товары в магазине \"Перекресток\"\n"
 
+      );
+
+      execute(outMess);
+    } else if (command.equals("/add")) {
+      outMess.setText("Введите сумму");
+      execute(outMess);
+    } else if (command.equals("/find")) {
+      outMess.setText("Введите товар(например, \"Молоко\")");
+      execute(outMess);
+    } else if (command.equals("/limit")) {
+      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
+      execute(outMess);
+    } else if (command.equals("/statistics")) {
+      String stat = tempClient.showStatistic();
+      outMess.setText(stat);
+      execute(outMess);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+    } else if (command.equals("/menu")) {
+      sendCommandsMenu(chatID);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+    } else if (command.equals("/products_and_prices")) {
+      outMess.setText("Вычисляем статистику, немного подождите...");
+      execute(outMess);
+      String result_prod_and_prices = this.sendDataForUser();
+      outMess.setText(result_prod_and_prices);
+      execute(outMess);
+      sendKeyboardCategoriesToUser(chatID);
+      outMess.setText("Введите /find, чтобы найти какой-то конкретный товар");
+      execute(outMess);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду
+    } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
+        || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
+        || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
+      if (categories == null) {
+        outMess.setText(
+            "Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
+        execute(outMess);
+        return;
+      }
+      String prod_of_suit_category = extractCategory(command);
+      outMess.setText(prod_of_suit_category);
+      out.println("Command of category!");
+      execute(outMess);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду
+    } else {
+      outMess.setText("Сообщение не распознано");
+      execute(outMess);
+    }
   }
-//  private void sendFirstTextOfCommand(String command, Long chatID)
-//      throws TelegramApiException, IOException {
-//    SendMessage outMess = new SendMessage();
-//    outMess.setChatId(chatID.toString());
-//    if (command.equals("/start")) {
-//      outMess.setText(
-//          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
-//              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
-//      execute(outMess);
-//    } else if (command.equals("/help")) {
-//      outMess.setText(
-//          "\n" +
-//              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
-//              "2)Введите \"/help\" чтобы получить список комад\n" +
-//              "3)Введите \"/add\" чтобы добавить товар в корзину\n" +
-//              "4)Введите \"/limit\" чтобы установить лимит на покупки\n" +
-//              "5)Введите \"/statistics\" чтобы показать стоимость корзины и ваш остаток\n"
-//              +
-//              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
-//              + "7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
-//              + "на товары в магазине \"Перекресток\"\n"
-//
-//      );
-//
-//      execute(outMess);
-//    } else if (command.equals("/add")) {
-//      outMess.setText("Введите сумму");
-//      execute(outMess);
-//    } else if (command.equals("/find")) {
-//      outMess.setText("Введите товар(например, \"Молоко\")");
-//      execute(outMess);
-//    } else if (command.equals("/limit")) {
-//      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
-//      execute(outMess);
-//    } else if (command.equals("/statistics")) {
-//      String stat = tempClient.showStatistic();
-//      outMess.setText(stat);
-//      execute(outMess);
-//      currentCommand.put(true, "Default command");//ставим дефолтную команду,
-//    } else if (command.equals("/menu")) {
-//      sendCommandsMenu(chatID);
-//      currentCommand.put(true, "Default command");//ставим дефолтную команду,
-//    } else if (command.equals("/products_and_prices")) {
-//      outMess.setText("Вычисляем статистику, немного подождите...");
-//      execute(outMess);
-//      String result_prod_and_prices = this.sendDataForUser();
-//      outMess.setText(result_prod_and_prices);
-//      execute(outMess);
-//      sendKeyboardCategoriesToUser(chatID);
-//      outMess.setText("Введите /find, чтобы найти какой-то конкретный товар");
-//      execute(outMess);
-//      currentCommand.put(true, "Default command");//ставим дефолтную команду
-//    } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
-//        || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
-//        || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
-//      if (categories == null) {
-//        outMess.setText(
-//            "Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
-//        execute(outMess);
-//        return;
-//      }
-//      String prod_of_suit_category = extractCategory(command);
-//      outMess.setText(prod_of_suit_category);
-//      out.println("Command of category!");
-//      execute(outMess);
-//      currentCommand.put(true, "Default command");//ставим дефолтную команду
-//    } else {
-//      outMess.setText("Сообщение не распознано");
-//      execute(outMess);
-//    }
-//  }
 
 
   private int tempSUM = 0;
-
 
   private void doCommandLogic(String command, String textOfMessage, Long chat_id)
       throws TelegramApiException {
