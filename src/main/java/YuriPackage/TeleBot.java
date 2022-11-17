@@ -14,7 +14,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
@@ -25,6 +24,7 @@ public class TeleBot extends TelegramLongPollingBot {
   private final Bot bot_holding_base = new Bot();
   private Client tempClient = new Client();
 
+  private CommandHandler cmd = new CommandHandler();
 
   private Map<String, List<String>> categories = null;
 
@@ -67,56 +67,17 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
   private void sendKeyboardCategoriesToUser(Long number_of_chat) {
-    var per = InlineKeyboardButton
-        .builder()
-        .text("\uD83C\uDFEAОт Перекрёстка\uD83C\uDFEA")
-        .callbackData("От Перекрёстка")
-        .build();
-
-    var veg = InlineKeyboardButton
-        .builder()
-        .text("\uD83E\uDD66С днём вегана\uD83E\uDD66")
-        .callbackData("С днём вегана")
-        .build();
-
-    var milk_prod = InlineKeyboardButton
-        .builder()
-        .text("\uD83D\uDC2EМолоко, сыр, яйца\uD83D\uDC14")
-        .callbackData("Молоко, сыр, яйца")
-        .build();
-
-    var makarony = InlineKeyboardButton
-        .builder()
-        .text("\uD83C\uDF5DМакароны, крупы, масло, специи\uD83E\uDDC2")
-        .callbackData("Макароны, крупы, масло, специи")
-        .build();
-    var fruits_veget = InlineKeyboardButton
-        .builder()
-        .text("\uD83C\uDF45Овощи, фрукты, грибы\uD83C\uDF4E")
-        .callbackData("Овощи, фрукты, грибы")
-        .build();
-    var ready_food = InlineKeyboardButton
-        .builder()
-        .text("\uD83C\uDF71Готовая еда\uD83C\uDF71")
-        .callbackData("Готовая еда")
-        .build();
-
-    //создаем клавиатуру
-    keyboard1 = InlineKeyboardMarkup.builder()
-        .keyboardRow(List.of(per))
-        .keyboardRow(List.of(veg))
-        .keyboardRow(List.of(milk_prod))
-        .keyboardRow(List.of(makarony))
-        .keyboardRow(List.of(fruits_veget))
-        .keyboardRow(List.of(ready_food))
-        .build();
-
+    creatorMenu.createKeyboardCategoriesToUser(number_of_chat);
     //сендим клавиатуру
-
-    sendMenu(number_of_chat, "<b>Категории</b>", keyboard1);
+    SendMessage sm = creatorMenu.getSm();
+    try {
+      execute(sm);
+    } catch (TelegramApiException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private final String[] commands_list = new String[]{"/add", "/limit", "/statistics", "/start",
+  private final String[] commandslist = new String[]{"/add", "/limit", "/statistics", "/start",
       "/help", "/menu", "/products_and_prices", "Молоко, сыр, яйца", "С днём вегана",
       "От Перекрёстка",
       "Макароны, крупы, масло, специи",
@@ -124,7 +85,7 @@ public class TeleBot extends TelegramLongPollingBot {
   private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
-    for (String x : commands_list) {
+    for (String x : commandslist) {
       if (argum.equals(x)) {
         return true;
       }
@@ -136,82 +97,97 @@ public class TeleBot extends TelegramLongPollingBot {
     currentCommand.put(true, argum);
   }
 
-  private void SendFirstTextOfCommand(String command, Long chatID)
+
+  private void sendFirstTextOfCommand(String command, Long chatID)
       throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
-    if (command.equals("/start")) {
-      outMess.setText(
-          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
-              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
-      execute(outMess);
-    } else if (command.equals("/help")) {
-      outMess.setText(
-          "\n" +
-              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
-              "2)Введите \"/help\" чтобы получить список комад\n" +
-              "3)Введите \"/add\" чтобы добавить товар в корзину\n" +
-              "4)Введите \"/limit\" чтобы установить лимит на покупки\n" +
-              "5)Введите \"/statistics\" чтобы показать стоимость корзины и ваш остаток\n"
-              +
-              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
-              + "7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
-              + "на товары в магазине \"Перекресток\"\n"
-
-      );
-
-      execute(outMess);
-    } else if (command.equals("/add")) {
-      outMess.setText("Введите сумму");
-      execute(outMess);
-    } else if (command.equals("/find")) {
-      outMess.setText("Введите товар(например, \"Молоко\")");
-      execute(outMess);
-    } else if (command.equals("/limit")) {
-      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
-      execute(outMess);
-    } else if (command.equals("/statistics")) {
-      String stat = tempClient.showStatistic();
-      outMess.setText(stat);
-      execute(outMess);
-      currentCommand.put(true, "Default command");//ставим дефолтную команду,
-    } else if (command.equals("/menu")) {
-      SendMenu(chatID);
-      currentCommand.put(true, "Default command");//ставим дефолтную команду,
-    } else if (command.equals("/products_and_prices")) {
-      outMess.setText("Вычисляем статистику, немного подождите...");
-      execute(outMess);
-      String result_prod_and_prices = this.sendDataForUser();
-      outMess.setText(result_prod_and_prices);
-      execute(outMess);
-      sendKeyboardCategoriesToUser(chatID);
-      outMess.setText("Введите /find, чтобы найти какой-то конкретный товар");
-      execute(outMess);
-      currentCommand.put(true, "Default command");//ставим дефолтную команду
-    } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
-        || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
-        || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
-      if (categories == null) {
-        outMess.setText(
-            "Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
-        execute(outMess);
-        return;
-      }
-      String prod_of_suit_category = extractCategory(command);
-      outMess.setText(prod_of_suit_category);
-      out.println("Command of category!");
-      execute(outMess);
-      currentCommand.put(true, "Default command");//ставим дефолтную команду
-    } else {
-      outMess.setText("Сообщение не распознано");
-      execute(outMess);
+    try{
+      cmd.handleFirstTextOfCommand(command, chatID);
+      SendMessage outPutMess = cmd.getOutMess();//Переименуешь тут как нужно
+      execute(outPutMess);
     }
+    catch(Exception e){
+      //тут просто дописать какой ex выкинуть
+    }
+
   }
+//  private void sendFirstTextOfCommand(String command, Long chatID)
+//      throws TelegramApiException, IOException {
+//    SendMessage outMess = new SendMessage();
+//    outMess.setChatId(chatID.toString());
+//    if (command.equals("/start")) {
+//      outMess.setText(
+//          "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
+//              + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
+//      execute(outMess);
+//    } else if (command.equals("/help")) {
+//      outMess.setText(
+//          "\n" +
+//              "1)Введите \"/start\" чтобы начать работу с ботом\n" +
+//              "2)Введите \"/help\" чтобы получить список комад\n" +
+//              "3)Введите \"/add\" чтобы добавить товар в корзину\n" +
+//              "4)Введите \"/limit\" чтобы установить лимит на покупки\n" +
+//              "5)Введите \"/statistics\" чтобы показать стоимость корзины и ваш остаток\n"
+//              +
+//              "6)Введите \"/menu\" чтобы открыть интерактивное меню\n"
+//              + "7)Введите \"/products_and_prices\" чтобы посмотреть текущие цены"
+//              + "на товары в магазине \"Перекресток\"\n"
+//
+//      );
+//
+//      execute(outMess);
+//    } else if (command.equals("/add")) {
+//      outMess.setText("Введите сумму");
+//      execute(outMess);
+//    } else if (command.equals("/find")) {
+//      outMess.setText("Введите товар(например, \"Молоко\")");
+//      execute(outMess);
+//    } else if (command.equals("/limit")) {
+//      outMess.setText("Введите сумму, за пределы которой ваши расходы не должны сегодня выходить");
+//      execute(outMess);
+//    } else if (command.equals("/statistics")) {
+//      String stat = tempClient.showStatistic();
+//      outMess.setText(stat);
+//      execute(outMess);
+//      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+//    } else if (command.equals("/menu")) {
+//      sendCommandsMenu(chatID);
+//      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+//    } else if (command.equals("/products_and_prices")) {
+//      outMess.setText("Вычисляем статистику, немного подождите...");
+//      execute(outMess);
+//      String result_prod_and_prices = this.sendDataForUser();
+//      outMess.setText(result_prod_and_prices);
+//      execute(outMess);
+//      sendKeyboardCategoriesToUser(chatID);
+//      outMess.setText("Введите /find, чтобы найти какой-то конкретный товар");
+//      execute(outMess);
+//      currentCommand.put(true, "Default command");//ставим дефолтную команду
+//    } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
+//        || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
+//        || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
+//      if (categories == null) {
+//        outMess.setText(
+//            "Сначала обновите страницу, для этого выберите пункт \"Посмотреть текущие цены на товары в магазине \"Перекресток\" \" ");
+//        execute(outMess);
+//        return;
+//      }
+//      String prod_of_suit_category = extractCategory(command);
+//      outMess.setText(prod_of_suit_category);
+//      out.println("Command of category!");
+//      execute(outMess);
+//      currentCommand.put(true, "Default command");//ставим дефолтную команду
+//    } else {
+//      outMess.setText("Сообщение не распознано");
+//      execute(outMess);
+//    }
+//  }
 
 
   private int tempSUM = 0;
 
-  private void DoCommandLogic(String command, String textOfMessage, Long chat_id)
+  private void doCommandLogic(String command, String textOfMessage, Long chat_id)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
 
@@ -232,7 +208,7 @@ public class TeleBot extends TelegramLongPollingBot {
         //товар добавлен, затираем переменную
         String tempGOOD = textOfMessage;
         tempClient.addExpenses(tempSUM, tempGOOD);//добавляем расходы
-        if (tempClient.OVERFLOW) {
+        if (tempClient.getOVERFLOW()) {
           outMess.setText("Вы выходите за пределы установленной суммы");
           execute(outMess);
           return;
@@ -254,7 +230,7 @@ public class TeleBot extends TelegramLongPollingBot {
     } else if (command.equals("/find")) {
       //setLimit(text)
       Finder finder = new Finder();
-      finder.text = this.readFromPerekrestok.parserFinder.text.toString();
+      finder.setText(this.readFromPerekrestok.getParserFinder().getText().toString());
       String mathes = finder.getAllMathes(textOfMessage);
       if (mathes == null || mathes.equals("")) {
         outMess.setText("Нет такого товара, найдите другой!");
@@ -280,7 +256,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
   @Override
   public String getBotToken() {
-    String token = GetTokenFromEnvironmentVariables();
+    String token = getTokenFromEnvironmentVariables();
     if (token != null) {
       return token;
     } else {
@@ -297,7 +273,7 @@ public class TeleBot extends TelegramLongPollingBot {
     if (isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
       try {
-        SendFirstTextOfCommand(textOfMessage,
+        sendFirstTextOfCommand(textOfMessage,
             chat_id); //отправляем первое сообщение и завершаем логику
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
@@ -308,7 +284,7 @@ public class TeleBot extends TelegramLongPollingBot {
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
     try {
-      DoCommandLogic(command, textOfMessage, chat_id);
+      doCommandLogic(command, textOfMessage, chat_id);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
@@ -320,7 +296,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
   @Override
   public void onUpdateReceived(Update update) {
-    bot_holding_base.readBase();
+    bot_holding_base.readToLocalBase();
     var msg = update.getMessage();
     String textOfMessage = null;
     if (msg == null) {
@@ -340,7 +316,7 @@ public class TeleBot extends TelegramLongPollingBot {
       String user_uniq_nick = user.getUserName();
       mainLogic(textOfMessage, chat_id, user_uniq_nick);
     }
-    bot_holding_base.updateBase();
+    bot_holding_base.updateToJSONBase();
 
   }
 
@@ -351,15 +327,13 @@ public class TeleBot extends TelegramLongPollingBot {
     return false;
   }
 
-  private void sendMenu(Long who, String txt, InlineKeyboardMarkup kb) {
-    SendMessage sm = SendMessage
-        .builder()
-        .chatId(who.toString())
-        .parseMode("HTML")
-        .text(txt)
-        .replyMarkup(kb)
-        .build();
+  private String readUsingFiles(String fileName) throws IOException {
+    return new String(Files.readAllBytes(Paths.get(fileName)));
+  }
 
+  private void sendCommandsMenu(Long number_of_chat) {
+    creatorMenu.createCommandsMenu(number_of_chat);
+    SendMessage sm = creatorMenu.getSm();
     try {
       execute(sm);
     } catch (TelegramApiException e) {
@@ -367,53 +341,7 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-
-  private String readUsingFiles(String fileName) throws IOException {
-    return new String(Files.readAllBytes(Paths.get(fileName)));
-  }//считываем данные из файла и возвращаем в виде строки
-
-  private void SendMenu(Long number_of_chat) {
-    //создаем кнопочки
-    var add = InlineKeyboardButton
-        .builder()
-        .text("Добавить товар в корзину")
-        .callbackData("/add")
-        .build();
-
-    var limit = InlineKeyboardButton
-        .builder()
-        .text("Ввести сумму лимита на покупки")
-        .callbackData("/limit")
-        .build();
-
-    var stat = InlineKeyboardButton
-        .builder()
-        .text("Посмотреть стоимость корзины и остаток")
-        .callbackData("/statistics")
-        .build();
-
-    var products_and_prices = InlineKeyboardButton
-        .builder()
-        .text("Посмотреть текущие цены на товары в магазине \"Перекресток\"")
-        .callbackData("/products_and_prices")
-        .build();
-
-    //создаем клавиатуру
-    keyboard1 = InlineKeyboardMarkup.builder()
-        .keyboardRow(List.of(products_and_prices))
-        .keyboardRow(List.of(add))
-        .keyboardRow(List.of(limit))
-        .keyboardRow(List.of(stat))
-        .build();
-
-    //сендим клавиатуру
-
-    sendMenu(number_of_chat, "<b>\uD83E\uDDEDFines interactive menu\uD83E\uDDED</b>", keyboard1);
-
-    //____________________________________________________//
-  }
-
-  private String GetTokenFromEnvironmentVariables() {
+  private String getTokenFromEnvironmentVariables() {
     Map<String, String> env = System.getenv();
     for (String envName : env.keySet()) {
       if (envName.equals("TOKEN_TELE")) {
@@ -424,4 +352,5 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
   private InlineKeyboardMarkup keyboard1;
+  private InteractiveMenuCreator creatorMenu = new InteractiveMenuCreator();
 }

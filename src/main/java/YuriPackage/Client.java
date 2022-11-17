@@ -9,7 +9,15 @@ public class Client {
 
   private int limit = Integer.MAX_VALUE;
 
-  protected boolean OVERFLOW = false;
+  public boolean getOVERFLOW() {
+    return OVERFLOW;
+  }
+
+  public void setOVERFLOW(boolean OVERFLOW) {
+    this.OVERFLOW = OVERFLOW;
+  }
+
+  private boolean OVERFLOW = false;
   private int ostat;
   private Scanner in;
 
@@ -22,7 +30,7 @@ public class Client {
     ostat = Integer.MAX_VALUE;
   }
 
-  protected void addExpenses(int sum, String product) {
+  void addExpenses(int sum, String product) {
     this.OVERFLOW = false;
     if (map.containsKey(product)) {
       int temp = map.get(product);
@@ -30,18 +38,16 @@ public class Client {
         map.put(product, temp + sum);
       } else {
         this.OVERFLOW = true;
-        System.out.println("Your limit will be" +
-            " achieved\nYou can't by this!\n" +
-            "If you buy, thr limit is over");
+        System.out.println("Your limit will be" + " achieved\nYou can't by this!\n"
+            + "If you buy, thr limit is over");
       }
     } else {
       if (canAdd(sum)) {
         this.map.put(product, sum);
       } else {
         this.OVERFLOW = true;
-        System.out.println("Your limit will be" +
-            " achieved\nYou can't by this!\n" +
-            "If you buy, thr limit is over");
+        System.out.println("Your limit will be" + " achieved\nYou can't by this!\n"
+            + "If you buy, thr limit is over");
         return;
       }
 
@@ -49,25 +55,23 @@ public class Client {
     ostat -= sum;
   }
 
-  protected void addExpensesFromJSON(int sum, String product) {
+  void addExpensesFromJSON(int sum, String product) {
     if (map.containsKey(product)) {
       int temp = map.get(product);
       if (canAdd(temp + sum)) {
         map.put(product, temp + sum);
         this.date = new Date().toString();
       } else {
-        System.out.println("Your limit will be" +
-            " achieved\nYou can't by this!\n" +
-            "If you buy, thr limit is over");
+        System.out.println("Your limit will be" + " achieved\nYou can't by this!\n"
+            + "If you buy, thr limit is over");
       }
     } else {
       if (canAdd(sum)) {
         map.put(product, sum);
       } else {
 
-        System.out.println("Your limit will be" +
-            " achieved\nYou can't by this!\n" +
-            "If you buy, thr limit is over");
+        System.out.println("Your limit will be" + " achieved\nYou can't by this!\n"
+            + "If you buy, thr limit is over");
       }
     }
   }
@@ -82,7 +86,7 @@ public class Client {
 
   }
 
-  protected int getOstat() {
+  int getOstat() {
     return ostat;
   }
 
@@ -97,7 +101,7 @@ public class Client {
     return false;
   }
 
-  protected String showStatistic() {
+  String showStatistic() {
     String stat = "";
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
       String key = entry.getKey();
@@ -108,27 +112,26 @@ public class Client {
     return stat;
   }
 
-  ;
 
-  protected void setLimit(int LimitUser) {
+  void setLimit(int LimitUser) {
     limit = LimitUser;
     this.ostat = limit;
   }
 
-  protected void setLimitFromJSON(int lim) {
+  void setLimitFromJSON(int lim) {
     this.limit = lim;
   }
 
-  protected HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
+  HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
   {
     return (HashMap<String, Integer>) this.map;
   }
 
-  protected void setDate(String data) {
+  void setDate(String data) {
     this.date = data;
   }
 
-  protected int LimitForJSON() {
+  int LimitForJSON() {
     return this.limit;
   }
 
