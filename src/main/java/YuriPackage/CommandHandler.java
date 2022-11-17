@@ -61,6 +61,7 @@ public class CommandHandler {
   //метод handleFirstTextOfCommand вроде не единственный обрабатывает команды
   //посмотри в телеботе какие еще методы обрабатывают команды
   // и допиши их сюда
+
  void handleFirstTextOfCommand(String command, Long chatID)
       throws TelegramApiException, IOException {
     this.outMess = new SendMessage();

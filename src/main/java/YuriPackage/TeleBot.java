@@ -187,6 +187,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private int tempSUM = 0;
 
+
   private void doCommandLogic(String command, String textOfMessage, Long chat_id)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
