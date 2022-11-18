@@ -23,8 +23,8 @@ public class HandlerJSON {
 
   void readBase() {
     try (FileReader fileReader = new FileReader(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
-      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
+        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
+      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
       String input = Files.readString(file);
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
@@ -72,7 +72,7 @@ public class HandlerJSON {
 
   void updateBase() {
     try (FileWriter file = new FileWriter(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+        "C:\\Учеба ООП\\Console-Java-Bot\\text.json");) {
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();

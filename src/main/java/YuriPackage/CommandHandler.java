@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -20,6 +21,12 @@ public class CommandHandler {
   }
 
   private SendMessage outMess = new SendMessage();
+
+  public SendMessage getOutMessforYuri() {
+    return outMessforYuri;
+  }
+
+  private SendMessage outMessforYuri = null;
 
   public Map<String, List<String>> getCategories() {
     return categories;
@@ -45,6 +52,7 @@ public class CommandHandler {
     this.currentCommand = currentCommand;
   }
 
+  Parser readFromPerekrestok = new Parser();
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
 
   private Client tempClient = new Client();
@@ -52,6 +60,10 @@ public class CommandHandler {
   private InteractiveMenuCreator creator = new InteractiveMenuCreator();
 
   private Map<String, List<String>> categories = new HashMap<>();
+
+  private int tempSUM = 0;
+
+  private boolean sumIsAdded = false;
 
   //короче надо, чтоб в этот метод мог обработать команду
   //я не знаю как сделать, чтобы он мог ее отправлять
@@ -61,7 +73,8 @@ public class CommandHandler {
   //метод handleFirstTextOfCommand вроде не единственный обрабатывает команды
   //посмотри в телеботе какие еще методы обрабатывают команды
   // и допиши их сюда
-  void handleFirstTextOfCommand(String command, Long chatID)
+
+ void handleFirstTextOfCommand(String command, Long chatID)
       throws TelegramApiException, IOException {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
@@ -69,6 +82,7 @@ public class CommandHandler {
       outMess.setText(
           "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
               + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
+
     } else if (command.equals("/help")) {
       outMess.setText(
           "\n" +
@@ -97,16 +111,28 @@ public class CommandHandler {
       creator.createCommandsMenu(chatID);
       outMess = creator.getSm();
       currentCommand.put(true, "Default command");//ставим дефолтную команду,
-//    } else if (command.equals("/products_and_prices")) {
-//
-//      outMess.setText("Вычисляем статистику, немного подождите...");
-//      String result_prod_and_prices = this.sendDataForUser();
-//      outMess.setText(result_prod_and_prices);
-//      creator.createKeyboardCategoriesToUser(chatID);
-//      outMess = creator.getSm();
-//      outMess.setText("Введите /find, чтобы найти какой-то конкретный товар");
-//      currentCommand.put(true, "Default command");//ставим дефолтную команду
-    } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
+    } else if (command.equals("/products_and_prices")) {
+
+      //outMess.setText("Вычисляем статистику, немного подождите...");
+
+      String result_prod_and_prices = sendDataForUser();
+      outMess.setText(result_prod_and_prices);
+      outMess.setText(result_prod_and_prices + "Введите /find, чтобы найти какой-то конкретный товар");
+
+      this.outMessforYuri = new SendMessage();
+      creator.createKeyboardCategoriesToUser(chatID);
+      outMessforYuri = creator.getSm();
+      outMessforYuri.setChatId(chatID.toString());
+      currentCommand.put(true, "Default command");//ставим дефолтную команду
+    }
+    else if(command.equals("/categories"))
+    {
+
+      creator.createKeyboardCategoriesToUser(chatID);
+      outMess = creator.getSm();
+      String result_prod_and_prices = sendDataForUser();
+    }
+    else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
         || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
         || command.equals("Овощи, фрукты, грибы") || command.equals("Готовая еда")) {
       if (categories == null) {
@@ -121,6 +147,82 @@ public class CommandHandler {
     } else {
       outMess.setText("Сообщение не распознано");
     }
+ }
+
+  void doCommandLogic(String command, String textOfMessage, Long chatID)
+      throws TelegramApiException {
+    this.outMess = new SendMessage();
+    outMess.setChatId(chatID.toString());
+    if (command.equals("/add")) {
+      //мы знаем, что первое сообщение уже отправлено
+      //"Введите сумму" добавлено
+      if (!sumIsAdded) {
+        tempSUM = Integer.parseInt(textOfMessage);
+        //Если сумма еще не добавлена - просим добавить
+        //addSum(text)
+        //просим ввести товар
+        outMess.setText("Введите товар");
+        sumIsAdded = true;
+      } else {
+        //addGood(text)
+        //товар добавлен, затираем переменную
+        String tempGOOD = textOfMessage;
+        tempClient.addExpenses(tempSUM, tempGOOD);//добавляем расходы
+        if (tempClient.getOVERFLOW()) {
+          outMess.setText("Вы выходите за пределы установленной суммы");
+          return;
+        }
+        //затираем даные
+        sumIsAdded = false;
+        tempSUM = 0;
+        tempGOOD = "";
+        currentCommand.put(true, "Default command");//ставим дефолтную команду
+      }
+    } else if (command.equals("/limit")) {
+      //setLimit(text)
+      tempClient.setLimit(Integer.parseInt(textOfMessage));
+      outMess.setText("Лимит установлен");
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+      // которая никак не обрабатывается
+      // и попадет в else
+    } else if (command.equals("/find")) {
+      //setLimit(text)
+      Finder finder = new Finder();
+      finder.setText(this.readFromPerekrestok.getParserFinder().getText().toString());
+      String mathes = finder.getAllMathes(textOfMessage);
+      if (mathes == null || mathes.equals("")) {
+        outMess.setText("Нет такого товара, найдите другой!");
+        return;
+      }
+      outMess.setText(mathes);
+      currentCommand.put(true, "Default command");//ставим дефолтную команду,
+      // которая никак не обрабатывается
+      // и попадет в else
+    } else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
+      outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
+    }
+  }
+
+  private String sendDataForUser() throws IOException {
+    this.categories = readFromPerekrestok.getCategories();
+    StringBuilder result = new StringBuilder();
+    for (Entry<String, List<String>> entry : categories.entrySet()) {
+      String key = entry.getKey();
+      List<String> value = entry.getValue();
+      result.append(key).append("\n");
+      for (int i = 0; i < value.size(); i++) {
+        String name_of_product = value.get(i).split("___")[0];
+        String price_of_product = value.get(i).split("___")[1];
+        result.append(name_of_product)
+            .append("\t - ")
+            .append(price_of_product)
+            .append("\n");
+      }
+      result.append("\n");
+    }
+
+    return result.toString();
+
   }
 
   private String extractCategory(String message) {
