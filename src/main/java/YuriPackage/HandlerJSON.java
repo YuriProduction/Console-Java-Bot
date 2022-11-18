@@ -14,6 +14,8 @@ import org.json.simple.JSONValue;
 
 public class HandlerJSON {
 
+  //Управляет считыванием и обновлением JSON-базы
+
   public Map<String, Client> getBase() {
     return base;
   }

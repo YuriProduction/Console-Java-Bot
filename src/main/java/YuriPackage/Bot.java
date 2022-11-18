@@ -15,7 +15,6 @@ import org.json.simple.JSONValue;
 public class Bot { //implements Bootable,ReadAndWrite
 
   //отвечает за корректную запись в Map клиентов
-
   private Map<String, Client> base = new HashMap<>();
 
   private HandlerJSON handlerJSON = new HandlerJSON();

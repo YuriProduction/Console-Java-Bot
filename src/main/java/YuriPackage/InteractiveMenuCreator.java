@@ -1,10 +1,13 @@
 package YuriPackage;
+
 import java.util.List;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 public class InteractiveMenuCreator {
+
+  //Создает кнопки и посылает их в TeleBot для обработки и отправки пользователю
 
   void createKeyboardCategoriesToUser(Long number_of_chat) {
     var per = InlineKeyboardButton
@@ -55,6 +58,7 @@ public class InteractiveMenuCreator {
 
     createFinalMenu(number_of_chat, "<b>Категории</b>", keyboard1);
   }
+
   void createCommandsMenu(Long number_of_chat) {
     //создаем кнопочки
     var add = InlineKeyboardButton
@@ -94,6 +98,7 @@ public class InteractiveMenuCreator {
     createFinalMenu(number_of_chat, "<b>\uD83E\uDDEDFines interactive menu\uD83E\uDDED</b>",
         keyboard1);
   }
+
   void createFinalMenu(Long who, String txt, InlineKeyboardMarkup kb) {
     this.sm = SendMessage
         .builder()
@@ -103,6 +108,7 @@ public class InteractiveMenuCreator {
         .replyMarkup(kb)
         .build();
   }
+
   private InlineKeyboardMarkup keyboard1;
 
   public SendMessage getSm() {

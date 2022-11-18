@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class Client {
 
+  //Отвечает за запись клиента и его данных(расходы, лимит в базу)
   private int limit = Integer.MAX_VALUE;
 
   public boolean getOVERFLOW() {

@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public class Finder {
 
+  //Находит по шаблону выражение
   public void setText(String text) {
     this.text = text;
   }
