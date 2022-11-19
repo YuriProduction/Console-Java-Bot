@@ -16,7 +16,7 @@ class ClientTest {
   }
 
   @ParameterizedTest(name = "№{index} -> Expenses = {0}")
-  @ValueSource(ints = {100,200,1010})
+  @ValueSource(ints = {100, 200, 1010})
   void testAddExpenses(int Expenses) {
 
     try {
@@ -31,18 +31,16 @@ class ClientTest {
       ost.setAccessible(true);
 
       Limit.invoke(ourClient, 1000);
-      if(Expenses>1000)
-      {
+      if (Expenses > 1000) {
         Assertions.assertEquals(null, addEx.invoke(ourClient, Expenses, "milk"));
-      }
-      else{
+      } else {
         addEx.invoke(ourClient, Expenses, "milk");
         Assertions.assertEquals("Product - milk| Expenses = " + Expenses + "\n"
             + "Your ostat = " + ost.invoke(ourClient) + "\n", Stats.invoke(ourClient));
         addEx.invoke(ourClient, Expenses, "meat");
         addEx.invoke(ourClient, Expenses, "meat");
         Assertions.assertEquals("Product - milk| Expenses = " + Expenses + "\n"
-            + "Product - meat| Expenses = " + Expenses*2 + "\n"
+            + "Product - meat| Expenses = " + Expenses * 2 + "\n"
             + "Your ostat = " + ost.invoke(ourClient) + "\n", Stats.invoke(ourClient));
       }
 
@@ -70,7 +68,7 @@ class ClientTest {
   }
 
   @ParameterizedTest(name = "№{index} -> Sum = {0}")
-  @ValueSource(ints = {300, 560, 999,1001})
+  @ValueSource(ints = {300, 560, 999, 1001})
   void testCanAdd(int sum) {
     try {
       Method canAdd = Client.class.getDeclaredMethod("canAdd", int.class);
@@ -80,11 +78,9 @@ class ClientTest {
       Limit.setAccessible(true);
 
       Limit.invoke(ourClient, 1000);
-      if (sum>1000)
-      {
+      if (sum > 1000) {
         Assertions.assertFalse(Boolean.parseBoolean(canAdd.invoke(ourClient, sum).toString()));
-      }
-      else{
+      } else {
         Assertions.assertTrue(Boolean.parseBoolean(canAdd.invoke(ourClient, sum).toString()));
       }
 
