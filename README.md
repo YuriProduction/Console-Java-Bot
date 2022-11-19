@@ -1,4 +1,19 @@
 # Java-Telegram-Bot
-This bot helps you to look after your costs and it is capable of finding the prices of goods in the shop. So, you can collect the bucket of food like you are in the shop
-but you will already know how much money you have to pay!
+
+<p align="left">Всем привет
+<img src="https://github.com/blackcater/blackcater/raw/main/images/Hi.gif" height="32"/>
+</p>
+<p>Наш бот ориентирован на человека, желающего узнать цены на продукты  и собрать продуктовую корзину до похода в магазин</p>
+<h3  align="left" style="font-family:'Arial'">Возможности нашего бота:</h3>
+<ul>
+    <li>Выводить цены на продукты</li>
+    <li>Искать конкретный продукт</li>
+    <li>Устанавливать бюджет пользователя на поход в магазин</li>
+</ul> 
+<h3 style="color:green">Дополнительно: </h3>
+<ul>
+    <li>Пользователь может добавлять любые расходы за день</li>
+    <li>Бот может использоваться в качестве средства анализа расходов</li>
+</ul>
+
 
