@@ -62,7 +62,7 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
 
-  private void sendFirstTextOfCommand(String command, Long chatID,Client tempClient)
+  private void sendFirstTextOfCommand(String command, Long chatID, Client tempClient)
       throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
@@ -128,7 +128,7 @@ public class TeleBot extends TelegramLongPollingBot {
       fixUsingCommand(textOfMessage);
       try {
         sendFirstTextOfCommand(textOfMessage,
-            chat_id,tempClient); //отправляем первое сообщение и завершаем логику
+            chat_id, tempClient); //отправляем первое сообщение и завершаем логику
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
       } catch (IOException e) {
@@ -138,7 +138,7 @@ public class TeleBot extends TelegramLongPollingBot {
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
     try {
-      doCommandLogic(command, textOfMessage, chat_id,tempClient);
+      doCommandLogic(command, textOfMessage, chat_id, tempClient);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }

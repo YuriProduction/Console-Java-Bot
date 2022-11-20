@@ -67,7 +67,7 @@ public class CommandHandler {
 
   private boolean sumIsAdded = false;
 
-  void handleFirstTextOfCommand(String command, Long chatID,Client tempClient)
+  void handleFirstTextOfCommand(String command, Long chatID, Client tempClient)
       throws TelegramApiException, IOException {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
