@@ -9,19 +9,9 @@ public class Client {
 
   //Отвечает за запись клиента и его данных(расходы, лимит в базу)
   private int limit = Integer.MAX_VALUE;
-
-  public boolean getOVERFLOW() {
-    return OVERFLOW;
-  }
-
-  public void setOVERFLOW(boolean OVERFLOW) {
-    this.OVERFLOW = OVERFLOW;
-  }
-
   private boolean OVERFLOW = false;
   private int ostat;
   private Scanner in;
-
   private String date;
   private Map<String, Integer> map;
 
@@ -29,6 +19,14 @@ public class Client {
     map = new HashMap<String, Integer>();
     in = new Scanner(System.in);
     ostat = Integer.MAX_VALUE;
+  }
+
+  public boolean getOVERFLOW() {
+    return OVERFLOW;
+  }
+
+  public void setOVERFLOW(boolean OVERFLOW) {
+    this.OVERFLOW = OVERFLOW;
   }
 
   void addExpenses(int sum, String product) {
@@ -49,7 +47,6 @@ public class Client {
         this.OVERFLOW = true;
         System.out.println("Your limit will be" + " achieved\nYou can't by this!\n"
             + "If you buy, thr limit is over");
-        return;
       }
 
     }
