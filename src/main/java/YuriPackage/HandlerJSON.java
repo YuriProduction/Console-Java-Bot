@@ -16,14 +16,14 @@ public class HandlerJSON {
 
   //Управляет считыванием и обновлением JSON-базы
 
-  public Map<String, Client> getBase() {
-    return base;
-  }
+//  public Map<String, Client> getBase() {
+//    return base;
+//  }
 
-  private final Map<String, Client> base = new HashMap<>();
+//  private final Map<String, Client> base = new HashMap<>();
 
 
-  void readBase() {
+  void readBase(Map<String, Client> base) {
     try (FileReader fileReader = new FileReader(
         "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
       Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
@@ -72,9 +72,10 @@ public class HandlerJSON {
 
   ;
 
-  void updateBase() {
+  void updateBase(Map<String, Client> base) {
     try (FileWriter file = new FileWriter(
         "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+
       JSONObject main_obj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();

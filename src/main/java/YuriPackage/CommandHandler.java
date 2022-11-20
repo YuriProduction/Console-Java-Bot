@@ -38,13 +38,13 @@ public class CommandHandler {
     this.categories = categories;
   }
 
-  public Client getTempClient() {
-    return tempClient;
-  }
+//  //public Client getTempClient() {
+//    return tempClient;
+//  }
 
-  public void setTempClient(Client tempClient) {
-    this.tempClient = tempClient;
-  }
+//  public void setTempClient(Client tempClient) {
+//    this.tempClient = tempClient;
+//  }
 
   public Map<Boolean, String> getCurrentCommand() {
     return currentCommand;
@@ -57,7 +57,7 @@ public class CommandHandler {
   Parser readFromPerekrestok = new Parser();
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
 
-  private Client tempClient = new Client();
+  //private Client tempClient = new Client();
 
   private InteractiveMenuCreator creator = new InteractiveMenuCreator();
 
@@ -67,7 +67,7 @@ public class CommandHandler {
 
   private boolean sumIsAdded = false;
 
-  void handleFirstTextOfCommand(String command, Long chatID)
+  void handleFirstTextOfCommand(String command, Long chatID,Client tempClient)
       throws TelegramApiException, IOException {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
@@ -141,7 +141,7 @@ public class CommandHandler {
     }
   }
 
-  void doCommandLogic(String command, String textOfMessage, Long chatID)
+  void doCommandLogic(String command, String textOfMessage, Long chatID, Client tempClient)
       throws TelegramApiException {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
@@ -160,6 +160,7 @@ public class CommandHandler {
         //товар добавлен, затираем переменную
         String tempGOOD = textOfMessage;
         tempClient.addExpenses(tempSUM, tempGOOD);//добавляем расходы
+        outMess.setText("Данные добавлены успешно");
         if (tempClient.getOVERFLOW()) {
           outMess.setText("Вы выходите за пределы установленной суммы");
           return;

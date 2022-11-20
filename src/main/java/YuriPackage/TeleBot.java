@@ -62,12 +62,12 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
 
-  private void sendFirstTextOfCommand(String command, Long chatID)
+  private void sendFirstTextOfCommand(String command, Long chatID,Client tempClient)
       throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     try {
-      cmd.handleFirstTextOfCommand(command, chatID);
+      cmd.handleFirstTextOfCommand(command, chatID, tempClient);
       SendMessage outPutMess = cmd.getOutMess();//Переименуешь тут как нужно
       SendMessage outPutMessForYuri = cmd.getOutMessforButtons();
       execute(outPutMess);
@@ -85,17 +85,18 @@ public class TeleBot extends TelegramLongPollingBot {
   private int tempSUM = 0;
 
 
-  private void doCommandLogic(String command, String textOfMessage, Long chat_id)
+  private void doCommandLogic(String command, String textOfMessage, Long chat_id, Client tempClient)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chat_id.toString());
 
     try {
-      cmd.doCommandLogic(command, textOfMessage, chat_id);
+      out.println(tempClient);
+      cmd.doCommandLogic(command, textOfMessage, chat_id, tempClient);
       SendMessage outPutMess = cmd.getOutMess();//Переименуешь тут как нужно
       execute(outPutMess);
     } catch (Exception e) {
-
+      throw new RuntimeException();
     }
 
   }
@@ -121,12 +122,13 @@ public class TeleBot extends TelegramLongPollingBot {
   private void mainLogic(String textOfMessage, long chat_id, String user_uniq_nick) {
     bot_holding_base.registateClient(user_uniq_nick);
     tempClient = bot_holding_base.signIN(user_uniq_nick);
+    out.println(user_uniq_nick);
 
     if (isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
       try {
         sendFirstTextOfCommand(textOfMessage,
-            chat_id); //отправляем первое сообщение и завершаем логику
+            chat_id,tempClient); //отправляем первое сообщение и завершаем логику
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
       } catch (IOException e) {
@@ -136,7 +138,7 @@ public class TeleBot extends TelegramLongPollingBot {
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
     try {
-      doCommandLogic(command, textOfMessage, chat_id);
+      doCommandLogic(command, textOfMessage, chat_id,tempClient);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }

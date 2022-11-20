@@ -31,13 +31,12 @@ public class Bot { //implements Bootable,ReadAndWrite
   }
 
   void readToLocalBase() {
-    handlerJSON.readBase();
-    this.base = handlerJSON.getBase();
+    handlerJSON.readBase(base);
   }
 
 
   void updateToJSONBase() {
-    handlerJSON.updateBase();
+    handlerJSON.updateBase(base);
   }
 
 }
