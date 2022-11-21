@@ -21,6 +21,10 @@ public class Client {
     ostat = Integer.MAX_VALUE;
   }
 
+  int getOstat() {
+    return ostat;
+  }
+
   public boolean getOVERFLOW() {
     return OVERFLOW;
   }
@@ -84,9 +88,6 @@ public class Client {
 
   }
 
-  int getOstat() {
-    return ostat;
-  }
 
   private boolean canAdd(int item) {
     int sum = 0;
@@ -111,8 +112,8 @@ public class Client {
   }
 
 
-  void setLimit(int LimitUser) {
-    limit = LimitUser;
+  void setLimit(int limitUser) {
+    limit = limitUser;
     this.ostat = limit;
   }
 

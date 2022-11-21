@@ -13,13 +13,13 @@ public class Parser {
 
   //Парсит данные с сайта
 
-  public Finder getParserFinder() {
-    return parserFinder;
-  }
-
   private Finder parserFinder = new Finder();
   private StringBuilder textForPareserFinder = new StringBuilder();
   private Map<String, List<String>> categories = null;
+
+  public Finder getParserFinder() {
+    return parserFinder;
+  }
 
   Map<String, List<String>> getCategories() throws IOException {
     categories = new HashMap<>();

@@ -5,21 +5,21 @@ import java.util.regex.Pattern;
 
 public class Finder {
 
-  //Находит по шаблону выражение
-  public void setText(String text) {
-    this.text = text;
-  }
+  private String text;
 
   public String getText() {
     return text;
   }
 
-  private String text;
+  //Находит по шаблону выражение
+  public void setText(String text) {
+    this.text = text;
+  }
 
-  String getAllMathes(String user_text) {
+  String getAllMathes(String userText) {
     String tempFind = "";
     StringBuilder result = new StringBuilder();
-    Pattern pattern = Pattern.compile(user_text + ".*___?");
+    Pattern pattern = Pattern.compile(userText + ".*___?");
     Matcher matcher = pattern.matcher(this.text);
     while (matcher.find()) {
       tempFind = matcher.group();

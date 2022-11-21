@@ -18,8 +18,8 @@ public class HandlerJSON {
 
   void readBase(Map<String, Client> base) {
     try (FileReader fileReader = new FileReader(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
-      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
+        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
+      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
       String input = Files.readString(file);
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
@@ -67,18 +67,18 @@ public class HandlerJSON {
 
   void updateBase(Map<String, Client> base) {
     try (FileWriter file = new FileWriter(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
 
-      JSONObject main_obj = new JSONObject();
+      JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
       HashMap<String, Integer> tempClientBase;
       for (Map.Entry<String, Client> entry : base.entrySet()) {
         JSONObject obj = new JSONObject();
-        String uniq_NAME = entry.getKey();
+        String uniqNAME = entry.getKey();
         tempClient = entry.getValue();
         tempClientBase = tempClient.mapForJSON();
-        obj.put("Name", uniq_NAME);
+        obj.put("Name", uniqNAME);
         obj.put("Limit", tempClient.LimitForJSON());
         obj.put("Date", new Date().toString());
         JSONArray products = new JSONArray();
@@ -91,8 +91,8 @@ public class HandlerJSON {
         obj.put("Products", products);
         mp.add(obj);
       }
-      main_obj.put("Map", mp);
-      file.write(main_obj.toJSONString());
+      mainObj.put("Map", mp);
+      file.write(mainObj.toJSONString());
     } catch (Exception ex) {
       ex.printStackTrace();
       System.out.println("Not today");
@@ -104,8 +104,8 @@ public class HandlerJSON {
     //происходит проверка по дням
     // (в функции выше, не учитывается
     // проерка по месяцам!)
-    char[] char_data = data.toCharArray();
-    String str_day = String.valueOf(char_data[8]) + char_data[9];
-    return Integer.parseInt(str_day);
+    char[] charData = data.toCharArray();
+    String strDay = String.valueOf(charData[8]) + charData[9];
+    return Integer.parseInt(strDay);
   }
 }

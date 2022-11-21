@@ -16,7 +16,7 @@ class ClientTest {
   }
 
   @ParameterizedTest(name = "№{index} -> Expenses = {0}")
-  @ValueSource(ints = {100, 200, 1010})
+  @ValueSource(ints = {100, 200, 300, 1010})
   void testAddExpenses(int Expenses) {
 
     try {
@@ -38,10 +38,11 @@ class ClientTest {
         Assertions.assertEquals("Product - milk| Expenses = " + Expenses + "\n"
             + "Your ostat = " + ost.invoke(ourClient) + "\n", Stats.invoke(ourClient));
         addEx.invoke(ourClient, Expenses, "meat");
-        addEx.invoke(ourClient, Expenses, "meat");
         Assertions.assertEquals("Product - milk| Expenses = " + Expenses + "\n"
-            + "Product - meat| Expenses = " + Expenses * 2 + "\n"
+            + "Product - meat| Expenses = " + Expenses * 1 + "\n"
             + "Your ostat = " + ost.invoke(ourClient) + "\n", Stats.invoke(ourClient));
+        addEx.invoke(ourClient, Expenses, "meat");
+        System.out.println(Stats.invoke(ourClient));
       }
 
 

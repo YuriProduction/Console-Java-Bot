@@ -9,7 +9,10 @@ public class InteractiveMenuCreator {
 
   //Создает кнопки и посылает их в TeleBot для обработки и отправки пользователю
 
-  void createKeyboardCategoriesToUser(Long number_of_chat) {
+  private InlineKeyboardMarkup keyboard1;
+  private SendMessage sendMessage = new SendMessage();
+
+  void createKeyboardCategoriesToUser(Long numberOfChat) {
     var per = InlineKeyboardButton
         .builder()
         .text("\uD83C\uDFEAОт Перекрёстка\uD83C\uDFEA")
@@ -22,7 +25,7 @@ public class InteractiveMenuCreator {
         .callbackData("С днём вегана")
         .build();
 
-    var milk_prod = InlineKeyboardButton
+    var milkProd = InlineKeyboardButton
         .builder()
         .text("\uD83D\uDC2EМолоко, сыр, яйца\uD83D\uDC14")
         .callbackData("Молоко, сыр, яйца")
@@ -33,12 +36,12 @@ public class InteractiveMenuCreator {
         .text("\uD83C\uDF5DМакароны, крупы, масло, специи\uD83E\uDDC2")
         .callbackData("Макароны, крупы, масло, специи")
         .build();
-    var fruits_veget = InlineKeyboardButton
+    var fruitsVeget = InlineKeyboardButton
         .builder()
         .text("\uD83C\uDF45Овощи, фрукты, грибы\uD83C\uDF4E")
         .callbackData("Овощи, фрукты, грибы")
         .build();
-    var ready_food = InlineKeyboardButton
+    var readyFood = InlineKeyboardButton
         .builder()
         .text("\uD83C\uDF71Готовая еда\uD83C\uDF71")
         .callbackData("Готовая еда")
@@ -48,18 +51,18 @@ public class InteractiveMenuCreator {
     keyboard1 = InlineKeyboardMarkup.builder()
         .keyboardRow(List.of(per))
         .keyboardRow(List.of(veg))
-        .keyboardRow(List.of(milk_prod))
+        .keyboardRow(List.of(milkProd))
         .keyboardRow(List.of(makarony))
-        .keyboardRow(List.of(fruits_veget))
-        .keyboardRow(List.of(ready_food))
+        .keyboardRow(List.of(fruitsVeget))
+        .keyboardRow(List.of(readyFood))
         .build();
 
     //сендим клавиатуру
 
-    createFinalMenu(number_of_chat, "<b>Категории</b>", keyboard1);
+    createFinalMenu(numberOfChat, "<b>Категории</b>", keyboard1);
   }
 
-  void createCommandsMenu(Long number_of_chat) {
+  void createCommandsMenu(Long numberOfChat) {
     //создаем кнопочки
     var add = InlineKeyboardButton
         .builder()
@@ -79,15 +82,15 @@ public class InteractiveMenuCreator {
         .callbackData("/statistics")
         .build();
 
-    var products_and_prices = InlineKeyboardButton
+    var productsAndPrices = InlineKeyboardButton
         .builder()
         .text("Посмотреть текущие цены на товары в магазине \"Перекресток\"")
-        .callbackData("/products_and_prices")
+        .callbackData("/productsAndPrices")
         .build();
 
     //создаем клавиатуру
     keyboard1 = InlineKeyboardMarkup.builder()
-        .keyboardRow(List.of(products_and_prices))
+        .keyboardRow(List.of(productsAndPrices))
         .keyboardRow(List.of(add))
         .keyboardRow(List.of(limit))
         .keyboardRow(List.of(stat))
@@ -95,12 +98,12 @@ public class InteractiveMenuCreator {
 
     //сендим клавиатуру
 
-    createFinalMenu(number_of_chat, "<b>\uD83E\uDDEDFines interactive menu\uD83E\uDDED</b>",
+    createFinalMenu(numberOfChat, "<b>\uD83E\uDDEDFines interactive menu\uD83E\uDDED</b>",
         keyboard1);
   }
 
   void createFinalMenu(Long who, String txt, InlineKeyboardMarkup kb) {
-    this.sm = SendMessage
+    this.sendMessage = SendMessage
         .builder()
         .chatId(who.toString())
         .parseMode("HTML")
@@ -109,12 +112,8 @@ public class InteractiveMenuCreator {
         .build();
   }
 
-  private InlineKeyboardMarkup keyboard1;
-
-  public SendMessage getSm() {
-    return sm;
+  public SendMessage getSendMessage() {
+    return sendMessage;
   }
-
-  private SendMessage sm = new SendMessage();
 }
 
