@@ -1,16 +1,7 @@
 package YuriPackage;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 public class Bot { //implements Bootable,ReadAndWrite
 
@@ -33,7 +24,6 @@ public class Bot { //implements Bootable,ReadAndWrite
   void readToLocalBase() {
     handlerJSON.readBase(base);
   }
-
 
   void updateToJSONBase() {
     handlerJSON.updateBase(base);

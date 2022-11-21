@@ -25,7 +25,6 @@ public class Finder {
       tempFind = matcher.group();
       result.append(tempFind.substring(0, tempFind.length() - 3)).append("\n");
     }
-
     return result.toString();
   }
 

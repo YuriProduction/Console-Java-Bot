@@ -37,7 +37,6 @@ public class Parser {
       Elements hrefElements = doc.select(
           selector); // Selector - это такой путь до определенного элемента
       String categoriesText = element.text(); // *.text() достает текст из html файла
-
       String href = hrefElements.attr("href"); // *.attr(key) достает внутренную ссылку по ключу
       Document content = Jsoup.connect("https://www.perekrestok.ru" + href)
           .get(); // открываю ссылку-категорию, чтобы считать от туда данные

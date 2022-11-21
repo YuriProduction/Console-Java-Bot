@@ -96,8 +96,8 @@ public class InteractiveMenuCreator {
         .keyboardRow(List.of(stat))
         .build();
 
-    //сендим клавиатуру
 
+    //сендим клавиатуру
     createFinalMenu(numberOfChat, "<b>\uD83E\uDDEDFines interactive menu\uD83E\uDDED</b>",
         keyboard1);
   }
