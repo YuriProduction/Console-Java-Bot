@@ -16,7 +16,7 @@ public class HandlerJSON {
 
   //Управляет считыванием и обновлением JSON-базы
 
-  void readBase(Map<String, Client> base) {
+  public void readBase(Map<String, Client> base) {
     try (FileReader fileReader = new FileReader(
         "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
       Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
@@ -65,7 +65,7 @@ public class HandlerJSON {
 
   ;
 
-  void updateBase(Map<String, Client> base) {
+  public void updateBase(Map<String, Client> base) {
     try (FileWriter file = new FileWriter(
         "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
 
@@ -100,10 +100,7 @@ public class HandlerJSON {
 
   }
 
-  static int castDateToInt(String data) {
-    //происходит проверка по дням
-    // (в функции выше, не учитывается
-    // проерка по месяцам!)
+  private static int castDateToInt(String data) {
     char[] char_data = data.toCharArray();
     String str_day = String.valueOf(char_data[8]) + char_data[9];
     return Integer.parseInt(str_day);

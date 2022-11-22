@@ -9,7 +9,7 @@ public class InteractiveMenuCreator {
 
   //Создает кнопки и посылает их в TeleBot для обработки и отправки пользователю
 
-  void createKeyboardCategoriesToUser(Long number_of_chat) {
+  public void createKeyboardCategoriesToUser(Long number_of_chat) {
     var per = InlineKeyboardButton
         .builder()
         .text("\uD83C\uDFEAОт Перекрёстка\uD83C\uDFEA")
@@ -59,7 +59,7 @@ public class InteractiveMenuCreator {
     createFinalMenu(number_of_chat, "<b>Категории</b>", keyboard1);
   }
 
-  void createCommandsMenu(Long number_of_chat) {
+  public void createCommandsMenu(Long number_of_chat) {
     //создаем кнопочки
     var add = InlineKeyboardButton
         .builder()
@@ -99,7 +99,7 @@ public class InteractiveMenuCreator {
         keyboard1);
   }
 
-  void createFinalMenu(Long who, String txt, InlineKeyboardMarkup kb) {
+  public void createFinalMenu(Long who, String txt, InlineKeyboardMarkup kb) {
     this.sm = SendMessage
         .builder()
         .chatId(who.toString())

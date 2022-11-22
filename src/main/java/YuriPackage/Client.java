@@ -29,7 +29,7 @@ public class Client {
     this.OVERFLOW = OVERFLOW;
   }
 
-  void addExpenses(int sum, String product) {
+  public void addExpenses(int sum, String product) {
     this.OVERFLOW = false;
     if (map.containsKey(product)) {
       int temp = map.get(product);
@@ -53,7 +53,7 @@ public class Client {
     ostat -= sum;
   }
 
-  void addExpensesFromJSON(int sum, String product) {
+  public void addExpensesFromJSON(int sum, String product) {
     if (map.containsKey(product)) {
       int temp = map.get(product);
       if (canAdd(temp + sum)) {
@@ -84,7 +84,7 @@ public class Client {
 
   }
 
-  int getOstat() {
+  public int getOstat() {
     return ostat;
   }
 
@@ -99,7 +99,7 @@ public class Client {
     return false;
   }
 
-  String showStatistic() {
+  public String showStatistic() {
     String stat = "";
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
       String key = entry.getKey();
@@ -111,25 +111,26 @@ public class Client {
   }
 
 
-  void setLimit(int LimitUser) {
+  public void setLimit(int LimitUser) {
     limit = LimitUser;
     this.ostat = limit;
   }
 
-  void setLimitFromJSON(int lim) {
+  public void setLimitFromJSON(int lim) {
     this.limit = lim;
   }
 
-  HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
+  public HashMap<String, Integer> mapForJSON()//нужно для запси в json-базу
   {
     return (HashMap<String, Integer>) this.map;
   }
 
-  void setDate(String data) {
+
+  public void setDate(String data) {
     this.date = data;
   }
 
-  int LimitForJSON() {
+  public int LimitForJSON() {
     return this.limit;
   }
 

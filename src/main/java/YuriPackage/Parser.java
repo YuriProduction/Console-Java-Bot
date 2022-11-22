@@ -21,7 +21,7 @@ public class Parser {
   private StringBuilder textForPareserFinder = new StringBuilder();
   private Map<String, List<String>> categories = null;
 
-  Map<String, List<String>> getCategories() throws IOException {
+  public Map<String, List<String>> getCategories() throws IOException {
     categories = new HashMap<>();
     Document doc = Jsoup.connect("https://www.perekrestok.ru/cat").get();
     String price;
