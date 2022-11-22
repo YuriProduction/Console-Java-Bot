@@ -27,8 +27,8 @@ public class Bot { //implements Bootable,ReadAndWrite
     handlerJSON.readBase(base);
   }
 
-
   public void updateToJSONBase() {
+
     handlerJSON.updateBase(base);
   }
 

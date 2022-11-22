@@ -21,6 +21,10 @@ public class Client {
     ostat = Integer.MAX_VALUE;
   }
 
+  public int getOstat() {
+    return ostat;
+  }
+
   public boolean getOVERFLOW() {
     return OVERFLOW;
   }
@@ -84,10 +88,6 @@ public class Client {
 
   }
 
-  public int getOstat() {
-    return ostat;
-  }
-
   private boolean canAdd(int item) {
     int sum = 0;
     for (Map.Entry<String, Integer> entry : map.entrySet()) {
@@ -113,7 +113,6 @@ public class Client {
 
   public void setLimit(int LimitUser) {
     limit = LimitUser;
-    this.ostat = limit;
   }
 
   public void setLimitFromJSON(int lim) {

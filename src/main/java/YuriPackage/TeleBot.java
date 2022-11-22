@@ -7,46 +7,37 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 
 public class TeleBot extends TelegramLongPollingBot {
 
-  //Отвечает за взаимодейсвие с интерфейсом пользователя.
-  //За маршрутизацию сообщений.
+  private final Bot botHoldingBase = new Bot();
+  private final String[] commandslist = new String[]{"/add", "/limit", "/statistics", "/start",
+      "/help", "/menu", "/products_and_prices", "Молоко, сыр, яйца", "С днём вегана",
+      "От Перекрёстка", "Макароны, крупы, масло, специи", "Овощи, фрукты, грибы", "Готовая еда",
+      "/find", "/categories"};
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
-
-  private final Bot bot_holding_base = new Bot();
   private Client tempClient = new Client();
+  private CommandHandler commandHandler = new CommandHandler();
+  private InteractiveMenuCreator creatorMenu = new InteractiveMenuCreator();
 
-  private InteractiveMenuCreator creator = new InteractiveMenuCreator();
 
-  private CommandHandler cmd = new CommandHandler();
-
-  private Map<String, List<String>> categories = null;
-
-  private void sendKeyboardCategoriesToUser(Long number_of_chat) {
-    creatorMenu.createKeyboardCategoriesToUser(number_of_chat);
+  private void sendKeyboardCategoriesToUser(Long numberOfChat) {
+    creatorMenu.createKeyboardCategoriesToUser(numberOfChat);
     //сендим клавиатуру
-    SendMessage sm = creatorMenu.getSm();
+    SendMessage sendMessage = creatorMenu.getSendMessage();
     try {
-      execute(sm);
+      execute(sendMessage);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private final String[] commandslist = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help", "/menu", "/products_and_prices", "Молоко, сыр, яйца", "С днём вегана",
-      "От Перекрёстка", "Макароны, крупы, масло, специи", "Овощи, фрукты, грибы", "Готовая еда",
-      "/find", "/categories"};
-  private boolean sumIsAdded = false;
 
   private boolean isCommand(String argum) {
     for (String x : commandslist) {
@@ -61,15 +52,14 @@ public class TeleBot extends TelegramLongPollingBot {
     currentCommand.put(true, argum);
   }
 
-
-  private void sendFirstTextOfCommand(String command, Long chatID, Client tempClient)
+  private void sendFirstTextOfCommand(String command, Long chatID)
       throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     try {
-      cmd.handleFirstTextOfCommand(command, chatID, tempClient);
-      SendMessage outPutMess = cmd.getOutMess();//Переименуешь тут как нужно
-      SendMessage outPutMessForYuri = cmd.getOutMessforButtons();
+      commandHandler.handleFirstTextOfCommand(command, chatID,tempClient);
+      SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
+      SendMessage outPutMessForYuri = commandHandler.getOutMessforButtons();
       execute(outPutMess);
       if (outPutMessForYuri != null) {
         execute(outPutMessForYuri);
@@ -82,25 +72,20 @@ public class TeleBot extends TelegramLongPollingBot {
 
   }
 
-  private int tempSUM = 0;
-
-
-  private void doCommandLogic(String command, String textOfMessage, Long chat_id, Client tempClient)
+  private void doCommandLogic(String command, String textOfMessage, Long chatId)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
-    outMess.setChatId(chat_id.toString());
+    outMess.setChatId(chatId.toString());
 
     try {
-      out.println(tempClient);
-      cmd.doCommandLogic(command, textOfMessage, chat_id, tempClient);
-      SendMessage outPutMess = cmd.getOutMess();//Переименуешь тут как нужно
+      commandHandler.doCommandLogic(command, textOfMessage, chatId,tempClient);
+      SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outPutMess);
     } catch (Exception e) {
-      throw new RuntimeException();
+
     }
 
   }
-
 
   @Override
   public String getBotUsername() {
@@ -119,16 +104,15 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  private void mainLogic(String textOfMessage, long chat_id, String user_uniq_nick) {
-    bot_holding_base.registateClient(user_uniq_nick);
-    tempClient = bot_holding_base.signIN(user_uniq_nick);
-    out.println(user_uniq_nick);
+  private void mainLogic(String textOfMessage, long chatId, String userUniqNick) {
+    botHoldingBase.registateClient(userUniqNick);
+    tempClient = botHoldingBase.signIN(userUniqNick);
 
     if (isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
       try {
         sendFirstTextOfCommand(textOfMessage,
-            chat_id, tempClient); //отправляем первое сообщение и завершаем логику
+            chatId); //отправляем первое сообщение и завершаем логику
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
       } catch (IOException e) {
@@ -138,39 +122,36 @@ public class TeleBot extends TelegramLongPollingBot {
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
     try {
-      doCommandLogic(command, textOfMessage, chat_id, tempClient);
+      doCommandLogic(command, textOfMessage, chatId);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
 
   }
 
-
-  Parser readFromPerekrestok = new Parser();
-
   @Override
   public void onUpdateReceived(Update update) {
-    bot_holding_base.readToLocalBase();
+    botHoldingBase.readToLocalBase();
     var msg = update.getMessage();
     String textOfMessage = null;
     if (msg == null) {
       if (isUserTouchButton(update)) {
         textOfMessage = update.getCallbackQuery().getData();
         var user = update.getCallbackQuery().getFrom();
-        long chat_id = update.getCallbackQuery().getMessage().getChatId();
-        String user_uniq_nick = user.getUserName();
-        mainLogic(textOfMessage, chat_id, user_uniq_nick);
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
+        String userUniqNick = user.getUserName();
+        mainLogic(textOfMessage, chatId, userUniqNick);
       }
     } else {
       textOfMessage = msg.getText();
       out.println(textOfMessage);
       var user = msg.getFrom();
-      long chat_id = msg.getChatId();
+      long chatId = msg.getChatId();
       out.println(user.getUserName());
-      String user_uniq_nick = user.getUserName();
-      mainLogic(textOfMessage, chat_id, user_uniq_nick);
+      String userUniqNick = user.getUserName();
+      mainLogic(textOfMessage, chatId, userUniqNick);
     }
-    bot_holding_base.updateToJSONBase();
+    botHoldingBase.updateToJSONBase();
 
   }
 
@@ -181,13 +162,15 @@ public class TeleBot extends TelegramLongPollingBot {
     return false;
   }
 
+  //readUsingFiles посмотри Юра где его можно заюзать либо убери
   private String readUsingFiles(String fileName) throws IOException {
     return new String(Files.readAllBytes(Paths.get(fileName)));
   }
 
-  private void sendCommandsMenu(Long number_of_chat) {
-    creatorMenu.createCommandsMenu(number_of_chat);
-    SendMessage sm = creatorMenu.getSm();
+  //sendCommandsMenu посмотри Юра где его можно заюзать либо убери
+  private void sendCommandsMenu(Long numberOfChat) {
+    creatorMenu.createCommandsMenu(numberOfChat);
+    SendMessage sm = creatorMenu.getSendMessage();
     try {
       execute(sm);
     } catch (TelegramApiException e) {
@@ -205,6 +188,4 @@ public class TeleBot extends TelegramLongPollingBot {
     return null;
   }
 
-  private InlineKeyboardMarkup keyboard1;
-  private InteractiveMenuCreator creatorMenu = new InteractiveMenuCreator();
 }

@@ -30,6 +30,22 @@ public class CommandHandler {
 
   private SendMessage outMessforButtons = null;
 
+  public Map<String, List<String>> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(Map<String, List<String>> categories) {
+    this.categories = categories;
+  }
+
+  public Client getTempClient() {
+    return tempClient;
+  }
+
+  public void setTempClient(Client tempClient) {
+    this.tempClient = tempClient;
+  }
+
   public Map<Boolean, String> getCurrentCommand() {
     return currentCommand;
   }
@@ -42,6 +58,9 @@ public class CommandHandler {
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
 
 
+  private Client tempClient = new Client();
+
+
   private InteractiveMenuCreator creator = new InteractiveMenuCreator();
 
   private Map<String, List<String>> categories = new HashMap<>();
@@ -50,8 +69,9 @@ public class CommandHandler {
 
   private boolean sumIsAdded = false;
 
+
   public void handleFirstTextOfCommand(String command, Long chatID, Client tempClient)
-      throws TelegramApiException, IOException {
+      throws IOException {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     if (command.equals("/start")) {
@@ -86,7 +106,7 @@ public class CommandHandler {
       currentCommand.put(true, "Default command");//ставим дефолтную команду,
     } else if (command.equals("/menu")) {
       creator.createCommandsMenu(chatID);
-      outMess = creator.getSm();
+      outMess = creator.getSendMessage();
       currentCommand.put(true, "Default command");//ставим дефолтную команду,
     } else if (command.equals("/products_and_prices")) {
 
@@ -99,13 +119,13 @@ public class CommandHandler {
 
       this.outMessforButtons = new SendMessage();
       creator.createKeyboardCategoriesToUser(chatID);
-      outMessforButtons = creator.getSm();
+      outMessforButtons = creator.getSendMessage();
       outMessforButtons.setChatId(chatID.toString());
       currentCommand.put(true, "Default command");//ставим дефолтную команду
     } else if (command.equals("/categories")) {
 
       creator.createKeyboardCategoriesToUser(chatID);
-      outMess = creator.getSm();
+      outMess = creator.getSendMessage();
       String result_prod_and_prices = sendDataForUser();
     } else if (command.equals("От Перекрёстка") || command.equals("С днём вегана")
         || command.equals("Молоко, сыр, яйца") || command.equals("Макароны, крупы, масло, специи")
@@ -124,8 +144,8 @@ public class CommandHandler {
     }
   }
 
-  public void doCommandLogic(String command, String textOfMessage, Long chatID, Client tempClient)
-      throws TelegramApiException {
+
+  public void doCommandLogic(String command, String textOfMessage, Long chatID, Client tempClient) {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     if (command.equals("/add")) {
@@ -143,7 +163,6 @@ public class CommandHandler {
         //товар добавлен, затираем переменную
         String tempGOOD = textOfMessage;
         tempClient.addExpenses(tempSUM, tempGOOD);//добавляем расходы
-        outMess.setText("Данные добавлены успешно");
         if (tempClient.getOVERFLOW()) {
           outMess.setText("Вы выходите за пределы установленной суммы");
           return;
@@ -188,11 +207,11 @@ public class CommandHandler {
       List<String> value = entry.getValue();
       result.append(key).append("\n");
       for (int i = 0; i < value.size(); i++) {
-        String name_of_product = value.get(i).split("___")[0];
-        String price_of_product = value.get(i).split("___")[1];
-        result.append(name_of_product)
+        String nameOfProduct = value.get(i).split("___")[0];
+        String priceOfProduct = value.get(i).split("___")[1];
+        result.append(nameOfProduct)
             .append("\t - ")
-            .append(price_of_product)
+            .append(priceOfProduct)
             .append("\n");
       }
       result.append("\n");
@@ -208,13 +227,14 @@ public class CommandHandler {
     StringBuilder result = new StringBuilder();
     result.append(message).append("\n");
     for (String str : tempList) {
-      String name_of_product = str.split("___")[0];
-      String price_of_product = str.split("___")[1];
-      result.append(name_of_product)
+      String nameOfProduct = str.split("___")[0];
+      String priceOfProduct = str.split("___")[1];
+      result.append(nameOfProduct)
           .append("\t - ")
-          .append(price_of_product)
+          .append(priceOfProduct)
           .append("\n");
     }
     return result.toString();
   }
+
 }

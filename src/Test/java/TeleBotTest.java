@@ -26,6 +26,7 @@ class TeleBotTest {
       Method method = TeleBot.class.getDeclaredMethod("isCommand", String.class);
 
       method.setAccessible(true);
+
       assertTrue(Boolean.parseBoolean(method.invoke(teleBot, command).toString()));
     } catch (Exception e) {
       e.printStackTrace();

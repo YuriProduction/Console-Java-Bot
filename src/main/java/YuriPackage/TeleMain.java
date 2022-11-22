@@ -11,4 +11,5 @@ public class TeleMain {
     TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
     botsApi.registerBot(new TeleBot());
   }
+
 }

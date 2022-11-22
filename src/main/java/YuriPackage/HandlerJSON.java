@@ -67,18 +67,18 @@ public class HandlerJSON {
 
   public void updateBase(Map<String, Client> base) {
     try (FileWriter file = new FileWriter(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");) {
+        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
 
-      JSONObject main_obj = new JSONObject();
+      JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
       HashMap<String, Integer> tempClientBase;
       for (Map.Entry<String, Client> entry : base.entrySet()) {
         JSONObject obj = new JSONObject();
-        String uniq_NAME = entry.getKey();
+        String uniqNAME = entry.getKey();
         tempClient = entry.getValue();
         tempClientBase = tempClient.mapForJSON();
-        obj.put("Name", uniq_NAME);
+        obj.put("Name", uniqNAME);
         obj.put("Limit", tempClient.LimitForJSON());
         obj.put("Date", new Date().toString());
         JSONArray products = new JSONArray();
@@ -91,8 +91,8 @@ public class HandlerJSON {
         obj.put("Products", products);
         mp.add(obj);
       }
-      main_obj.put("Map", mp);
-      file.write(main_obj.toJSONString());
+      mainObj.put("Map", mp);
+      file.write(mainObj.toJSONString());
     } catch (Exception ex) {
       ex.printStackTrace();
       System.out.println("Not today");

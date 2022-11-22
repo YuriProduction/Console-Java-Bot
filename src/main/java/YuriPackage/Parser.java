@@ -13,13 +13,14 @@ public class Parser {
 
   //Парсит данные с сайта
 
+  private Finder parserFinder = new Finder();
+  private StringBuilder textForPareserFinder = new StringBuilder();
+  private Map<String, List<String>> categories = null;
+
   public Finder getParserFinder() {
     return parserFinder;
   }
 
-  private Finder parserFinder = new Finder();
-  private StringBuilder textForPareserFinder = new StringBuilder();
-  private Map<String, List<String>> categories = null;
 
   public Map<String, List<String>> getCategories() throws IOException {
     categories = new HashMap<>();
@@ -37,7 +38,6 @@ public class Parser {
       Elements hrefElements = doc.select(
           selector); // Selector - это такой путь до определенного элемента
       String categoriesText = element.text(); // *.text() достает текст из html файла
-
       String href = hrefElements.attr("href"); // *.attr(key) достает внутренную ссылку по ключу
       Document content = Jsoup.connect("https://www.perekrestok.ru" + href)
           .get(); // открываю ссылку-категорию, чтобы считать от туда данные
