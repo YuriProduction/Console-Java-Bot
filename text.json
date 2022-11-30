@@ -1,1 +1,1 @@
-{"Map":[{"Products":[{"price":303,"title":"basket"},{"price":1111,"title":"О"}],"Limit":2000,"Date":"Tue Nov 22 17:27:35 YEKT 2022","Name":"YuriProduction"}]}
+{"Base":[{"Stocks":[{"Company":"Аэрофлот","PriceOneStock":24.82,"Count":5},{"Company":"Газпром","PriceOneStock":167.68,"Count":9}],"ID":"1382884346","Date":"Wed Nov 30 23:20:12 YEKT 2022"}]}

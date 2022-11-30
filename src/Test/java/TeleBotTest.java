@@ -1,6 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import YuriPackage.TeleBot;
+import InvestHelper.TeleBot;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;

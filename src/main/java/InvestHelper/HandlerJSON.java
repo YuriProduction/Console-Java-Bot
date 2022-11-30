@@ -1,4 +1,4 @@
-package YuriPackage;
+package InvestHelper;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -24,46 +24,34 @@ public class HandlerJSON {
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
-      JSONArray jsonArray = (JSONArray) jsonObject.get("Map");
+      JSONArray jsonArray = (JSONArray) jsonObject.get("Base");
 
       for (Object item : jsonArray) {
         tempClient = new Client();
         JSONObject map = (JSONObject) item;
-        String name = (String) map.get("Name");
-        long lim = (Long) map.get("Limit");
+        String userID = (String) map.get("ID");
         String date = (String) map.get("Date");
-        if (castDateToInt(new Date().toString()) - castDateToInt(date) != 0) {
-          tempClient.setLimitFromJSON(Integer.MAX_VALUE);
-          tempClient.setDate(date);//уже можно добавлять
-//          JSONArray jsonArray1 = (JSONArray) map.get("Products");
-//          for (Object item1 : jsonArray1) {
-//            JSONObject map1 = (JSONObject) item1;
-//            String title = (String) map1.get("title");
-//            long price = (Long) map1.get("price");
-//            //tempClient.addExpensesFromJSON((int) price, title);
-//          }
-        } else {
-          tempClient.setLimitFromJSON((int) lim);
-          tempClient.setDate(date);
-          JSONArray jsonArray1 = (JSONArray) map.get("Products");
-          for (Object item1 : jsonArray1) {
-            JSONObject map1 = (JSONObject) item1;
-            String title = (String) map1.get("title");
-            long price = (Long) map1.get("price");
-            tempClient.addExpensesFromJSON((int) price, title);
-          }
+        tempClient.setDate(date);
+        JSONArray jsonArray1 = (JSONArray) map.get("Stocks");
+        for (Object item1 : jsonArray1) {
+          JSONObject map1 = (JSONObject) item1;
+          String company = (String) map1.get("Company");
+          double priceOneStock = (Double) map1.get("PriceOneStock");
+          long countOfStocks = (Long) map1.get("Count");
+          tempClient.addStockToInvestPortfolio(company, (int) countOfStocks, priceOneStock);
         }
-        if (!base.containsKey(name)) {//если первый раз считываем или записали нового
-          base.put(name, tempClient);
+
+        if (!base.containsKey(userID)) {//если первый раз считываем или записали нового
+          base.put(userID, tempClient);
         }
       }
 
-    } catch (Exception ex) {
+    } catch (
+        Exception ex) {
       ex.printStackTrace();
     }
   }
 
-  ;
 
   public void updateBase(Map<String, Client> base) {
     try (FileWriter file = new FileWriter(
@@ -72,26 +60,28 @@ public class HandlerJSON {
       JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();
       Client tempClient = new Client();
-      HashMap<String, Integer> tempClientBase;
+      HashMap<String, UserStock> tempStockBase;
       for (Map.Entry<String, Client> entry : base.entrySet()) {
         JSONObject obj = new JSONObject();
-        String uniqNAME = entry.getKey();
+        String userID = entry.getKey();
         tempClient = entry.getValue();
-        tempClientBase = tempClient.mapForJSON();
-        obj.put("Name", uniqNAME);
-        obj.put("Limit", tempClient.LimitForJSON());
+        tempStockBase = tempClient.mapForJSON();
+        obj.put("ID", userID);
         obj.put("Date", new Date().toString());
-        JSONArray products = new JSONArray();
-        for (Map.Entry<String, Integer> entry1 : tempClientBase.entrySet()) {
+        JSONArray stocks = new JSONArray();
+        for (Map.Entry<String, UserStock> entry1 : tempStockBase.entrySet()) {
           JSONObject obj1 = new JSONObject();
-          obj1.put("title", entry1.getKey());
-          obj1.put("price", entry1.getValue());
-          products.add(obj1);
+          obj1.put("Company", entry1.getKey());
+          System.out.println(entry1.getKey());
+          UserStock tempUserStock = entry1.getValue();
+          obj1.put("Count", tempUserStock.getCountStocks());
+          obj1.put("PriceOneStock", tempUserStock.getStockPrice());
+          stocks.add(obj1);
         }
-        obj.put("Products", products);
+        obj.put("Stocks", stocks);
         mp.add(obj);
       }
-      mainObj.put("Map", mp);
+      mainObj.put("Base", mp);
       file.write(mainObj.toJSONString());
     } catch (Exception ex) {
       ex.printStackTrace();

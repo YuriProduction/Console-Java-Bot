@@ -1,7 +1,10 @@
-package YuriPackage;
+package InvestHelper;
 
 import static java.lang.System.exit;
 import static java.lang.System.out;
+
+import InvestHelper.BaseOfClients;
+import InvestHelper.CommandHandler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,27 +19,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class TeleBot extends TelegramLongPollingBot {
 
-  private final Bot botHoldingBase = new Bot();
-  private final String[] commandslist = new String[]{"/add", "/limit", "/statistics", "/start",
-      "/help", "/menu", "/products_and_prices", "Молоко, сыр, яйца", "С днём вегана",
-      "От Перекрёстка", "Макароны, крупы, масло, специи", "Овощи, фрукты, грибы", "Готовая еда",
-      "/find", "/categories"};
+  private final BaseOfClients botHoldingBase = new BaseOfClients();
+  private final String[] commandslist = new String[]{"/add", "/start",
+      "/help", "/show"};
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
   private Client tempClient = new Client();
   private CommandHandler commandHandler = new CommandHandler();
-  private InteractiveMenuCreator creatorMenu = new InteractiveMenuCreator();
 
-
-  private void sendKeyboardCategoriesToUser(Long numberOfChat) {
-    creatorMenu.createKeyboardCategoriesToUser(numberOfChat);
-    //сендим клавиатуру
-    SendMessage sendMessage = creatorMenu.getSendMessage();
-    try {
-      execute(sendMessage);
-    } catch (TelegramApiException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
 
   private boolean isCommand(String argum) {
@@ -58,20 +47,18 @@ public class TeleBot extends TelegramLongPollingBot {
     outMess.setChatId(chatID.toString());
     try {
       commandHandler.handleFirstTextOfCommand(command, chatID,tempClient);
-      SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
-      SendMessage outPutMessForYuri = commandHandler.getOutMessforButtons();
-      execute(outPutMess);
-      if (outPutMessForYuri != null) {
-        execute(outPutMessForYuri);
-
+      outMess = commandHandler.getOutMess();//Переименуешь тут как нужно
+      execute(outMess);
+      if (commandHandler.isStillExecutable())
+      {
+        outMess.setText(commandHandler.stillExecutableMethodForQuotesReturn());
+        execute(outMess);
       }
-
     } catch (Exception e) {
       //тут просто дописать какой ex выкинуть
     }
 
   }
-
   private void doCommandLogic(String command, String textOfMessage, Long chatId)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
@@ -81,7 +68,7 @@ public class TeleBot extends TelegramLongPollingBot {
       commandHandler.doCommandLogic(command, textOfMessage, chatId,tempClient);
       SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outPutMess);
-    } catch (Exception e) {
+    } catch (Exception ignored) {
 
     }
 
@@ -104,9 +91,9 @@ public class TeleBot extends TelegramLongPollingBot {
     }
   }
 
-  private void mainLogic(String textOfMessage, long chatId, String userUniqNick) {
-    botHoldingBase.registateClient(userUniqNick);
-    tempClient = botHoldingBase.signIN(userUniqNick);
+  private void mainLogic(String textOfMessage, long chatId) {
+    botHoldingBase.registateClient(String.valueOf(chatId));
+    tempClient = botHoldingBase.signIN(String.valueOf(chatId));
 
     if (isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
@@ -135,12 +122,13 @@ public class TeleBot extends TelegramLongPollingBot {
     var msg = update.getMessage();
     String textOfMessage = null;
     if (msg == null) {
+      SendMessage outMess = new SendMessage();
       if (isUserTouchButton(update)) {
         textOfMessage = update.getCallbackQuery().getData();
         var user = update.getCallbackQuery().getFrom();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
         String userUniqNick = user.getUserName();
-        mainLogic(textOfMessage, chatId, userUniqNick);
+        mainLogic(textOfMessage, chatId);
       }
     } else {
       textOfMessage = msg.getText();
@@ -148,8 +136,9 @@ public class TeleBot extends TelegramLongPollingBot {
       var user = msg.getFrom();
       long chatId = msg.getChatId();
       out.println(user.getUserName());
+      out.println(chatId);
       String userUniqNick = user.getUserName();
-      mainLogic(textOfMessage, chatId, userUniqNick);
+      mainLogic(textOfMessage, chatId);
     }
     botHoldingBase.updateToJSONBase();
 
@@ -168,15 +157,7 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
   //sendCommandsMenu посмотри Юра где его можно заюзать либо убери
-  private void sendCommandsMenu(Long numberOfChat) {
-    creatorMenu.createCommandsMenu(numberOfChat);
-    SendMessage sm = creatorMenu.getSendMessage();
-    try {
-      execute(sm);
-    } catch (TelegramApiException e) {
-      throw new RuntimeException(e);
-    }
-  }
+
 
   private String getTokenFromEnvironmentVariables() {
     Map<String, String> env = System.getenv();
