@@ -28,10 +28,17 @@ public class ParserStocks {
   }
 
   public StringBuilder getTextForUserAboutQuotes() {
-    return textForUserAboutQuotes;
+    //чтобы зачищать строку
+    StringBuilder stringBuilder = this.textForUserAboutQuotes;
+    textForUserAboutQuotes = new StringBuilder();
+    return stringBuilder;
   }
 
   private StringBuilder textForUserAboutQuotes = new StringBuilder();
+
+  public Map<String, Double> getQuotes() {
+    return quotes;
+  }
 
   //котировки
   private final Map<String, Double> quotes = new HashMap<>();
@@ -48,6 +55,12 @@ public class ParserStocks {
       String[] fullInfoAboutCompanyArray = fullInfoAboutCompany.split(" ");
       System.out.println(fullInfoAboutCompany);
       String company = fullInfoAboutCompanyArray[1];
+      if (company.equals("ГМК") || company.equals("МРСК"))
+        //есть разные названия
+        company +=" " + fullInfoAboutCompanyArray[2];
+      if (quotes.containsKey(company))
+        //значит доп.название какое-то
+        company +=" " + fullInfoAboutCompanyArray[2];
       String lastPriceOfActions = fullInfoAboutCompanyArray[5];
       String growth = fullInfoAboutCompanyArray[7];
       char sign = growth.charAt(0);
@@ -59,9 +72,6 @@ public class ParserStocks {
       quotes.put(company, Double.parseDouble(lastPriceOfActions));
       textForUserAboutQuotes.append(company).append("--->").append(lastPriceOfActions)
           .append(" " + upOrDown).append("\n");
-//      System.out.println("Компания " + company + "\n" +
-//          "Цена акций " + lastPriceOfActions + "Прирост " + growth + upOrDown);
-//      System.out.println();
     }
   }
 

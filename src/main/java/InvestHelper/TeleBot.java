@@ -20,22 +20,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TeleBot extends TelegramLongPollingBot {
 
   private final BaseOfClients botHoldingBase = new BaseOfClients();
-  private final String[] commandslist = new String[]{"/add", "/start",
-      "/help", "/show"};
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
   private Client tempClient = new Client();
   private CommandHandler commandHandler = new CommandHandler();
-
-
-
-  private boolean isCommand(String argum) {
-    for (String x : commandslist) {
-      if (argum.equals(x)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   private void fixUsingCommand(String argum) {
     currentCommand.put(true, argum);
@@ -46,11 +33,10 @@ public class TeleBot extends TelegramLongPollingBot {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     try {
-      commandHandler.handleFirstTextOfCommand(command, chatID,tempClient);
+      commandHandler.handleFirstTextOfCommand(command, chatID, tempClient);
       outMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outMess);
-      if (commandHandler.isStillExecutable())
-      {
+      if (commandHandler.isStillExecutable()) {
         outMess.setText(commandHandler.stillExecutableMethodForQuotesReturn());
         execute(outMess);
       }
@@ -59,13 +45,14 @@ public class TeleBot extends TelegramLongPollingBot {
     }
 
   }
+
   private void doCommandLogic(String command, String textOfMessage, Long chatId)
       throws TelegramApiException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatId.toString());
 
     try {
-      commandHandler.doCommandLogic(command, textOfMessage, chatId,tempClient);
+      commandHandler.doCommandLogic(command, textOfMessage, chatId, tempClient);
       SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outPutMess);
     } catch (Exception ignored) {
@@ -94,8 +81,9 @@ public class TeleBot extends TelegramLongPollingBot {
   private void mainLogic(String textOfMessage, long chatId) {
     botHoldingBase.registateClient(String.valueOf(chatId));
     tempClient = botHoldingBase.signIN(String.valueOf(chatId));
-
-    if (isCommand(textOfMessage)) {
+    out.println("Дата у клиента: " + tempClient.getDate());
+    CommandHandler commandHandler1 = new CommandHandler();
+    if (commandHandler1.isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
       try {
         sendFirstTextOfCommand(textOfMessage,
@@ -150,13 +138,6 @@ public class TeleBot extends TelegramLongPollingBot {
     }
     return false;
   }
-
-  //readUsingFiles посмотри Юра где его можно заюзать либо убери
-  private String readUsingFiles(String fileName) throws IOException {
-    return new String(Files.readAllBytes(Paths.get(fileName)));
-  }
-
-  //sendCommandsMenu посмотри Юра где его можно заюзать либо убери
 
 
   private String getTokenFromEnvironmentVariables() {

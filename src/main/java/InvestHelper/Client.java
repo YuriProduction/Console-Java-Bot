@@ -12,7 +12,16 @@ public class Client {
     this.date = date;
   }
 
-  String date;
+  public String getDate() {
+    return date;
+  }
+
+  private String date;
+
+  public Map<String, UserStock> getInvestmentPortfolio() {
+    return investmentPortfolio;
+  }
+
   private final Map<String, UserStock> investmentPortfolio;
 
   public Client() {

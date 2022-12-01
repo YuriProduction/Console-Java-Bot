@@ -90,9 +90,4 @@ public class HandlerJSON {
 
   }
 
-  private static int castDateToInt(String data) {
-    char[] char_data = data.toCharArray();
-    String str_day = String.valueOf(char_data[8]) + char_data[9];
-    return Integer.parseInt(str_day);
-  }
 }
