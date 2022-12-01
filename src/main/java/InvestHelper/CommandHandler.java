@@ -29,6 +29,7 @@ public class CommandHandler {
     this.currentCommand = currentCommand;
   }
 
+  private final ReplyKeyboardMaker keyboardMaker = new ReplyKeyboardMaker();
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
 
   public boolean isStillExecutable() {
@@ -45,33 +46,38 @@ public class CommandHandler {
       out.println("Date " + tempClient.getDate());
       outMess.setText("Привет! Ты не заходил в бота больше одного дня, "
           + "перед использованием посмотри, что произошло на бирже!"
-          + "Для этого введи команду \"show\"");
+          + "Для этого введи команду \"/StockPrices\"");
       tempClient.setDate(new Date().toString());
       return;
     }
     if (command.equals("/start")) {
+      outMess.setReplyMarkup(keyboardMaker.setReplyKeyboardMarkup(command));
       outMess.setText(
           "Привет \uD83D\uDC4B, меня зовут Финес. Я твой личный бот-финансист \uD83D\uDCB0."
               + "\nЖми /help, если хочешь узнать на что я способен \uD83E\uDDBE");
 
     } else if (command.equals("/help")) {
+      outMess.setReplyMarkup(keyboardMaker.setReplyKeyboardMarkup(command));
       outMess.setText(
           "\n" +
-              "1)Введите \"/show\" чтобы посмотреть цены всех акций на фондовой бирже\n" +
-              "2)Введите \"/add\" чтобы добавить конкретную акцию\n" +
+              "1)Введите \"/StockPrices\" чтобы посмотреть цены всех акций на фондовой бирже\n" +
+              "2)Введите \"/AddStock\" чтобы добавить конкретную акцию\n" +
               "3)Введите \"/help\" чтобы получить помощь\n" +
-              "4)Введите \"/statistic\" чтобы получить статистику по текущим инвестицям\n"
+              "4)Введите \"/Statistic\" чтобы получить статистику по текущим инвестицям\n"
       );
-    } else if (command.equals("/add")) {
+    } else if (command.equals("/AddStock")) {
       outMess.setText("Введите команию, акции которой вы хотите приобрести");
-    } else if (command.equals("/show")) {
+      stillExecutable = true;
+    } else if (command.equals("/StockPrices")) {
       outMess.setText("Начинаем загрузку данных с биржи...Немного подождите");
       stillExecutable = true;
-    } else if (command.equals("/statistic")) {
+    } else if (command.equals("/Statistic")) {
+      parserStocks.parseQuotesData();
       String startMes = "Перед каждым выводом "
-          + "статистики рекомендуем вводить команду \"/show\", "
+          + "статистики рекомендуем вводить команду \"/StockPrices\", "
           + "чтобы данные были наиболее актуальными!\n\n";
-      String stat = statisticComputer.computeStatistics(tempClient.getInvestmentPortfolio(),parserStocks.getQuotes());
+      String stat = statisticComputer.computeStatistics(tempClient.getInvestmentPortfolio(),
+          parserStocks.getQuotes());
       outMess.setText(startMes + stat);
 
     } else {
@@ -88,6 +94,12 @@ public class CommandHandler {
     return parserStocks.getTextForUserAboutQuotes().toString();
   }
 
+  public void parseStocks() throws IOException {
+    stillExecutable = false;
+    parserStocks.parseQuotesData();
+    StringBuilder stringBuilder = parserStocks.getTextForUserAboutQuotes();
+  }
+
   private boolean nameOfcompanyIsSentByUser = false;
 
   private String nameOfCompany = "Error company";
@@ -96,7 +108,7 @@ public class CommandHandler {
     this.outMess = new SendMessage();
 
     outMess.setChatId(chatID.toString());
-    if (command.equals("/add")) {
+    if (command.equals("/AddStock")) {
       if (!nameOfcompanyIsSentByUser) {
         nameOfCompany = textOfMessage;
         if (parserStocks.existsCompany(nameOfCompany)) {
@@ -105,7 +117,7 @@ public class CommandHandler {
           outMess.setText("Такой фирме на рынке нет или вы давно"
               + " не смотрели текущую ситуацию на бирже. "
               + "Выберите другую компанию "
-              + "или нажмите \"/show\" и попробуйте еще раз");
+              + "или нажмите \"/StockPrices\" и попробуйте еще раз");
           return;
         }
 
@@ -132,8 +144,8 @@ public class CommandHandler {
     return false;
   }
 
-  private final String[] commandslist = new String[]{"/add", "/start",
-      "/help", "/show", "/statistic"};
+  private final String[] commandslist = new String[]{"/AddStock", "/start",
+      "/help", "/StockPrices", "/Statistic"};
 
   private static int castDateToInt(String data) {
     char[] charData = data.toCharArray();

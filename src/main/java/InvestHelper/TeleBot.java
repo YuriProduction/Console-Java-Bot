@@ -9,6 +9,7 @@ import InvestHelper.CommandHandler;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -37,8 +38,14 @@ public class TeleBot extends TelegramLongPollingBot {
       outMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outMess);
       if (commandHandler.isStillExecutable()) {
-        outMess.setText(commandHandler.stillExecutableMethodForQuotesReturn());
-        execute(outMess);
+        if (!command.equals("/AddStock")) {
+          outMess.setText(commandHandler.stillExecutableMethodForQuotesReturn());
+          execute(outMess);
+        } else {
+          //считывает акции, чтобы пользователь мог добавить даже без просмотра
+          commandHandler.parseStocks();
+        }
+
       }
     } catch (Exception e) {
       //тут просто дописать какой ex выкинуть
@@ -55,8 +62,8 @@ public class TeleBot extends TelegramLongPollingBot {
       commandHandler.doCommandLogic(command, textOfMessage, chatId, tempClient);
       SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outPutMess);
-    } catch (Exception ignored) {
-
+    } catch (Exception ex) {
+        ex.printStackTrace();
     }
 
   }
@@ -81,6 +88,7 @@ public class TeleBot extends TelegramLongPollingBot {
   private void mainLogic(String textOfMessage, long chatId) {
     botHoldingBase.registateClient(String.valueOf(chatId));
     tempClient = botHoldingBase.signIN(String.valueOf(chatId));
+    tempClient.setDate(new Date().toString());
     out.println("Дата у клиента: " + tempClient.getDate());
     CommandHandler commandHandler1 = new CommandHandler();
     if (commandHandler1.isCommand(textOfMessage)) {
@@ -96,6 +104,8 @@ public class TeleBot extends TelegramLongPollingBot {
       return;
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
+    if (command == null)
+      command = "Default command";
     try {
       doCommandLogic(command, textOfMessage, chatId);
     } catch (TelegramApiException e) {

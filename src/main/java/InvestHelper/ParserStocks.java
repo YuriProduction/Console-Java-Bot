@@ -56,11 +56,15 @@ public class ParserStocks {
       System.out.println(fullInfoAboutCompany);
       String company = fullInfoAboutCompanyArray[1];
       if (company.equals("ГМК") || company.equals("МРСК"))
-        //есть разные названия
-        company +=" " + fullInfoAboutCompanyArray[2];
+      //есть разные названия
+      {
+        company += " " + fullInfoAboutCompanyArray[2];
+      }
       if (quotes.containsKey(company))
-        //значит доп.название какое-то
-        company +=" " + fullInfoAboutCompanyArray[2];
+      //значит доп.название какое-то
+      {
+        company += " " + fullInfoAboutCompanyArray[2];
+      }
       String lastPriceOfActions = fullInfoAboutCompanyArray[5];
       String growth = fullInfoAboutCompanyArray[7];
       char sign = growth.charAt(0);
