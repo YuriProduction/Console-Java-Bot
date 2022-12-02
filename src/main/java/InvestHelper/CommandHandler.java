@@ -73,12 +73,9 @@ public class CommandHandler {
       stillExecutable = true;
     } else if (command.equals("/Statistic")) {
       parserStocks.parseQuotesData();
-      String startMes = "Перед каждым выводом "
-          + "статистики рекомендуем вводить команду \"/StockPrices\", "
-          + "чтобы данные были наиболее актуальными!\n\n";
       String stat = statisticComputer.computeStatistics(tempClient.getInvestmentPortfolio(),
           parserStocks.getQuotes());
-      outMess.setText(startMes + stat);
+      outMess.setText(stat);
 
     } else {
       outMess.setText("Сообщение не распознано");

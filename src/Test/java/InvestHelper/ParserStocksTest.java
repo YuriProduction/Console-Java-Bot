@@ -59,7 +59,7 @@ class ParserStocksTest {
         + "МРСК Центр--->0.2908 \uD83D\uDCC9\n"
         + "МРСК Ур--->0.1748 \uD83D\uDCC8\n"
         + "МРСК СЗ--->0.0256 \uD83D\uDCC9\n");
-    Assertions.assertEquals(test ,ourStocks.getTextForUserAboutQuotes());
+    Assertions.assertEquals(test.toString() ,ourStocks.getTextForUserAboutQuotes().toString());
   }
 
 }

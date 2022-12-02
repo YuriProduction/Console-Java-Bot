@@ -63,7 +63,7 @@ public class TeleBot extends TelegramLongPollingBot {
       SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outPutMess);
     } catch (Exception ex) {
-        ex.printStackTrace();
+      ex.printStackTrace();
     }
 
   }
@@ -104,8 +104,9 @@ public class TeleBot extends TelegramLongPollingBot {
       return;
     }
     String command = currentCommand.get(true);//смотрим, какая команда используется
-    if (command == null)
+    if (command == null) {
       command = "Default command";
+    }
     try {
       doCommandLogic(command, textOfMessage, chatId);
     } catch (TelegramApiException e) {
