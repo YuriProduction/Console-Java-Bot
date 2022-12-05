@@ -14,7 +14,6 @@ public class ParserStocks {
 
   public boolean existsCompany(String company) {
     if (quotes.containsKey(company)) {
-      System.out.println(quotes);
       return true;
     }
     return false;
@@ -53,9 +52,8 @@ public class ParserStocks {
     for (Element item : table) {
       String fullInfoAboutCompany = item.select("td").text();
       String[] fullInfoAboutCompanyArray = fullInfoAboutCompany.split(" ");
-      System.out.println(fullInfoAboutCompany);
       String company = fullInfoAboutCompanyArray[1];
-      if (company.equals("ГМК") || company.equals("МРСК"))
+      if (company.equals("ГМК") || company.equals("МРСК")|| company.equals("ПИК"))
       //есть разные названия
       {
         company += " " + fullInfoAboutCompanyArray[2];

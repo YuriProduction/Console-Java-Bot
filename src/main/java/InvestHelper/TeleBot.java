@@ -60,7 +60,8 @@ public class TeleBot extends TelegramLongPollingBot {
 
     try {
       commandHandler.doCommandLogic(command, textOfMessage, chatId, tempClient);
-      SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно
+      SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно\
+      out.println("Out message is " + outMess.toString());
       execute(outPutMess);
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -87,9 +88,9 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private void mainLogic(String textOfMessage, long chatId) {
     botHoldingBase.registateClient(String.valueOf(chatId));
+    //объявить локальную переменную Client
     tempClient = botHoldingBase.signIN(String.valueOf(chatId));
     tempClient.setDate(new Date().toString());
-    out.println("Дата у клиента: " + tempClient.getDate());
     CommandHandler commandHandler1 = new CommandHandler();
     if (commandHandler1.isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
@@ -135,7 +136,6 @@ public class TeleBot extends TelegramLongPollingBot {
       var user = msg.getFrom();
       long chatId = msg.getChatId();
       out.println(user.getUserName());
-      out.println(chatId);
       String userUniqNick = user.getUserName();
       mainLogic(textOfMessage, chatId);
     }

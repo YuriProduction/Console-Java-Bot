@@ -1,5 +1,6 @@
 package InvestHelper;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,17 +30,13 @@ public class Client {
   }
 
 
+  public void addStockToInvestPortfolioForJsonReading(String nameOfCompany, int countOfStock, double stockPrice) {
+      UserStock userStock = new UserStock(stockPrice, countOfStock);
+      investmentPortfolio.put(nameOfCompany, userStock);
+  }
   public void addStockToInvestPortfolio(String nameOfCompany, int countOfStock, double stockPrice) {
-    if (!investmentPortfolio.containsKey(nameOfCompany)) {
-      UserStock userStock = new UserStock(stockPrice, countOfStock);
-      investmentPortfolio.put(nameOfCompany, userStock);
-    } else {
-      //увеличиваем число акций
-      int prevCount = investmentPortfolio.get(nameOfCompany).getCountStocks();
-      countOfStock += prevCount;
-      UserStock userStock = new UserStock(stockPrice, countOfStock);
-      investmentPortfolio.put(nameOfCompany, userStock);
-    }
+    UserStock userStock = new UserStock(stockPrice, countOfStock);
+    investmentPortfolio.put(nameOfCompany + "_" + new Date().toString(), userStock);
   }
 
   public HashMap<String, UserStock> mapForJSON()//нужно для запси в json-базу

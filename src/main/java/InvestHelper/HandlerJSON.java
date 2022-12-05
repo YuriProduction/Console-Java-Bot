@@ -38,7 +38,7 @@ public class HandlerJSON {
           String company = (String) map1.get("Company");
           double priceOneStock = (Double) map1.get("PriceOneStock");
           long countOfStocks = (Long) map1.get("Count");
-          tempClient.addStockToInvestPortfolio(company, (int) countOfStocks, priceOneStock);
+          tempClient.addStockToInvestPortfolioForJsonReading(company, (int) countOfStocks, priceOneStock);
         }
 
         if (!base.containsKey(userID)) {//если первый раз считываем или записали нового

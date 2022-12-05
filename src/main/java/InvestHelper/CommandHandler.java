@@ -43,7 +43,6 @@ public class CommandHandler {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     if (Math.abs(castDateToInt(tempClient.getDate()) - castDateToInt(new Date().toString())) >= 1) {
-      out.println("Date " + tempClient.getDate());
       outMess.setText("Привет! Ты не заходил в бота больше одного дня, "
           + "перед использованием посмотри, что произошло на бирже!"
           + "Для этого введи команду \"/StockPrices\"");
@@ -75,6 +74,7 @@ public class CommandHandler {
       parserStocks.parseQuotesData();
       String stat = statisticComputer.computeStatistics(tempClient.getInvestmentPortfolio(),
           parserStocks.getQuotes());
+      StringBuilder stringBuilder = parserStocks.getTextForUserAboutQuotes();
       outMess.setText(stat);
 
     } else {
@@ -126,6 +126,7 @@ public class CommandHandler {
             parserStocks.getPriceOfStock(nameOfCompany));
         nameOfcompanyIsSentByUser = false;
         currentCommand.put(true, "Default command");//ставим дефолтную команду
+        outMess.setText("Акции успешно добавлены!");
       }
     } else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
       outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");

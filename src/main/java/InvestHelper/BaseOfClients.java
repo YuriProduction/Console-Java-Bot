@@ -13,7 +13,6 @@ public class BaseOfClients { //implements Bootable,ReadAndWrite
 
   public void registateClient(String userID) {
     if (!base.containsKey(userID)) {
-      System.out.println("Чела нет в базе");
       base.put(userID,
           new Client());//ЕСЛИ СОДЕРЖИТ - ТО НИЧЕ НЕ ДЕЛАЕМ, ТАК КАК ОН СПОКОЙНО ВОЙДЕТ В СИСТЕМУ
     }
