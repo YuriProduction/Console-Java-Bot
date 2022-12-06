@@ -1,5 +1,6 @@
-package InvestHelper;
+package TestClasses;
 
+import InvestHelper.UserStock;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -8,26 +9,29 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-public class HandlerJSON {
+public class JsonClass {
 
   //Управляет считыванием и обновлением JSON-базы
 
-  public void readBase(Map<String, Client> base) {
+  public String readBase(Map<String, ClientClass> base, String path) {
+    String input = "";
     try (FileReader fileReader = new FileReader(
-        "text.json")) {
-      Path file = Paths.get("text.json");
-      String input = Files.readString(file);
+        path)) {
+      Path file = Paths.get(path);
+      input = Files.readString(file);
       System.out.println(input);
-      Client tempClient = new Client();//новый клиент в словарь
+
+      ClientClass tempClient = new ClientClass();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
       JSONArray jsonArray = (JSONArray) jsonObject.get("Base");
 
       for (Object item : jsonArray) {
-        tempClient = new Client();
+        tempClient = new ClientClass();
         JSONObject map = (JSONObject) item;
         String userID = (String) map.get("ID");
         String date = (String) map.get("Date");
@@ -38,7 +42,7 @@ public class HandlerJSON {
           String company = (String) map1.get("Company");
           double priceOneStock = (Double) map1.get("PriceOneStock");
           long countOfStocks = (Long) map1.get("Count");
-          tempClient.addStockToInvestPortfolioForJsonReading(company, (int) countOfStocks, priceOneStock);
+          tempClient.addStockToInvestPortfolio(company, (int) countOfStocks, priceOneStock);
         }
 
         if (!base.containsKey(userID)) {//если первый раз считываем или записали нового
@@ -50,18 +54,19 @@ public class HandlerJSON {
         Exception ex) {
       ex.printStackTrace();
     }
+    return input;
   }
 
 
-  public void updateBase(Map<String, Client> base) {
+  public void updateBase(Map<String, ClientClass> base, String path) {
     try (FileWriter file = new FileWriter(
-        "text.json")) {
+        path)) {
 
       JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();
-      Client tempClient = new Client();
+      ClientClass tempClient = new ClientClass();
       HashMap<String, UserStock> tempStockBase;
-      for (Map.Entry<String, Client> entry : base.entrySet()) {
+      for (Entry<String, ClientClass> entry : base.entrySet()) {
         JSONObject obj = new JSONObject();
         String userID = entry.getKey();
         tempClient = entry.getValue();

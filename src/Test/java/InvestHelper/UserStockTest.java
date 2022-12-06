@@ -13,7 +13,7 @@ class UserStockTest {
   @BeforeEach
   public void prepareData() {
 
-    ourStock = new UserStock(0, 0);
+    ourStock = new UserStock(0.0, 0);
   }
 
   @ParameterizedTest
