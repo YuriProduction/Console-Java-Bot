@@ -22,7 +22,7 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private final BaseOfClients botHoldingBase = new BaseOfClients();
   private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
-  private Client tempClient = new Client();
+  //private Client tempClient = new Client();
   private CommandHandler commandHandler = new CommandHandler();
 
   private void fixUsingCommand(String argum) {
@@ -34,7 +34,8 @@ public class TeleBot extends TelegramLongPollingBot {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     try {
-      commandHandler.handleFirstTextOfCommand(command, chatID, tempClient);
+      //commandHandler.handleFirstTextOfCommand(command, chatID, tempClient);
+      commandHandler.handleFirstTextOfCommand(command, chatID, botHoldingBase.signIN(String.valueOf(chatID)));
       outMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outMess);
       if (commandHandler.isStillExecutable()) {
@@ -59,14 +60,14 @@ public class TeleBot extends TelegramLongPollingBot {
     outMess.setChatId(chatId.toString());
 
     try {
-      commandHandler.doCommandLogic(command, textOfMessage, chatId, tempClient);
+      //commandHandler.doCommandLogic(command, textOfMessage, chatId, tempClient);
+      commandHandler.doCommandLogic(command, textOfMessage, chatId, botHoldingBase.signIN(String.valueOf(chatId)));
       SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно\
       out.println("Out message is " + outMess.toString());
       execute(outPutMess);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
-
   }
 
   @Override
@@ -89,8 +90,8 @@ public class TeleBot extends TelegramLongPollingBot {
   private void mainLogic(String textOfMessage, long chatId) {
     botHoldingBase.registateClient(String.valueOf(chatId));
     //объявить локальную переменную Client
-    tempClient = botHoldingBase.signIN(String.valueOf(chatId));
-    tempClient.setDate(new Date().toString());
+    //tempClient = botHoldingBase.signIN(String.valueOf(chatId));
+    //tempClient.setDate(new Date().toString());
     CommandHandler commandHandler1 = new CommandHandler();
     if (commandHandler1.isCommand(textOfMessage)) {
       fixUsingCommand(textOfMessage);
