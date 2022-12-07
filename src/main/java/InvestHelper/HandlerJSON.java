@@ -19,8 +19,8 @@ public class HandlerJSON {
   public String readBase(Map<String, Client> base, String path) {
     String input = "";
     try (FileReader fileReader = new FileReader(
-        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
-      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
+        path)) {
+      Path file = Paths.get(path);
       input = Files.readString(file);
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
@@ -47,7 +47,6 @@ public class HandlerJSON {
           base.put(userID, tempClient);
         }
       }
-
     } catch (
         Exception ex) {
       ex.printStackTrace();
@@ -58,7 +57,7 @@ public class HandlerJSON {
 
   public void updateBase(Map<String, Client> base, String path) {
     try (FileWriter file = new FileWriter(
-        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
+        path)) {
 
       JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();

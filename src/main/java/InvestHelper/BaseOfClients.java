@@ -31,5 +31,4 @@ public class BaseOfClients { //implements Bootable,ReadAndWrite
     String path = "C:\\Учеба ООП\\Console-Java-Bot\\text.json";
     handlerJSON.updateBase(base, path);
   }
-
 }

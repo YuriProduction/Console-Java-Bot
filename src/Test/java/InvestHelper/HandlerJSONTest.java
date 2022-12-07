@@ -37,8 +37,6 @@ class HandlerJSONTest {
     String expected = "{\"Base\":[{\"Stocks\":[{\"Company\":\""+nameForJson+"\",\"PriceOneStock\":"+price+",\"Count\":"+count+"}],\"ID\":\""+userId+"\",\"Date\":\""+new Date()+"\"}]}";
     String actual = handlerJSON.readBase(base, path);
     Assertions.assertEquals(expected, actual);
-
-
   }
 
 }
