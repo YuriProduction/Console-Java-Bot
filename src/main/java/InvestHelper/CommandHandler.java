@@ -108,6 +108,7 @@ public class CommandHandler {
     if (command.equals("/AddStock")) {
       if (!nameOfcompanyIsSentByUser) {
         nameOfCompany = textOfMessage;
+        out.println("Название компании: " + nameOfCompany);
         if (parserStocks.existsCompany(nameOfCompany)) {
           outMess.setText("Введите количество акций, которое вы желаете приобрести");
         } else {
@@ -132,7 +133,6 @@ public class CommandHandler {
       outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
     }
   }
-
   public boolean isCommand(String argum) {
     for (String x : commandslist) {
       if (argum.equals(x)) {

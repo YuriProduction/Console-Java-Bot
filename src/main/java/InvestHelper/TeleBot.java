@@ -21,21 +21,21 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class TeleBot extends TelegramLongPollingBot {
 
   private final BaseOfClients botHoldingBase = new BaseOfClients();
-  private Map<Boolean, String> currentCommand = new HashMap<Boolean, String>();
-  //private Client tempClient = new Client();
-  private CommandHandler commandHandler = new CommandHandler();
 
-  private void fixUsingCommand(String argum) {
-    currentCommand.put(true, argum);
-  }
+  //Менеджер потоков следит, чтобы каждому потоку выделялся свой обработчик команд
+  private final Map<String, CommandHandler> managerOfThreads = new HashMap<>();
+
+  private final Map<String, String> managerOfThreadCommands = new HashMap<>();
 
   private void sendFirstTextOfCommand(String command, Long chatID)
       throws TelegramApiException, IOException {
     SendMessage outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
     try {
-      //commandHandler.handleFirstTextOfCommand(command, chatID, tempClient);
-      commandHandler.handleFirstTextOfCommand(command, chatID, botHoldingBase.signIN(String.valueOf(chatID)));
+      CommandHandler commandHandler;
+      commandHandler = managerOfThreads.get(String.valueOf(chatID));
+      commandHandler.handleFirstTextOfCommand(command, chatID,
+          botHoldingBase.signIN(String.valueOf(chatID)));
       outMess = commandHandler.getOutMess();//Переименуешь тут как нужно
       execute(outMess);
       if (commandHandler.isStillExecutable()) {
@@ -56,14 +56,12 @@ public class TeleBot extends TelegramLongPollingBot {
 
   private void doCommandLogic(String command, String textOfMessage, Long chatId)
       throws TelegramApiException {
-    SendMessage outMess = new SendMessage();
-    outMess.setChatId(chatId.toString());
-
     try {
+      CommandHandler commandHandler = managerOfThreads.get(String.valueOf(chatId));
       //commandHandler.doCommandLogic(command, textOfMessage, chatId, tempClient);
-      commandHandler.doCommandLogic(command, textOfMessage, chatId, botHoldingBase.signIN(String.valueOf(chatId)));
+      commandHandler.doCommandLogic(command, textOfMessage, chatId,
+          botHoldingBase.signIN(String.valueOf(chatId)));
       SendMessage outPutMess = commandHandler.getOutMess();//Переименуешь тут как нужно\
-      out.println("Out message is " + outMess.toString());
       execute(outPutMess);
     } catch (Exception ex) {
       ex.printStackTrace();
@@ -88,13 +86,15 @@ public class TeleBot extends TelegramLongPollingBot {
   }
 
   private void mainLogic(String textOfMessage, long chatId) {
+    String defaultCommand = new String("Default command");
     botHoldingBase.registateClient(String.valueOf(chatId));
-    //объявить локальную переменную Client
-    //tempClient = botHoldingBase.signIN(String.valueOf(chatId));
-    //tempClient.setDate(new Date().toString());
-    CommandHandler commandHandler1 = new CommandHandler();
+    //если уже содержит, то у него уже есть обработчик
+    if (!managerOfThreadCommands.containsKey(String.valueOf(chatId)))
+      managerOfThreads.put(String.valueOf(chatId), new CommandHandler());
+    CommandHandler commandHandler1;
+    commandHandler1 = managerOfThreads.get(String.valueOf(chatId));
     if (commandHandler1.isCommand(textOfMessage)) {
-      fixUsingCommand(textOfMessage);
+      managerOfThreadCommands.put(String.valueOf(chatId), textOfMessage);
       try {
         sendFirstTextOfCommand(textOfMessage,
             chatId); //отправляем первое сообщение и завершаем логику
@@ -103,14 +103,11 @@ public class TeleBot extends TelegramLongPollingBot {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
+      //!//
       return;
     }
-    String command = currentCommand.get(true);//смотрим, какая команда используется
-    if (command == null) {
-      command = "Default command";
-    }
     try {
-      doCommandLogic(command, textOfMessage, chatId);
+      doCommandLogic(managerOfThreadCommands.get(String.valueOf(chatId)), textOfMessage, chatId);
     } catch (TelegramApiException e) {
       throw new RuntimeException(e);
     }
@@ -128,7 +125,6 @@ public class TeleBot extends TelegramLongPollingBot {
         textOfMessage = update.getCallbackQuery().getData();
         var user = update.getCallbackQuery().getFrom();
         long chatId = update.getCallbackQuery().getMessage().getChatId();
-        String userUniqNick = user.getUserName();
         mainLogic(textOfMessage, chatId);
       }
     } else {
@@ -137,7 +133,6 @@ public class TeleBot extends TelegramLongPollingBot {
       var user = msg.getFrom();
       long chatId = msg.getChatId();
       out.println(user.getUserName());
-      String userUniqNick = user.getUserName();
       mainLogic(textOfMessage, chatId);
     }
     botHoldingBase.updateToJSONBase();
