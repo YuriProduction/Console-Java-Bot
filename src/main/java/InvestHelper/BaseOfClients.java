@@ -27,7 +27,6 @@ public class BaseOfClients { //implements Bootable,ReadAndWrite
   }
 
   public void updateToJSONBase() {
-
     handlerJSON.updateBase(base);
   }
 
