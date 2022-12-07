@@ -25,6 +25,7 @@ public class TeleBot extends TelegramLongPollingBot {
   //Менеджер потоков следит, чтобы каждому потоку выделялся свой обработчик команд
   private final Map<String, CommandHandler> managerOfThreads = new HashMap<>();
 
+  //Менеджер команд у пользователя
   private final Map<String, String> managerOfThreadCommands = new HashMap<>();
 
   private void sendFirstTextOfCommand(String command, Long chatID)
@@ -33,6 +34,7 @@ public class TeleBot extends TelegramLongPollingBot {
     outMess.setChatId(chatID.toString());
     try {
       CommandHandler commandHandler;
+      //выбираем конкретного клиента
       commandHandler = managerOfThreads.get(String.valueOf(chatID));
       commandHandler.handleFirstTextOfCommand(command, chatID,
           botHoldingBase.signIN(String.valueOf(chatID)));

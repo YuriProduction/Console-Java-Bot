@@ -1,9 +1,8 @@
 package InvestHelper;
 
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class StatisticComputer {
 
@@ -21,9 +20,9 @@ public class StatisticComputer {
     System.out.println("Текущие котировки: " + currentStatusOfStockMarket);
     double commonProfitFromCompany = 0.0;
     DecimalFormat df = new DecimalFormat("#.###");
-    df.setRoundingMode(RoundingMode.CEILING);
+    //df.setRoundingMode(RoundingMode.CEILING);
     for
-    (Map.Entry<String, UserStock> entry : clientInvestPortfolio.entrySet()) {
+    (Entry<String, UserStock> entry : clientInvestPortfolio.entrySet()) {
       String company = entry.getKey();
       //Чтобы сверил, есть ли такая на рынке
       String companyMarketName = company.split("_")[0];
@@ -36,6 +35,7 @@ public class StatisticComputer {
       }
       Double currentMarketPriceOfOneStock = currentStatusOfStockMarket.get(companyMarketName);
       Double del = currentMarketPriceOfOneStock - priceOfClientOneStock;
+
       if (del > 0) {
         sign = "\uD83D\uDD3A";
       } else {
@@ -47,6 +47,8 @@ public class StatisticComputer {
           " 3) " + df.format(commonProfitFromCompany) + "руб\n";
       totalProfit += commonProfitFromCompany;
     }
+
+
     statToUser += "Общий доход активов: " + df.format(totalProfit);
     return statToUser;
   }

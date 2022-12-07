@@ -16,11 +16,12 @@ public class HandlerJSON {
 
   //Управляет считыванием и обновлением JSON-базы
 
-  public void readBase(Map<String, Client> base) {
+  public String readBase(Map<String, Client> base, String path) {
+    String input = "";
     try (FileReader fileReader = new FileReader(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
-      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
-      String input = Files.readString(file);
+        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
+      Path file = Paths.get("C:\\Учеба ООП\\Console-Java-Bot\\text.json");
+      input = Files.readString(file);
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
@@ -38,7 +39,8 @@ public class HandlerJSON {
           String company = (String) map1.get("Company");
           double priceOneStock = (Double) map1.get("PriceOneStock");
           long countOfStocks = (Long) map1.get("Count");
-          tempClient.addStockToInvestPortfolioForJsonReading(company, (int) countOfStocks, priceOneStock);
+          tempClient.addStockToInvestPortfolioForJsonReading(company, (int) countOfStocks,
+              priceOneStock);
         }
 
         if (!base.containsKey(userID)) {//если первый раз считываем или записали нового
@@ -50,12 +52,13 @@ public class HandlerJSON {
         Exception ex) {
       ex.printStackTrace();
     }
+    return input;
   }
 
 
-  public void updateBase(Map<String, Client> base) {
+  public void updateBase(Map<String, Client> base, String path) {
     try (FileWriter file = new FileWriter(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
+        "C:\\Учеба ООП\\Console-Java-Bot\\text.json")) {
 
       JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();
