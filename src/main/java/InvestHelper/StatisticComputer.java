@@ -11,13 +11,14 @@ public class StatisticComputer {
       final
       Map<String, Double> currentStatusOfStockMarket) {
     String statToUser = "\n1) - Название компании\n"
-        + "2) - Разница между текущей стоиомостью одной акции комании и "
+        + "2) - Количество акций\n"
+        + "3) - Разница между текущей стоиомостью одной акции комании и "
         + "стоимостью, по которой покупали вы\n"
-        + "3) Общие показатели акции с учетом количества\n\n";
+        + "4) Общие показатели акции с учетом количества\n\n";
     Double totalProfit = 0.0;
     String sign = "";
-    System.out.println("Клиентская база: " + clientInvestPortfolio);
-    System.out.println("Текущие котировки: " + currentStatusOfStockMarket);
+//    System.out.println("Клиентская база: " + clientInvestPortfolio);
+//    System.out.println("Текущие котировки: " + currentStatusOfStockMarket);
     double commonProfitFromCompany = 0.0;
     DecimalFormat df = new DecimalFormat("#.###");
     //df.setRoundingMode(RoundingMode.CEILING);
@@ -42,14 +43,13 @@ public class StatisticComputer {
         sign = "\uD83D\uDD3B";
       }
       commonProfitFromCompany = del*countOfStocks;
-      statToUser += "1)" + new StringFormater().format(company) + " 2) " +
+      statToUser += "1)" + new StringFormater().format(company) + "\n2) " + countOfStocks + ""
+          + " акций " + "\n3) " +
           df.format(del)+"руб "+sign +
-          " 3) " + df.format(commonProfitFromCompany) + "руб\n";
+          "\n4) " + df.format(commonProfitFromCompany) + "руб\n\n\n";
       totalProfit += commonProfitFromCompany;
     }
-
-
-    statToUser += "Общий доход активов: " + df.format(totalProfit);
+    statToUser += "Общий прирост доходов от акций : " + df.format(totalProfit) + "\n\n\n";
     return statToUser;
   }
 

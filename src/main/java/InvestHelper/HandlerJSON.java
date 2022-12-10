@@ -32,6 +32,10 @@ public class HandlerJSON {
         String userID = (String) map.get("ID");
         String date = (String) map.get("Date");
         tempClient.setDate(date);
+        int totalINCOME = (int)(long)(map.get("totalINCOME"));
+        int totalEXPENSES = (int)(long)(map.get("totalEXPENSES"));
+        tempClient.setTotalEXPENSES(totalEXPENSES);
+        tempClient.setTotalINCOME(totalINCOME);
         JSONArray jsonArray1 = (JSONArray) map.get("Stocks");
         for (Object item1 : jsonArray1) {
           JSONObject map1 = (JSONObject) item1;
@@ -68,6 +72,8 @@ public class HandlerJSON {
         tempStockBase = tempClient.mapForJSON();
         obj.put("ID", userID);
         obj.put("Date", new Date().toString());
+        obj.put("totalINCOME",tempClient.getTotalINCOME());
+        obj.put("totalEXPENSES",tempClient.getTotalEXPENSES());
         JSONArray stocks = new JSONArray();
         for (Map.Entry<String, UserStock> entry1 : tempStockBase.entrySet()) {
           JSONObject obj1 = new JSONObject();

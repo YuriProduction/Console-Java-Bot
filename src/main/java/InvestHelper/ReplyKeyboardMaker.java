@@ -28,10 +28,13 @@ public class ReplyKeyboardMaker {
     KeyboardRow keyboardBriefcaseRow = new KeyboardRow();
     keyboardBriefcaseRow.add(new KeyboardButton("/Statistic"));// кнопка просмотра портфеля
     keyboardStartRows.add(keyboardStartRow);// добавил кнопки в листы
+    KeyboardRow keyboardSellRow = new KeyboardRow();
+    keyboardSellRow.add(new KeyboardButton("/Sell"));
     keyboardInfoRows.add(keyboardInfoRow);
     keyboardCaseRows.add(keyboardAddRow);
     keyboardCaseRows.add(keyboardShowcaseRow);
     keyboardCaseRows.add(keyboardBriefcaseRow);
+    keyboardCaseRows.add(keyboardSellRow);
 
     if (command
         == null) { // eсли бот начал свою работу, т.е. пользователь не ввел еще не какую команду

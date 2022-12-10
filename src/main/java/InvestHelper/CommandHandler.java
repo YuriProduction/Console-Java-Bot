@@ -62,11 +62,13 @@ public class CommandHandler {
               "1)Введите \"/StockPrices\" чтобы посмотреть цены всех акций на фондовой бирже\n" +
               "2)Введите \"/AddStock\" чтобы добавить конкретную акцию\n" +
               "3)Введите \"/help\" чтобы получить помощь\n" +
-              "4)Введите \"/Statistic\" чтобы получить статистику по текущим инвестицям\n"
+              "4)Введите \"/Statistic\" чтобы получить статистику по текущим инвестицям\n" +
+              "5)Введите \"/Sell\" чтобы продать акции конкретной компании\n"
       );
     } else if (command.equals("/AddStock")) {
       outMess.setText("Введите команию, акции которой вы хотите приобрести");
       stillExecutable = true;
+      nameOfcompanyIsSentByUser = false;
     } else if (command.equals("/StockPrices")) {
       outMess.setText("Начинаем загрузку данных с биржи...Немного подождите");
       stillExecutable = true;
@@ -74,9 +76,18 @@ public class CommandHandler {
       parserStocks.parseQuotesData();
       String stat = statisticComputer.computeStatistics(tempClient.getInvestmentPortfolio(),
           parserStocks.getQuotes());
+      stat += "\nПотрачено за весь период: " + tempClient.getTotalEXPENSES() + "руб\n";
+      stat += "Выручено за весь перод: " + tempClient.getTotalINCOME() + "руб\n";
+      stat += "Прибыль: " + (tempClient.getTotalINCOME() - tempClient.getTotalEXPENSES()) + "руб";
       StringBuilder stringBuilder = parserStocks.getTextForUserAboutQuotes();
       outMess.setText(stat);
 
+    } else if (command.equals("/Sell")) {
+      nameOfcompanyIsSentByUser = false;
+      outMess.setText("Введите данные о компании, акции которой хотите продать.\n"
+          + "Обратите внимание, что нужно ввести данные в том формате"
+          + ", в котором бот выводил вам статистику (Пункт 1))");
+      parserStocks.parseQuotesData();
     } else {
       outMess.setText("Сообщение не распознано");
     }
@@ -101,6 +112,7 @@ public class CommandHandler {
 
   private String nameOfCompany = "Error company";
 
+
   public void doCommandLogic(String command, String textOfMessage, Long chatID, Client tempClient) {
     this.outMess = new SendMessage();
 
@@ -121,7 +133,6 @@ public class CommandHandler {
 
         nameOfcompanyIsSentByUser = true;
       } else {
-
         int countOfStocks = Integer.parseInt(textOfMessage);
         tempClient.addStockToInvestPortfolio(nameOfCompany, countOfStocks,
             parserStocks.getPriceOfStock(nameOfCompany));
@@ -129,10 +140,37 @@ public class CommandHandler {
         currentCommand.put(true, "Default command");//ставим дефолтную команду
         outMess.setText("Акции успешно добавлены!");
       }
-    } else {//(Default command,/help,/start) //если команды выполнены, а пользователь что-то пишет
+    } else if (command.equals("/Sell")) {
+      if (!nameOfcompanyIsSentByUser) {
+        nameOfCompany = textOfMessage;
+        out.println("Название компании: " + nameOfCompany);
+        if (tempClient.haveSuchCompany(nameOfCompany)) {
+          outMess.setText("Введите количество акций, которое вы желаете продать");
+        } else {
+          outMess.setText("Такой фирме нет в вашем инвестиционном портфеле!");
+          return;
+        }
+
+        nameOfcompanyIsSentByUser = true;
+      } else {
+        int countOfStocks = Integer.parseInt(textOfMessage);
+        if (!tempClient.correctCountOfActions(nameOfCompany,countOfStocks))
+        {
+          outMess.setText("У вас нет столько акций! Введите число поменьше!");
+        }
+        else {
+          String comp = nameOfCompany.split("_")[0];
+          tempClient.sellStocks(nameOfCompany,countOfStocks,parserStocks.getPriceOfStock(comp));
+          outMess.setText("Акции успешно проданы!");
+        }
+
+      }
+    } else {//(Default command,/help,/s tart) //если команды выполнены, а пользователь что-то пишет
       outMess.setText("Вся логика выполнена. Команды перед вами. Делайте что хотите");
     }
+
   }
+
   public boolean isCommand(String argum) {
     for (String x : commandslist) {
       if (argum.equals(x)) {
@@ -143,7 +181,7 @@ public class CommandHandler {
   }
 
   private final String[] commandslist = new String[]{"/AddStock", "/start",
-      "/help", "/StockPrices", "/Statistic"};
+      "/help", "/StockPrices", "/Statistic", "/Sell"};
 
   private static int castDateToInt(String data) {
     char[] charData = data.toCharArray();
