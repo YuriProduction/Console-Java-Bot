@@ -11,10 +11,12 @@ public class StatisticComputer {
       final
       Map<String, Double> currentStatusOfStockMarket) {
     String statToUser = "\n1) - Название компании\n"
-        + "2) - Количество акций\n"
-        + "3) - Разница между текущей стоиомостью одной акции комании и "
+        + "2) - Цена покупки\n"
+        + "3) - Текущая цена\n"
+        + "4) - Разница между текущей стоиомостью одной акции комании и "
         + "стоимостью, по которой покупали вы\n"
-        + "4) Общие показатели акции с учетом количества\n\n";
+        + "5 - Общие показатели акции с учетом количества\n"
+        + "6) - Количество акций \n\n";
     Double totalProfit = 0.0;
     String sign = "";
 //    System.out.println("Клиентская база: " + clientInvestPortfolio);
@@ -42,11 +44,16 @@ public class StatisticComputer {
       } else {
         sign = "\uD83D\uDD3B";
       }
-      commonProfitFromCompany = del*countOfStocks;
-      statToUser += "1)" + new StringFormater().format(company) + "\n2) " + countOfStocks + ""
-          + " акций " + "\n3) " +
-          df.format(del)+"руб "+sign +
-          "\n4) " + df.format(commonProfitFromCompany) + "руб\n\n\n";
+      commonProfitFromCompany = del * countOfStocks;
+      statToUser += "1)" + new StringFormater().format(company)
+          + "\n2) " + priceOfClientOneStock
+          + "\n3) " + currentMarketPriceOfOneStock
+          + "\n4) " +
+          df.format(del) + "руб " + sign
+          +
+          "\n5) " + df.format(commonProfitFromCompany) + "руб" + sign +
+          "\n6) " + countOfStocks + ""
+          + " акций\n\n\n";
       totalProfit += commonProfitFromCompany;
     }
     statToUser += "Общий прирост доходов от акций : " + df.format(totalProfit) + "\n\n\n";

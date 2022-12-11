@@ -32,8 +32,8 @@ public class HandlerJSON {
         String userID = (String) map.get("ID");
         String date = (String) map.get("Date");
         tempClient.setDate(date);
-        int totalINCOME = (int)(long)(map.get("totalINCOME"));
-        int totalEXPENSES = (int)(long)(map.get("totalEXPENSES"));
+        long totalINCOME = (long) (map.get("totalINCOME"));
+        long totalEXPENSES = (long) (map.get("totalEXPENSES"));
         tempClient.setTotalEXPENSES(totalEXPENSES);
         tempClient.setTotalINCOME(totalINCOME);
         JSONArray jsonArray1 = (JSONArray) map.get("Stocks");
@@ -42,7 +42,8 @@ public class HandlerJSON {
           String company = (String) map1.get("Company");
           double priceOneStock = (Double) map1.get("PriceOneStock");
           long countOfStocks = (Long) map1.get("Count");
-          tempClient.addStockToInvestPortfolioForJsonReading(company, (int) countOfStocks, priceOneStock);
+          tempClient.addStockToInvestPortfolioForJsonReading(company, (int) countOfStocks,
+              priceOneStock);
         }
 
         if (!base.containsKey(userID)) {//если первый раз считываем или записали нового
@@ -72,8 +73,8 @@ public class HandlerJSON {
         tempStockBase = tempClient.mapForJSON();
         obj.put("ID", userID);
         obj.put("Date", new Date().toString());
-        obj.put("totalINCOME",tempClient.getTotalINCOME());
-        obj.put("totalEXPENSES",tempClient.getTotalEXPENSES());
+        obj.put("totalINCOME", tempClient.getTotalINCOME());
+        obj.put("totalEXPENSES", tempClient.getTotalEXPENSES());
         JSONArray stocks = new JSONArray();
         for (Map.Entry<String, UserStock> entry1 : tempStockBase.entrySet()) {
           JSONObject obj1 = new JSONObject();

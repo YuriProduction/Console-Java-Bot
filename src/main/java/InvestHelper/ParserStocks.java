@@ -53,7 +53,9 @@ public class ParserStocks {
       String fullInfoAboutCompany = item.select("td").text();
       String[] fullInfoAboutCompanyArray = fullInfoAboutCompany.split(" ");
       String company = fullInfoAboutCompanyArray[1];
-      if (company.equals("ГМК") || company.equals("МРСК")|| company.equals("ПИК"))
+      System.out.println(fullInfoAboutCompanyArray[1] + "\t" + fullInfoAboutCompanyArray[2]);
+      if (company.equals("ГМК") || company.equals("МРСК") || company.equals("ПИК")
+          || company.equals("ТМК"))
       //есть разные названия
       {
         company += " " + fullInfoAboutCompanyArray[2];

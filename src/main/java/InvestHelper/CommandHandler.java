@@ -76,9 +76,9 @@ public class CommandHandler {
       parserStocks.parseQuotesData();
       String stat = statisticComputer.computeStatistics(tempClient.getInvestmentPortfolio(),
           parserStocks.getQuotes());
-      stat += "\nПотрачено за весь период: " + tempClient.getTotalEXPENSES() + "руб\n";
-      stat += "Выручено за весь перод: " + tempClient.getTotalINCOME() + "руб\n";
-      stat += "Прибыль: " + (tempClient.getTotalINCOME() - tempClient.getTotalEXPENSES()) + "руб";
+      stat += "\nКуплено акций на сумму: " + tempClient.getTotalEXPENSES() + "руб\n";
+      stat += "Заработано на продаже акций: " + tempClient.getTotalINCOME() + "руб\n";
+      stat += "Баланс: " + (tempClient.getTotalINCOME() - tempClient.getTotalEXPENSES()) + "руб";
       StringBuilder stringBuilder = parserStocks.getTextForUserAboutQuotes();
       outMess.setText(stat);
 
@@ -154,13 +154,11 @@ public class CommandHandler {
         nameOfcompanyIsSentByUser = true;
       } else {
         int countOfStocks = Integer.parseInt(textOfMessage);
-        if (!tempClient.correctCountOfActions(nameOfCompany,countOfStocks))
-        {
+        if (!tempClient.correctCountOfActions(nameOfCompany, countOfStocks)) {
           outMess.setText("У вас нет столько акций! Введите число поменьше!");
-        }
-        else {
+        } else {
           String comp = nameOfCompany.split("_")[0];
-          tempClient.sellStocks(nameOfCompany,countOfStocks,parserStocks.getPriceOfStock(comp));
+          tempClient.sellStocks(nameOfCompany, countOfStocks, parserStocks.getPriceOfStock(comp));
           outMess.setText("Акции успешно проданы!");
         }
 

@@ -20,24 +20,24 @@ public class Client {
 
   private String date;
 
-  public int getTotalEXPENSES() {
+  public long getTotalEXPENSES() {
     return totalEXPENSES;
   }
 
-  public void setTotalEXPENSES(int totalEXPENSES) {
+  public void setTotalEXPENSES(long totalEXPENSES) {
     this.totalEXPENSES = totalEXPENSES;
   }
 
-  public int getTotalINCOME() {
+  public long getTotalINCOME() {
     return totalINCOME;
   }
 
-  public void setTotalINCOME(int totalINCOME) {
+  public void setTotalINCOME(long totalINCOME) {
     this.totalINCOME = totalINCOME;
   }
 
-  private int totalEXPENSES;
-  private int totalINCOME;
+  private long totalEXPENSES;
+  private long totalINCOME;
 
   public Map<String, UserStock> getInvestmentPortfolio() {
     return investmentPortfolio;
@@ -70,7 +70,7 @@ public class Client {
     //уменьшается количество акций в портфеле
     this.investmentPortfolio.get(nameOfCompany)
         .setCountStocks(currentCountOfStocks - countOfStocksToSell);
-    this.totalINCOME += priceOfOneStock*countOfStocksToSell;
+    this.totalINCOME += priceOfOneStock *countOfStocksToSell;
     if (currentCountOfStocks - countOfStocksToSell == 0)
       this.investmentPortfolio.remove(nameOfCompany);
   }
