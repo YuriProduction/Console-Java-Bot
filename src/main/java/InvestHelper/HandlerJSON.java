@@ -16,11 +16,12 @@ public class HandlerJSON {
 
   //Управляет считыванием и обновлением JSON-базы
 
-  public void readBase(Map<String, Client> base) {
+  public String readBase(Map<String, Client> base, String path) {
+    String input = "";
     try (FileReader fileReader = new FileReader(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
-      Path file = Paths.get("D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json");
-      String input = Files.readString(file);
+        path)) {
+      Path file = Paths.get(path);
+      input = Files.readString(file);
       System.out.println(input);
       Client tempClient = new Client();//новый клиент в словарь
       JSONObject jsonObject = (JSONObject) JSONValue.parse(input);
@@ -50,17 +51,17 @@ public class HandlerJSON {
           base.put(userID, tempClient);
         }
       }
-
     } catch (
         Exception ex) {
       ex.printStackTrace();
     }
+    return input;
   }
 
 
-  public void updateBase(Map<String, Client> base) {
+  public void updateBase(Map<String, Client> base, String path) {
     try (FileWriter file = new FileWriter(
-        "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json")) {
+        path)) {
 
       JSONObject mainObj = new JSONObject();
       JSONArray mp = new JSONArray();

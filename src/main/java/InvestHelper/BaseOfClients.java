@@ -23,11 +23,12 @@ public class BaseOfClients { //implements Bootable,ReadAndWrite
   }
 
   public void readToLocalBase() {
-    handlerJSON.readBase(base);
+    String path = "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json";
+    handlerJSON.readBase(base, path);
   }
 
   public void updateToJSONBase() {
-    handlerJSON.updateBase(base);
+    String path = "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\text.json";
+    handlerJSON.updateBase(base, path);
   }
-
 }

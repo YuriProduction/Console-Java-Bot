@@ -41,11 +41,11 @@ class ClientTest {
   void getInvestmentPortfolio(String name, Double price) throws IOException {
     DecimalFormat df = new DecimalFormat("#.###");
     stockCur.parseQuotesData();
-    String nameCompany = name;
+    String nameCompany = name+"_"+new Date();;
     int countOfStock = 2;
     Double stockPrice = price;
-    ourClient.addStockToInvestPortfolio(nameCompany, countOfStock, stockPrice);
-    Double diffPrice = stockCur.getPriceOfStock(nameCompany) - stockPrice;
+    ourClient.addStockToInvestPortfolio(name, countOfStock, stockPrice);
+    Double diffPrice = stockCur.getPriceOfStock(name) - stockPrice;
     Double ourStocks = countOfStock * diffPrice;
     Double profit = diffPrice * countOfStock;
 
@@ -60,7 +60,7 @@ class ClientTest {
             + "2) - Разница между текущей стоиомостью одной акции комании и стоимостью, по которой покупали вы\n"
             + "3) Общие показатели акции с учетом количества\n"
             + "\n"
-            + "1)"+name+" Dec 06 2022 2) " + df.format(diffPrice) + "руб " + sign + " 3) " + df.format(ourStocks)
+            + "1)"+stringFormater.format(nameCompany)+" 2) " + df.format(diffPrice) + "руб " + sign + " 3) " + df.format(ourStocks)
             + "руб\n"
             + "Общий доход активов: " + df.format(profit) + "",
         statClient.computeStatistics(ourClient.getInvestmentPortfolio(), stockCur.getQuotes()));
