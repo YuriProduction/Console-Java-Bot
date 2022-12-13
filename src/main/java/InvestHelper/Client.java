@@ -87,6 +87,12 @@ public class Client {
     investmentPortfolio.put(nameOfCompany + "_" + new Date().toString(), userStock);
   }
 
+  public void addStockToInvestPortfolioForTests(String nameOfCompany, int countOfStock, double stockPrice) {
+    UserStock userStock = new UserStock(stockPrice, countOfStock);
+    this.totalEXPENSES += stockPrice*countOfStock;
+    investmentPortfolio.put(nameOfCompany, userStock);
+  }
+
   public HashMap<String, UserStock> mapForJSON()//нужно для запси в json-базу
   {
     return (HashMap<String, UserStock>) this.investmentPortfolio;

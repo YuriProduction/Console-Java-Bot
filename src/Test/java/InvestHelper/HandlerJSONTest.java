@@ -26,7 +26,7 @@ class HandlerJSONTest {
       "Газпром, 302.2, 12"
   })
   void testBase(String name, Double price, int count) {
-    String path = "C:\\Учеба ООП\\Console-Java-Bot\\src\\main\\resources\\test.json";
+    String path = "D:\\JAVA\\UNIVERSITY\\Bot_consol\\ConsolniyBot\\src\\main\\resources\\test.json";
     HashMap<String, Client> base = new HashMap<>();
     String userId = "7771118889";
     base.put(userId, client);
@@ -34,7 +34,7 @@ class HandlerJSONTest {
     handlerJSON.updateBase(base,path);
     String nameForJson = name+"_"+new Date();
     System.out.println(name);
-    String expected = "{\"Base\":[{\"Stocks\":[{\"Company\":\""+nameForJson+"\",\"PriceOneStock\":"+price+",\"Count\":"+count+"}],\"ID\":\""+userId+"\",\"Date\":\""+new Date()+"\"}]}";
+    String expected = "{\"Base\":[{\"Stocks\":[{\"Company\":\""+nameForJson+"\",\"PriceOneStock\":"+price+",\"Count\":"+count+"}],\"totalINCOME\":"+ client.getTotalINCOME() +",\"ID\":\""+userId+"\",\"totalEXPENSES\":"+ client.getTotalEXPENSES()+",\"Date\":\""+new Date()+"\"}]}";
     String actual = handlerJSON.readBase(base, path);
     Assertions.assertEquals(expected, actual);
   }
