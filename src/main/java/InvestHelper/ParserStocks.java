@@ -40,10 +40,11 @@ public class ParserStocks {
   }
 
   //котировки
-  private final Map<String, Double> quotes = new HashMap<>();
+  private Map<String, Double> quotes = new HashMap<>();
 
 
   public void parseQuotesData() throws IOException {
+    this.quotes = new HashMap<>();
     textForUserAboutQuotes.append("Компания   ").append("Цена(руб/шт)").append("\n");
     String url = "https://investfuture.ru/securities";
     Document doc = Jsoup.parse(new URL(url).openStream(), "utf-8", url);
