@@ -42,13 +42,6 @@ public class CommandHandler {
       throws IOException {
     this.outMess = new SendMessage();
     outMess.setChatId(chatID.toString());
-    if (Math.abs(castDateToInt(tempClient.getDate()) - castDateToInt(new Date().toString())) >= 1) {
-      outMess.setText("Привет! Ты не заходил в бота больше одного дня, "
-          + "перед использованием посмотри, что произошло на бирже!"
-          + "Для этого введи команду \"/StockPrices\"");
-      tempClient.setDate(new Date().toString());
-      return;
-    }
     if (command.equals("/start")) {
       outMess.setReplyMarkup(keyboardMaker.setReplyKeyboardMarkup(command));
       outMess.setText(
